@@ -9,7 +9,10 @@ repositorio personal `FSendot/tpe_big_data`.
 1. Prioridad analítica y decisión que queremos habilitar para sus usuarios.
 2. Integrantes, disponibilidad y recursos para estimar un plan viable.
 3. Restricciones o validaciones del entorno de ejecución.
-4. Acceso a los archivos originales, después de la búsqueda local sin resultados.
+
+Acceso a datos resuelto: el usuario aportó el paquete del campus
+`cloud_provider_challenge_dataset_v1`. Se verificó la presencia de las ocho
+fuentes y su lectura básica. Ver [inventario inicial](../data/README.md).
 
 ## Decisiones dependientes
 
