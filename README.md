@@ -12,12 +12,24 @@ proponer una arquitectura viable y aportar evidencia mínima de lectura,
 generación o exploración de datos. La implementación completa de batch,
 streaming y serving corresponde a las instancias posteriores.
 
-Estado: repositorio inicial. El diseño está pendiente de la sesión de definición.
-Todavía no hay pipeline ni evidencia de ejecución.
+Estado: alcance y decisiones D1–D16 acordados, con foco en FinOps.
+El diseño está consolidado para revisión; la evidencia reproducible sigue pendiente.
+El entorno de ejecución queda abierto; Colab no está elegido.
+HDFS es el almacenamiento elegido para el Lake. El diseño de despliegue queda
+fuera de esta entrega; se mantienen los supuestos de recursos y la reproducción
+de la evidencia mínima.
 
 - [Alcance y checklist de la entrega](docs/primera-entrega.md).
-- [Preguntas y decisiones pendientes](docs/sesion-de-diseno.md).
+- [Alcance acordado](docs/alcance-primera-entrega.md).
+- [Diseño consolidado: arquitectura, contratos, consultas y plan](docs/diseno-primera-entrega.md).
+- [Decisiones D1–D16 y tradeoffs](docs/decisiones-de-diseno.md).
+- [Lectures: fundamentos y referencias para el diseño](docs/referencia-lectures.md).
+- [Glosario del dominio](CONTEXT.md).
 - [Disponibilidad de los datos](data/README.md).
+
+El siguiente trabajo ejecutable de esta entrega es el script de lectura y
+perfilado de las ocho fuentes y su evidencia. El pipeline, el CLI de consumo
+con reporte HTML y las cargas a Cassandra están diseñados, no implementados.
 
 ## Convenciones iniciales
 
@@ -27,7 +39,7 @@ Todavía no hay pipeline ni evidencia de ejecución.
 - Mantener los archivos originales de Landing sin modificaciones.
 - Guardar resultados reproducibles y sus comandos en `evidence/` cuando existan.
 - Excluir del control de versiones credenciales, entornos locales y datos generados.
-- Crear `CONTEXT.md` al acordar los primeros términos del dominio. Reservar
+- Actualizar `CONTEXT.md` al acordar términos del dominio. Reservar
   `docs/adr/` para decisiones con alternativas y consecuencias duraderas.
 - Crear carpetas de código, configuración y pruebas cuando haya contenido real.
 
