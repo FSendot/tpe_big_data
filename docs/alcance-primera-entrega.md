@@ -8,7 +8,8 @@ primera entrega sigue pendiente de preparación.
 
 Preparar el diseño y la fundación de datos exigidos por las secciones 5 y 9.1
 de la consigna, con el mínimo trabajo ejecutable necesario para sustentar el
-diseño. Fecha indicada en la consigna: 28/09/2026 a las 18:30.
+diseño. Fecha de entrega prorrogada al 05/10/2026, según lo informado el 04/10.
+Se mantiene el horario de las 18:30 de la consigna original.
 
 El caso principal explica las variaciones diarias del costo de uso por
 organización y servicio para FinOps del proveedor, mostrando impacto en USD

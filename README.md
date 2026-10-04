@@ -5,7 +5,8 @@ Repositorio personal: [FSendot/tpe_big_data](https://github.com/FSendot/tpe_big_
 
 ## Primera entrega
 
-Fecha límite: **28/09/2026 a las 18:30 h**.
+Fecha límite: **05/10/2026 a las 18:30 h**.
+Prórroga informada el 04/10; se mantiene el horario de la consigna original.
 
 El trabajo actual cubre diseño y fundación de datos. Debe explicar el problema,
 proponer una arquitectura viable y aportar evidencia mínima de lectura,

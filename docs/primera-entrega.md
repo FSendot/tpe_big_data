@@ -1,6 +1,7 @@
 # Primera entrega: diseño y fundación de datos
 
-Fecha límite: 28/09/2026, 18:30 h.
+Fecha límite actualizada: 05/10/2026, 18:30 h.
+Prórroga informada el 04/10; se mantiene el horario de la consigna original.
 Fuente: consigna v1.0, secciones 5 y 9.1, páginas 7, 8 y 15.
 
 Este archivo registra los requisitos de la entrega. El [diseño consolidado](diseno-primera-entrega.md)
