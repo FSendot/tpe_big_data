@@ -1,69 +1,248 @@
-# Cloud Provider Analytics
+# Contexto de implementación
 
-Vocabulario acordado para analizar el consumo y los costos de un proveedor cloud.
+Notas de trabajo. El documento entregable es `docs/primera-entrega.md` y no
+depende de este archivo. Las reglas de negocio y los tradeoffs están allí;
+aquí se conservan detalles de implementación y verificaciones pendientes.
 
-## Lenguaje
+## Estado y límites
 
-**FinOps**:
-Equipo que gestiona el gasto cloud y es el destinatario principal del análisis
-de aumentos del costo de uso por organización y servicio.
+Sólo hay documentación e inspecciones exploratorias. No existe todavía script
+de perfilado versionado, evidencia reproducible, pipeline ni infraestructura.
+El siguiente trabajo es el perfilado de las ocho fuentes con Python estándar,
+parámetro de ruta al dataset y salida en `evidence/`. No ampliar esa tarea a
+consultas analíticas, CLI de consumo, detector ni despliegue.
 
-**Costo de uso**:
-Importe incremental en USD asociado al consumo registrado en los eventos.
-Es la medida principal para analizar aumentos; su equivalencia con el importe
-de una factura no está establecida.
-_Evitar_: Facturación, ingreso, margen, costo interno del proveedor.
+HDFS está elegido; entorno, hosting, topología, scheduler y versiones siguen
+abiertos. Se prefiere CLI/script y HTML a Jupyter. Docker Compose es una opción
+posterior, no una obligación. La consigna pide Colab o equivalente validado
+para el pipeline; la elección de CLI no resuelve esa validación.
 
-**Aumento relativo**:
-Incremento del costo de uso expresado como porcentaje del costo del período
-de referencia.
-_Evitar_: Aumento absoluto como sinónimo.
+## Vocabulario
 
-**Aumento absoluto**:
-Diferencia en USD entre el costo de uso de un período y el del período de
-referencia.
-_Evitar_: Aumento relativo como sinónimo.
+- Costo de uso: importe incremental de los eventos, distinto de facturación,
+  revenue, margen o costo interno del proveedor.
+- Aumento absoluto: diferencia en USD. Aumento relativo: porcentaje respecto
+  del costo de referencia.
+- Día completo: día UTC terminado; puede recibir correcciones y no garantiza
+  que hayan llegado todos sus eventos.
+- Sin base comparable: día anterior ausente o costo cero; no hay porcentaje.
+- Pendiente de validación: valor cuyo significado o validez no se resolvió,
+  como costo negativo o contribución contradictoria. No equivale a error
+  confirmado ni a outlier estadístico.
+- Total parcial: excluye contribuciones pendientes de una medida.
+- Pendiente de recálculo: la publicación no refleja todas las novedades.
+  Recalcular puede eliminar la espera y conservar la parcialidad.
+- Revenue mensual: subtotal menos créditos más impuestos, convertido a USD.
+  La fórmula es una convención, no conciliación con el costo de uso.
 
-**Costo diario**:
-Suma del costo de uso de una organización y servicio durante un día calendario
-en UTC.
+## Perfilado pendiente
 
-**Costo horario**:
-Suma del costo de uso de una organización y servicio durante una hora
-calendario UTC. Puede publicarse y actualizarse antes de que termine esa hora.
+Leer todos los CSV y JSONL; registrar archivos, tamaños, SHA256, esquemas,
+casts, nulos, claves, duplicados, referencias y distribuciones temporales.
+Conservar reglas independientes por medida. El script debe recibir el paquete
+por parámetro, sin depender de Downloads ni escribir sobre los originales.
+Versionar comando, Python y resultados sin emails, comentarios o credenciales.
+Los conteos de diseño son referencias para investigar diferencias, no filtros
+que permitan forzar el resultado esperado.
 
-**Día completo**:
-Día calendario UTC que terminó. Sus resultados pueden corregirse si llegan
-eventos adicionales; el término no garantiza que todos los datos hayan llegado.
+Datos adicionales a los resumidos en la entrega:
 
-**Evento tardío**:
-Evento que llega después de publicar un resultado del período en el que ocurrió
-y que puede requerir corregir ese resultado.
+| Fuente | Bytes observados |
+| --- | ---: |
+| customers_orgs.csv | 7.746 |
+| users.csv | 70.683 |
+| resources.csv | 36.703 |
+| support_tickets.csv | 70.945 |
+| marketing_touches.csv | 101.998 |
+| nps_surveys.csv | 3.977 |
+| billing_monthly.csv | 15.854 |
+| 120 JSONL | 12.927.515 |
 
-**Sin base comparable**:
-Estado de una comparación cuyo día de referencia carece de registros o tiene
-costo cero, por lo que no se le asigna un aumento porcentual.
+- 33.953 timestamps distintos, intervalos intradía observados de 1–21 minutos.
+  No son una frecuencia de llegada.
+- Costos presentes y finitos; todos los timestamps interpretables. Servicios
+  y regiones ya estaban en minúsculas y sin espacios extremos.
+- Servicios: compute 12.498, database 7.419, networking 6.921, analytics 4.590,
+  genai 4.158 y storage 7.614. Las tres métricas value/unit aparecen en todos.
+- `genai_tokens` es un campo independiente de metric. Sus 3.132 valores
+  observados son enteros positivos y corresponden a v2 y service=genai.
+- Billing no repite invoice_id ni org-mes. FX USD observado: 0,85463–1,11791.
+- Tickets: 56 critical; sla_breached contiene 95 true y 905 false. Usar ese
+  indicador, sin inventar duraciones contractuales de SLA.
+- No hay generador, diccionario separado ni revisión de eventos en el paquete.
+  Su README, líneas 16–19, describe defectos deliberados pero no los resuelve.
 
-**Costo pendiente de validación**:
-Costo cuyo significado o validez no están establecidos. En este caso incluye
-los costos negativos, que podrían representar ajustes o errores.
-También incluye contribuciones de costo contradictorias sin una revisión
-confiable que permita resolverlas.
-_Evitar_: Outlier o error confirmado como sinónimos.
+## Contratos de transformación
 
-**Total parcial**:
-Agregado calculado con los valores utilizables de una medida cuando otros
-valores del mismo grupo faltan o siguen pendientes de validación. El estado
-se evalúa por medida: un consumo parcial no implica por sí solo un costo parcial.
+Propuesta numérica: decimal(38,12) para montos/medidas e int64 para conteos;
+validar precisión y overflow al elegir runtime. Guardar valor crudo y parseado.
+Bronze añade ingest_ts, source_file, source_hash, batch_id, fila y contrato.
+Silver usa superset v1/v2, versión de maestros y manifiesto por snapshot.
+Quarantine particiona por ingesta para admitir fechas de evento inválidas.
 
-**Pendiente de recálculo**:
-Resultado que necesita actualizarse porque se detectaron novedades o conflictos
-que su valor publicado todavía no refleja. Recalcularlo puede eliminar esa
-espera y mantenerlo parcial si siguen existiendo datos no utilizables.
-_Evitar_: Total parcial como sinónimo.
+Equivalencia de eventos excluye metadatos de ingesta y aplica sólo casts y
+normalizaciones admitidos. Comparar antes de deduplicar, también contra el
+historial, para no ocultar conflictos entre lotes. Un conflicto de una medida
+no invalida otras si identidad, fecha y dimensiones coinciden; si discrepan,
+marcar todos los grupos potencialmente afectados. Índice de identidad
+reconstruible desde originales, sin depender sólo del estado streaming.
 
-**Revenue mensual**:
-Importe de facturación de una organización y mes, neto de créditos e incluidos
-los impuestos según la convención acordada, expresado en USD. Puede quedar
-sin importe calculable si sus componentes requieren validación.
-_Evitar_: Costo de uso o margen como sinónimos.
+Cambios de día, organización o servicio invalidan asignaciones anterior y
+nueva. Una corrección diaria actualiza comparaciones adyacentes y todas las
+ventanas de 14 días que incluyan el día. Reutilizar agregados coherentes de días
+sin cambios. CSV y dimensiones invalidan resultados dependientes del snapshot.
+
+## Propuesta de streaming y recuperación
+
+1. Un script de reproducción ofrecería copias de los JSONL originales completos
+   al directorio de entrada. No reordena eventos ni modifica Landing. La tasa
+   de presentación y los archivos por lote serán parámetros documentados; el
+   objetivo de frescura se mide desde esa disponibilidad, no desde la fecha 2025.
+2. Ingesta con readStream y esquema explícito; foreachBatch conserva Bronze,
+   clasifica calidad/conflictos y publica un nuevo manifiesto Silver con sus
+   incidencias. Un cambio que necesita reparación bloquea la autoridad streaming
+   del grupo antes de permitir otra publicación. Una caída se recupera por ID
+   de query, lote y archivos, sin duplicar la contribución.
+3. Sólo se emiten como novedades operativas nuevas contribuciones canónicas.
+   Una query separada deduplica por event_id con watermark de 60 días; se prevé
+   dropDuplicatesWithinWatermark, sujeto a compatibilidad del runtime. Su salida
+   es append a Parquet. Conflictos y eventos fuera de margen quedan preservados
+   antes de este operador y registrados para recuperación.
+4. Otra query agrega esas novedades por org-servicio-ventana de una hora UTC,
+   con watermark de 60 días y salida Update mediante foreachBatch al publicador.
+   Se usan checkpoints distintos. Separar deduplicación y agregación evita
+   depender de una cadena de operadores con estado no admitida en Update.
+5. El publicador verifica autoridad y generación del grupo. Los grupos
+   transferidos a batch se reconstruyen sólo en el batch horario desde Silver,
+   incluidas nuevas contribuciones válidas. No se devuelve autoridad a un
+   acumulador que no haya sido reconciliado.
+
+Antes de promover Silver, cada lote guarda un plan recuperable con su corte,
+archivos, variantes, invalidaciones y todas las salidas esperadas. El reintento
+completa salidas faltantes desde ese plan aunque sus IDs ya figuren en Silver.
+Así, una caída entre actualizar Silver y emitir novedades no pierde eventos
+operativos. El lote no se considera terminado hasta verificar sus salidas.
+Para esta muestra, la ingesta publica un archivo de novedades por lote: lo
+escribe y cierra fuera del directorio observado y lo promueve completo con
+nombre determinista. Si ya existe, verifica el contenido lógico esperado.
+Se usará rename dentro del mismo HDFS y límites compatibles, comprobando el
+resultado; esto no se generaliza a otros backends. [Contrato de filesystem](https://apache.github.io/hadoop/hadoop-project-dist/hadoop-common/filesystem/filesystem.html).
+
+Propuesta inicial de triggers: 10 s por query. Presupuesto ilustrativo extremo:
+hasta 30 s de espera entre tres etapas y 30 s para lectura, validación,
+procesamiento y publicación. Es un presupuesto a comprobar, no una medición
+ni un SLA garantizado. Si hay backlog, se expone y se revisan tamaños de lote,
+paralelismo y costo de identidad antes de declarar alcanzado el objetivo.
+
+El margen de 60 días cubre el intervalo de la muestra si no se mezclan eventos
+posteriores ajenos a ella. No garantiza una configuración eficiente a escala.
+Se publican resultados provisionales sin esperar cierre de ventanas. Una
+entrada finita no hace avanzar por sí sola el watermark hasta cerrarlas todas.
+La recuperación identifica todas las horas fuera del margen garantizado,
+aunque Spark hubiera incorporado algunas: reemplazar desde detalle evita
+sumarlas otra vez. Esta reparación no depende de inferir un descarte exacto.
+
+Las garantías de operadores y limitaciones de consultas están documentadas por
+[Spark](https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html).
+foreachBatch puede reintentarse; la aplicación debe hacer sus escrituras
+idempotentes. Los archivos de novedades, snapshots y manifiestos comprometidos
+son inmutables. Repetir un lote verifica/reutiliza su salida; cambios después
+de su corte forman otro lote. La compatibilidad de APIs, checkpoints y driver
+queda por validar al fijar versiones, no se atribuye exactly-once al pipeline
+por usar Spark.
+
+## Publicación y consistencia
+
+- Cada resultado lleva source_cut, publication_id, schema_version, estado de
+  calidad y generated_at. generated_at no decide autoridad sobre otro escritor.
+- Batch produce una versión completa de los agregados que el CLI consultará
+  juntos. Puede reutilizar agregados no modificados al materializarla, sin
+  releer detalle que no cambió. Se escriben Gold y las filas de serving bajo
+  un nuevo publication_id; se verifican conteos y luego se activa su referencia.
+- El CLI fija una publicación batch al iniciar la consulta/reporte. Todas sus
+  tablas, comparaciones y rankings usan ese ID. Filas omitidas en la nueva
+  versión no sobreviven accidentalmente como restos de la anterior.
+- Para el operativo, cada grupo horario publica un conjunto de medidas bajo
+  un ID inmutable. Su referencia de control contiene autoridad stream/batch,
+  generación y estado. Un conflicto incrementa la generación y cambia la
+  autoridad a batch antes de autorizar una reparación. La activación de una
+  salida comprueba autoridad/generación y el predecesor esperado.
+- Toda activación, también batch, exige que la referencia activa siga siendo
+  el predecesor contra el que se calculó y que el corte no retroceda en ninguna
+  entrada relevante. Se comprueban snapshots/progreso, no hora de escritura.
+  Si otra publicación ganó, se rechaza el candidato o se recalcula; no se
+  reintenta el CAS ignorando la nueva base. Si el mismo ID ya está activo,
+  el reintento sólo verifica su finalización. Esto evita retrocesos dentro
+  de una misma autoridad y generación.
+- Un mismo responsable lógico de publicación aplica esas reglas. El mecanismo
+  previsto usa filas de control con actualización condicional, no un nuevo
+  servicio. Los cálculos pueden escribir candidatos; sólo el control autoriza
+  hacerlos visibles. Los candidatos rechazados quedan sin referencia activa.
+- Fallo antes de activar: sigue la publicación anterior, señalada como pendiente
+  o fallida. No se la considera confiable si ya hay incidencias conocidas.
+  Estas se consultan junto a la versión y excluyen de rankings los grupos
+  afectados; si no se puede comprobar su estado, la consulta lo informa y no
+  los presenta como elegibles. Sin publicación anterior: no disponible.
+
+El estado de calidad se publica también como agregado por grupo/período, con
+revisión, elegibilidad y actualización pendiente. No expone variantes ni PII.
+El CLI fija su revisión además del publication_id y verifica al finalizar que
+no haya cambiado; si cambió, rehace la evaluación o declara que no pudo obtener
+una vista estable, sin presentar un ranking como vigente. Las correcciones no
+borran incidencias ni pendientes posteriores a su corte. Quarantine continúa
+restringida al responsable de datos.
+
+Las actualizaciones condicionales de Cassandra permiten compare-and-set en
+una partición; no convierten una carga de varias tablas en una transacción
+aislada global. Por eso se proponen datos versionados más referencia activa.
+Se deben validar niveles de lectura/escritura compatibles antes de activar
+referencias, junto con conteos y cobertura. [Semántica CQL](https://cassandra.apache.org/doc/stable/cassandra/developing/cql/dml.html).
+
+Batch y operativo tienen cortes distintos, explícitos en el reporte. En el
+operativo, la coherencia se garantiza por grupo horario; no se promete que
+todas las horas cambien simultáneamente. Calidad y estado de actualización
+son ejes distintos: una publicación terminada puede contener un total parcial.
+La retención conserva las versiones activas y las que estén siendo leídas o
+reprocesadas. Tras cierre y margen de 30 días se coordina limpieza de Lake y serving.
+
+## Claves de serving
+
+`pub` identifica la publicación batch fijada por el CLI.
+
+| Tabla propuesta | Partition key | Clustering / orden | Consulta y contenido |
+| --- | --- | --- | --- |
+| org_daily_usage_by_service | org_id, service, month, pub | usage_date ASC | Costo, requests, cpu_hours, storage_gb_hours, carbono y calidad diarios; enumerar servicios para una vista conjunta |
+| top_services_14d | org_id, reference_date, pub | rank ASC, service | Top-N por costo acumulado de los 14 días calendario terminados en reference_date; importe, cobertura y elegibilidad |
+| tickets_by_org_date | org_id, severity, month, pub | date ASC | Conteos, breached_count, indicador válido, tasa y CSAT; critical y rango de 30 días |
+| revenue_by_org_month | org_id, year, pub | month ASC | Importe USD o no calculable, componentes, FX original/aplicado e incidencias |
+| genai_tokens_by_org_date | org_id, month, pub | date ASC | Tokens disponibles, costo registrado GenAI y cobertura de cada medida |
+| finops_daily_comparison | org_id, service, month, pub | date ASC | D/D−1, delta USD, porcentaje, base comparable y calidad |
+| finops_ranking_by_date | date, ranking_type, pub | rank ASC, org_id, service | Priorización entre organizaciones, por aumento USD o relativo; sólo comparaciones elegibles |
+| cost_anomaly_mart, futuro | org_id, service, month, pub | date ASC | Flag/score, método y contexto; no evaluable hasta definir método y base suficientes |
+| hourly_head_by_org_day | org_id, date | hour ASC, service | Referencia activa por grupo, autoridad, generación, estado y corte |
+| hourly_usage_version | org_id, service, hour, version | metric, unit | Medidas de la versión horaria y su calidad; se consulta la versión resuelta por head |
+| publication_head | dataset_id | — | Publicación batch activa, corte, estado y generación; actualizaciones condicionales |
+| quality_status_by_period | domain, period, quality_revision | org_id, service, hour_scope, measure | Estado agregado, elegibilidad, motivos resumidos y recálculo pendiente; sin variantes originales |
+| quality_head | dataset_id | — | Revisión de calidad activa que el reporte fija y vuelve a verificar |
+
+## Validaciones de la implementación posterior
+
+- Reintentar un lote en cada punto de fallo: tras promover Silver, antes de
+  emitir novedades y durante la carga de Cassandra. Comprobar todas las salidas.
+- Repeticiones equivalentes y contradictorias, incluidas las de otros lotes.
+- Costo válido con consumo inválido; medida sin contribuciones válidas;
+  importe cero frente a ausencia; FX USD inconsistente y factura no calculable.
+- Corregir D y verificar D/D−1, D+1/D, rankings y ventanas de 14 días.
+- Intentar publicar desde un acumulador obsoleto después de reparar un grupo.
+- Competencia entre candidatos del mismo escritor/generación: el corte activo
+  no retrocede aunque haya reintento de CAS.
+- Cambiar calidad durante la lectura de un reporte: reintentar o informar que
+  no se obtuvo una vista estable, sin mostrar rankings como válidos.
+- Medir frescura ordinaria, recuperación, bytes leídos, tamaño del estado y
+  número de archivos; contrastar recálculo por grupos o deltas contra el día
+  completo antes de sustituirlo.
+
+Mantener fuera de Git originales, credenciales, entornos locales, checkpoints
+y datos generados del Lake. Crear carpetas de código y pruebas cuando tengan
+contenido. No duplicar la entrega en PDF ni crear nuevos registros de decisiones
+si basta con actualizar el diseño y estas notas.
