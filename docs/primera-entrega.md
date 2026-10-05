@@ -38,8 +38,7 @@ de nuevo el CLI.
 El paquete sintético `cloud_provider_challenge_dataset_v1`, disponible en el
 campus, contiene siete CSV y 120 archivos JSONL dentro de `datalake/landing/`.
 Se leyeron los CSV y cada línea JSON sin modificar los originales. Los conteos
-siguientes provienen de esa inspección; falta incorporar el script y su salida
-para que la exploración pueda reproducirse desde el repositorio.
+siguientes provienen de esa inspección.
 
 | Fuente | Registros | Grano y clave observada | Campos principales y calidad |
 | --- | ---: | --- | --- |

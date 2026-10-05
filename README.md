@@ -13,5 +13,4 @@ Para acceder a los datos, descargar `cloud_provider_challenge_dataset_v1`
 del campus y extraerlo fuera del repositorio. Las fuentes están en
 `datalake/landing/`. Los originales no se modifican ni se suben a Git.
 
-Todavía falta incorporar el script de perfilado y su salida reproducible.
 El pipeline está diseñado, pero no implementado.
