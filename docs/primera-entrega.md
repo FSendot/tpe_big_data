@@ -281,12 +281,25 @@ y reconciliar el estado streaming en esta etapa.
 
 ### Publicación y recuperación ante fallos
 
-Los resultados se publicarán por versión para que una carga incompleta no
-reemplace el último corte válido. El reporte mostrará la fecha de ese corte y
-las incidencias conocidas, incluso si un resultado todavía espera recálculo o
-tiene un total parcial. En la implementación tendremos que probar qué ocurre
-ante reintentos, correcciones históricas y escrituras simultáneas de batch y
-streaming.
+Los resultados se escriben bajo una versión nueva y se verifican antes de
+activar su referencia en Cassandra. El reporte fija una publicación para
+leer juntos totales, comparaciones y rankings. Si falla una carga, sigue
+disponible la última versión terminada con su fecha y estado; sin una versión
+previa, se informa que el resultado no está disponible.
+
+Cada publicación identifica su corte de entradas. El control comprueba el
+predecesor esperado y que el corte no retroceda; para horas operativas comprueba
+además autoridad y generación. Un candidato obsoleto se rechaza o recalcula.
+Los reintentos completan las salidas previstas del lote sin duplicar aportes.
+Las actualizaciones condicionales de Cassandra no son una transacción global
+entre tablas: se usarán datos inmutables y referencias activas, con niveles
+de consistencia a validar.
+
+Las incidencias conocidas siguen visibles aunque el valor publicado sea
+anterior. El reporte verifica una revisión estable de calidad antes de
+presentar rankings. Un resultado pendiente de recálculo necesita actualizarse;
+un total parcial tiene contribuciones no utilizables. Son estados distintos,
+y terminar una publicación no elimina sus problemas de calidad.
 
 ## Consultas y consumo
 
