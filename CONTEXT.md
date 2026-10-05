@@ -6,10 +6,10 @@ aquí se conservan detalles de implementación y verificaciones pendientes.
 
 ## Estado y límites
 
-Sólo hay documentación e inspecciones exploratorias. No existe todavía script
-de perfilado versionado, evidencia reproducible, pipeline ni infraestructura.
-El siguiente trabajo es el perfilado de las ocho fuentes con Python estándar,
-parámetro de ruta al dataset y salida en `evidence/`. No ampliar esa tarea a
+Hay diseño y una exploración reproducible de las ocho fuentes en
+`scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
+No hay pipeline ni infraestructura. El script usa Python estándar, recibe la
+ruta del paquete y conserva los originales. No ampliar la primera entrega a
 consultas analíticas, CLI de consumo, detector ni despliegue.
 
 HDFS está elegido; entorno, hosting, topología, scheduler y versiones siguen
@@ -35,13 +35,13 @@ para el pipeline; la elección de CLI no resuelve esa validación.
 - Revenue mensual: subtotal menos créditos más impuestos, convertido a USD.
   La fórmula es una convención, no conciliación con el costo de uso.
 
-## Perfilado pendiente
+## Exploración y validaciones posteriores
 
-Leer todos los CSV y JSONL; registrar archivos, tamaños, SHA256, esquemas,
-casts, nulos, claves, duplicados, referencias y distribuciones temporales.
-Conservar reglas independientes por medida. El script debe recibir el paquete
-por parámetro, sin depender de Downloads ni escribir sobre los originales.
-Versionar comando, Python y resultados sin emails, comentarios o credenciales.
+La exploración registra archivos, tamaños, SHA256, columnas, tipos JSON,
+vacíos, claves, duplicados, referencias y distribuciones temporales. Faltan
+los casts y contratos completos de Silver, las validaciones de todas las
+medidas y los casos de recuperación. Conservar reglas independientes por medida.
+Comando, versión de Python y resultados están versionados sin datos personales.
 Los conteos de diseño son referencias para investigar diferencias, no filtros
 que permitan forzar el resultado esperado.
 

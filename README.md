@@ -6,11 +6,49 @@ Análisis de costos y consumo de un proveedor cloud, con foco en FinOps y
 métricas de Soporte y Producto. La propuesta combina PySpark, HDFS y
 Cassandra, con consultas por CLI y reportes HTML.
 
-La [primera entrega](docs/primera-entrega.md) reúne el diseño y la exploración
-inicial de los datos. Entrega: **05/10/2026**.
+La [primera entrega](docs/primera-entrega.md) reúne el diseño completo.
+Entrega: **05/10/2026**. La exploración inicial se puede ejecutar; el pipeline
+queda diseñado para las próximas etapas.
 
-Para acceder a los datos, descargar `cloud_provider_challenge_dataset_v1`
-del campus y extraerlo fuera del repositorio. Las fuentes están en
-`datalake/landing/`. Los originales no se modifican ni se suben a Git.
+## Artefactos de la primera entrega
 
-El pipeline está diseñado, pero no implementado.
+| Artefacto | Ubicación |
+| --- | --- |
+| Documento de diseño | [Primera entrega](docs/primera-entrega.md) |
+| Diagrama de arquitectura v1 | [Arquitectura](docs/primera-entrega.md#arquitectura-v1) |
+| Matriz requisito–componente | [Matriz y relación con las 5V](docs/primera-entrega.md#matriz-requisitocomponente) |
+| Plan inicial | [Supuestos, riesgos, roles, recursos y esfuerzo](docs/primera-entrega.md#plan-inicial) |
+| Registro de decisiones | [Decisiones y tradeoffs](docs/primera-entrega.md#registro-de-decisiones) |
+| Datos y evidencia | [Acceso y reproducción](data/README.md), [resultado de la lectura](evidence/README.md) |
+
+## Estructura
+
+```text
+docs/primera-entrega.md    Diseño, diagrama, matriz, decisiones y plan
+data/README.md            Obtención y uso del paquete del campus
+scripts/profile_data.py   Exploración con Python estándar
+evidence/                 Resultado agregado y hashes de las entradas
+CONTEXT.md                Notas internas para la implementación posterior
+```
+
+## Reproducir la exploración
+
+Descargar `cloud_provider_challenge_dataset_v1` del campus y extraerlo fuera
+del repo. Con Python 3.9 o posterior, desde la raíz del repositorio:
+
+```sh
+python3 scripts/profile_data.py /ruta/cloud_provider_challenge_dataset_v1 --output evidence/profile.json
+```
+
+El script verifica las ocho fuentes y no modifica los originales. La salida
+contiene estadísticas y hashes, sin filas de clientes, emails ni comentarios.
+Las [instrucciones de datos](data/README.md) detallan qué comprueba.
+
+## Convenciones
+
+- Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
+- Fechas de eventos y agregaciones en UTC; costos de uso separados de revenue.
+- Versionar código, diseño y evidencia agregada. Mantener fuera de Git los
+  originales, credenciales, entornos, checkpoints y salidas del Lake.
+- Registrar decisiones de diseño en la entrega y detalles internos en
+  `CONTEXT.md`; no duplicar el documento en otros formatos.

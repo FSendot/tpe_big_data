@@ -1,0 +1,1054 @@
+{
+  "python": "3.9.6",
+  "script_sha256": "a119d31197d77f7b3971f583b267f5e7f0640d8cd7739a2e110331b8efa2397e",
+  "input_files": 127,
+  "input_bytes": 13235421,
+  "csv": {
+    "customers_orgs.csv": {
+      "rows": 80,
+      "columns": [
+        "org_id",
+        "org_name",
+        "industry",
+        "hq_region",
+        "plan_tier",
+        "is_enterprise",
+        "signup_date",
+        "sales_rep",
+        "lifecycle_stage",
+        "marketing_source",
+        "nps_score"
+      ],
+      "empty_by_column": {
+        "org_id": 0,
+        "org_name": 0,
+        "industry": 0,
+        "hq_region": 0,
+        "plan_tier": 0,
+        "is_enterprise": 0,
+        "signup_date": 0,
+        "sales_rep": 0,
+        "lifecycle_stage": 0,
+        "marketing_source": 0,
+        "nps_score": 11
+      },
+      "key_columns": [
+        "org_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0
+    },
+    "users.csv": {
+      "rows": 800,
+      "columns": [
+        "user_id",
+        "org_id",
+        "email",
+        "role",
+        "active",
+        "created_at",
+        "last_login"
+      ],
+      "empty_by_column": {
+        "user_id": 0,
+        "org_id": 0,
+        "email": 0,
+        "role": 0,
+        "active": 0,
+        "created_at": 0,
+        "last_login": 139
+      },
+      "key_columns": [
+        "user_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    },
+    "resources.csv": {
+      "rows": 400,
+      "columns": [
+        "resource_id",
+        "org_id",
+        "service",
+        "region",
+        "created_at",
+        "state",
+        "tags_json"
+      ],
+      "empty_by_column": {
+        "resource_id": 0,
+        "org_id": 0,
+        "service": 0,
+        "region": 0,
+        "created_at": 0,
+        "state": 0,
+        "tags_json": 83
+      },
+      "key_columns": [
+        "resource_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    },
+    "support_tickets.csv": {
+      "rows": 1000,
+      "columns": [
+        "ticket_id",
+        "org_id",
+        "category",
+        "severity",
+        "created_at",
+        "resolved_at",
+        "csat",
+        "sla_breached"
+      ],
+      "empty_by_column": {
+        "ticket_id": 0,
+        "org_id": 0,
+        "category": 0,
+        "severity": 0,
+        "created_at": 0,
+        "resolved_at": 240,
+        "csat": 254,
+        "sla_breached": 0
+      },
+      "key_columns": [
+        "ticket_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    },
+    "marketing_touches.csv": {
+      "rows": 1500,
+      "columns": [
+        "touch_id",
+        "org_id",
+        "campaign",
+        "channel",
+        "timestamp",
+        "clicked",
+        "converted"
+      ],
+      "empty_by_column": {
+        "touch_id": 0,
+        "org_id": 0,
+        "campaign": 0,
+        "channel": 0,
+        "timestamp": 0,
+        "clicked": 0,
+        "converted": 0
+      },
+      "key_columns": [
+        "touch_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    },
+    "nps_surveys.csv": {
+      "rows": 92,
+      "columns": [
+        "org_id",
+        "survey_date",
+        "nps_score",
+        "comment"
+      ],
+      "empty_by_column": {
+        "org_id": 0,
+        "survey_date": 0,
+        "nps_score": 19,
+        "comment": 10
+      },
+      "key_columns": [
+        "org_id",
+        "survey_date"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    },
+    "billing_monthly.csv": {
+      "rows": 240,
+      "columns": [
+        "invoice_id",
+        "org_id",
+        "month",
+        "subtotal",
+        "credits",
+        "taxes",
+        "currency",
+        "exchange_rate_to_usd"
+      ],
+      "empty_by_column": {
+        "invoice_id": 0,
+        "org_id": 0,
+        "month": 0,
+        "subtotal": 0,
+        "credits": 137,
+        "taxes": 0,
+        "currency": 0,
+        "exchange_rate_to_usd": 0
+      },
+      "key_columns": [
+        "invoice_id"
+      ],
+      "duplicate_key_rows": 0,
+      "missing_key_rows": 0,
+      "unknown_org_rows": 0
+    }
+  },
+  "events": {
+    "files": 120,
+    "rows": 43200,
+    "unknown_org": 0,
+    "unknown_resource": 0,
+    "resource_dimension_mismatch": 0,
+    "invalid_cost": 0,
+    "negative_cost": 216,
+    "value_null": 877,
+    "value_numeric_string": 1309,
+    "unit_null": 2075,
+    "nonnegative_cost_with_incomplete_consumption": 2906,
+    "carbon_present": 32400,
+    "genai_tokens_present": 3132,
+    "invalid_event_id": 0,
+    "duplicate_event_id_rows": 0,
+    "conflicting_with_first_rows": 0,
+    "invalid_timestamp": 0,
+    "unique_event_ids": 43200,
+    "timestamp_min": "2025-07-03T00:02:00+00:00",
+    "timestamp_max": "2025-08-31T23:58:00+00:00",
+    "unique_timestamps": 33953,
+    "rows_by_date": {
+      "2025-07-03": 720,
+      "2025-07-04": 720,
+      "2025-07-05": 720,
+      "2025-07-06": 720,
+      "2025-07-07": 720,
+      "2025-07-08": 720,
+      "2025-07-09": 720,
+      "2025-07-10": 720,
+      "2025-07-11": 720,
+      "2025-07-12": 720,
+      "2025-07-13": 720,
+      "2025-07-14": 720,
+      "2025-07-15": 720,
+      "2025-07-16": 720,
+      "2025-07-17": 720,
+      "2025-07-18": 720,
+      "2025-07-19": 720,
+      "2025-07-20": 720,
+      "2025-07-21": 720,
+      "2025-07-22": 720,
+      "2025-07-23": 720,
+      "2025-07-24": 720,
+      "2025-07-25": 720,
+      "2025-07-26": 720,
+      "2025-07-27": 720,
+      "2025-07-28": 720,
+      "2025-07-29": 720,
+      "2025-07-30": 720,
+      "2025-07-31": 720,
+      "2025-08-01": 720,
+      "2025-08-02": 720,
+      "2025-08-03": 720,
+      "2025-08-04": 720,
+      "2025-08-05": 720,
+      "2025-08-06": 720,
+      "2025-08-07": 720,
+      "2025-08-08": 720,
+      "2025-08-09": 720,
+      "2025-08-10": 720,
+      "2025-08-11": 720,
+      "2025-08-12": 720,
+      "2025-08-13": 720,
+      "2025-08-14": 720,
+      "2025-08-15": 720,
+      "2025-08-16": 720,
+      "2025-08-17": 720,
+      "2025-08-18": 720,
+      "2025-08-19": 720,
+      "2025-08-20": 720,
+      "2025-08-21": 720,
+      "2025-08-22": 720,
+      "2025-08-23": 720,
+      "2025-08-24": 720,
+      "2025-08-25": 720,
+      "2025-08-26": 720,
+      "2025-08-27": 720,
+      "2025-08-28": 720,
+      "2025-08-29": 720,
+      "2025-08-30": 720,
+      "2025-08-31": 720
+    },
+    "dates_per_file_min": 59,
+    "dates_per_file_max": 60,
+    "org_service_groups": 262,
+    "groups_missing_observed_dates": 259,
+    "schema_versions": {
+      "1": 10800,
+      "2": 32400
+    },
+    "services": {
+      "analytics": 4590,
+      "compute": 12498,
+      "database": 7419,
+      "genai": 4158,
+      "networking": 6921,
+      "storage": 7614
+    },
+    "columns": {
+      "carbon_kg": {
+        "json_types": {
+          "float": 29762,
+          "int": 2638
+        },
+        "null_or_empty": 0,
+        "absent": 10800
+      },
+      "cost_usd_increment": {
+        "json_types": {
+          "float": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "event_id": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "genai_tokens": {
+        "json_types": {
+          "int": 3132
+        },
+        "null_or_empty": 0,
+        "absent": 40068
+      },
+      "metric": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "org_id": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "region": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "resource_id": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "schema_version": {
+        "json_types": {
+          "int": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "service": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "timestamp": {
+        "json_types": {
+          "str": 43200
+        },
+        "null_or_empty": 0,
+        "absent": 0
+      },
+      "unit": {
+        "json_types": {
+          "NoneType": 2075,
+          "str": 41125
+        },
+        "null_or_empty": 2075,
+        "absent": 0
+      },
+      "value": {
+        "json_types": {
+          "NoneType": 877,
+          "float": 41014,
+          "str": 1309
+        },
+        "null_or_empty": 877,
+        "absent": 0
+      }
+    }
+  },
+  "billing": {
+    "currencies": {
+      "ARS": 51,
+      "EUR": 29,
+      "USD": 160
+    },
+    "months": [
+      "2025-06-01",
+      "2025-07-01",
+      "2025-08-01"
+    ],
+    "duplicate_org_month_rows": 0,
+    "negative_subtotal": 13,
+    "invalid_or_nonpositive_fx": 0,
+    "usd_fx_not_one": 160
+  },
+  "manifest": [
+    {
+      "path": "datalake/landing/billing_monthly.csv",
+      "bytes": 15854,
+      "sha256": "89662f497cf2ad464763e832175c4c94ea0790cf0a320be81a264649d74072cc"
+    },
+    {
+      "path": "datalake/landing/customers_orgs.csv",
+      "bytes": 7746,
+      "sha256": "33b4acd3a86a9cc84ba2e5b18ea6ff92bdbc56ae420ccb89a2881f4f376cb364"
+    },
+    {
+      "path": "datalake/landing/marketing_touches.csv",
+      "bytes": 101998,
+      "sha256": "44cdb4bba275d73bd9e1e216eedc37b73b1cf744ddfaf845820a7fbf3f7f2a0e"
+    },
+    {
+      "path": "datalake/landing/nps_surveys.csv",
+      "bytes": 3977,
+      "sha256": "2407fa308c14a3d6164d718b2e0cdb94842c48a4ed08d633eebf4e173c827148"
+    },
+    {
+      "path": "datalake/landing/resources.csv",
+      "bytes": 36703,
+      "sha256": "ff00868ae96ddfd7556e4aaeadbf66781181699da5428320f8725b527e7faaba"
+    },
+    {
+      "path": "datalake/landing/support_tickets.csv",
+      "bytes": 70945,
+      "sha256": "9e60b608a08bc8076b9781833e04ce80d7e8049f056e5f17cee92dc6ca14358b"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0000.jsonl",
+      "bytes": 107939,
+      "sha256": "5f30742b79876fe094d0ee27e7e84e150c34e1b2ba36928d13281f70037790ef"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0001.jsonl",
+      "bytes": 107492,
+      "sha256": "d34099da2af6cd252612ea56377437e9f1d9e267267e6a939290f0f1196c0f31"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0002.jsonl",
+      "bytes": 107431,
+      "sha256": "167b9cc2dd7b2d347a37562be88173ccbfaaddec8ceaaeaafa09fdb37bcaaf4c"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0003.jsonl",
+      "bytes": 107669,
+      "sha256": "4d0e458d92cf016bf8b5c5e0cf72c8e130ca4edf64aee59b103b244935d44e8a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0004.jsonl",
+      "bytes": 107916,
+      "sha256": "8a906753e6a37b3824a29848670c69aa647776bde0469fc5aa0a472ddb38564d"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0005.jsonl",
+      "bytes": 107685,
+      "sha256": "d6435f1feb6abd9b0965a0471d9d3e99b23640a6e096b3bcdd09dd8b010613fb"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0006.jsonl",
+      "bytes": 107386,
+      "sha256": "47f253d00b2e79cebc2b3567afb579de6c407a9dbfc9236abba3ea4267121ad5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0007.jsonl",
+      "bytes": 107887,
+      "sha256": "1d395094484cb65e1ac7acc63296126edba31381ccbe0ef3e7fb1e8445980e5c"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0008.jsonl",
+      "bytes": 107819,
+      "sha256": "b8eaef0483cc28e70e1dfb68e2aa446f5edee61d849f935ea7202c2f531ea1f2"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0009.jsonl",
+      "bytes": 107555,
+      "sha256": "fe6ec8f1cfc30dcb66e700e6367835a3b7fa05bf51723f781367e48fb3f088ad"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0010.jsonl",
+      "bytes": 107970,
+      "sha256": "cfca5a176634a22c9f722cb246928b79b9db7a58b0fa86f68fa3ed1097fc6d1f"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0011.jsonl",
+      "bytes": 107589,
+      "sha256": "7b828284808e09bba71c610772974b0de028354654eb1426fa03bf678b7c7051"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0012.jsonl",
+      "bytes": 107972,
+      "sha256": "bdb60cc07e181634d4c1d088be1a13a136ba3866d7984e576ebbef8a399c1c12"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0013.jsonl",
+      "bytes": 107527,
+      "sha256": "a92e1ec34cff28b5f54b4c071685fe5aa63abe1d2703dd565b9facd6f9b98ce5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0014.jsonl",
+      "bytes": 107607,
+      "sha256": "5dd8c02d05396c059670be78537816d26ba509a194555cdd5e627c53ff11eb4c"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0015.jsonl",
+      "bytes": 107226,
+      "sha256": "96fabb54aec44fb678e10f3b0dc4db1d218dbe75be2aa8e5891f7d2d70da0872"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0016.jsonl",
+      "bytes": 107770,
+      "sha256": "0394998715bcac18c56838b0a54250eff7e1fa0d2da51b6f8a98a6a331c6259b"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0017.jsonl",
+      "bytes": 107719,
+      "sha256": "9fcd3ab48c6babe4f87eaa0c74e1a708a0afd3ca86442dd9a644b9c38c893cf3"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0018.jsonl",
+      "bytes": 107903,
+      "sha256": "aef2f962205147f5b0e4dca2fcce754c78c513d2d5f180fddcb4a4fb76c0f9b7"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0019.jsonl",
+      "bytes": 107856,
+      "sha256": "93aca8cf01ecde3d7946bd39bb96be8445b354b8de7e77e0ef00599ae04b912b"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0020.jsonl",
+      "bytes": 107833,
+      "sha256": "d094c2540f28477d20f13af2d08791162326a73205a06598759db7f57a36d6b6"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0021.jsonl",
+      "bytes": 108316,
+      "sha256": "897bac1c90d4eedb00345ff00c4c668690bf1a7041cd37d8ef52bcb5851f5a30"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0022.jsonl",
+      "bytes": 107665,
+      "sha256": "da24f686655832ccbfb9285934ea0234fc44a00978af0e7703ee798700f48bcc"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0023.jsonl",
+      "bytes": 107326,
+      "sha256": "1114e355fb15940646a511eab8b112994ec28307d75af1953ec3aa7a74b69074"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0024.jsonl",
+      "bytes": 107561,
+      "sha256": "2d7b216b4255b165ddc0df27b62eef3de1429339cb843eebaaf5e4465663daa7"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0025.jsonl",
+      "bytes": 107627,
+      "sha256": "e3ce35380175d121974a6f3247abb76574ff57087df74221fa54bdb9c8d086f5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0026.jsonl",
+      "bytes": 107554,
+      "sha256": "53f0ed97129a4e0d8cfb8633b4b5fa6923c238da2f520143566f7881124dfbb5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0027.jsonl",
+      "bytes": 108252,
+      "sha256": "d1cc9b570b4b870eef37ce8ba7dc12b036f3acfe3b9e25e3751770ff394d0231"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0028.jsonl",
+      "bytes": 107548,
+      "sha256": "8a789b36b38bd54ad1e877d6a3070f20b789861cd7169d74638132ff6c0dde12"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0029.jsonl",
+      "bytes": 107741,
+      "sha256": "2e06168fcab9c075b8a18b4f7e7b0d12a36f697eb97e66f53c969eaaa4cbdcfb"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0030.jsonl",
+      "bytes": 108035,
+      "sha256": "8410b9e979b7e3407181861819b4247cbda96806f65b0a660f20f142ac277eaa"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0031.jsonl",
+      "bytes": 107427,
+      "sha256": "279afc919da4c6578a5e4b227ca95af9673ad813a5f5ae428ef036544161ab3a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0032.jsonl",
+      "bytes": 107995,
+      "sha256": "d78061b26c6ef529ef12be36b451fe63255d47552cc05ed66e8a046a674c6dd5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0033.jsonl",
+      "bytes": 107891,
+      "sha256": "6d333b7bdc6da953005ab5638f8cdb6f5b26e405fae7634c316d55049d37c27d"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0034.jsonl",
+      "bytes": 107570,
+      "sha256": "05f81e41626d3e3ba5711a1210645ffcdb36d3e5664e7800e82184012113ef5c"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0035.jsonl",
+      "bytes": 107757,
+      "sha256": "f559a25cd1291ac5372de4660509eed388b607b3d7bf9f0bd2baa78d3891adc7"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0036.jsonl",
+      "bytes": 107809,
+      "sha256": "1881ea2dab8dede1138d64ac9e43d2259a1b4d33040c7a2f1470dad9e6888ad6"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0037.jsonl",
+      "bytes": 107636,
+      "sha256": "e77c237b55ce60a12e59f51d9b478efec4b9c0eafb647f2743a36cd7cc94c3c8"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0038.jsonl",
+      "bytes": 107846,
+      "sha256": "38465de59b47ae68f7ce556a470c0a13ee9dd1edfa13811ba59a2dd5f3262b5d"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0039.jsonl",
+      "bytes": 107910,
+      "sha256": "e1ce8ec6492912ceffa115b1dd7a775f5e849a2e8296187f17e5212df8ed6df0"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0040.jsonl",
+      "bytes": 107460,
+      "sha256": "fb057352c26493212ee134a47ddde049378862ee1132a45872f2c59f5f70958a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0041.jsonl",
+      "bytes": 108045,
+      "sha256": "2551b49e1e97461f0a7e455db10198dbe246ead1766b8840caf9ab422e772c20"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0042.jsonl",
+      "bytes": 107930,
+      "sha256": "8aaca4bb2d228167b35204d7923d80d17e92c1236adaee72811deb157e73ff70"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0043.jsonl",
+      "bytes": 107767,
+      "sha256": "b545cfa7e397ae5c76f0155a0a17935e78abc48c486d2e898a8a0ed7bda9b2e8"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0044.jsonl",
+      "bytes": 107293,
+      "sha256": "3e85bc7bdfb015dc8c7c2d954c5612af3a625bc768e09dcb291a488b8ad24f1b"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0045.jsonl",
+      "bytes": 107821,
+      "sha256": "745d98bc02844e8d78659651fcf4f90370339d7d21dd1ec0a2a57b27f850a4c4"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0046.jsonl",
+      "bytes": 107906,
+      "sha256": "e8f681afa45c2ff4e9364e4d13a045a48b5b688c6e2461a9cdf4e2b8769857c1"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0047.jsonl",
+      "bytes": 107680,
+      "sha256": "cf7480fd47398c681f36ca44e89caf6dd8ec1263647c685e4b03b53259051934"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0048.jsonl",
+      "bytes": 107520,
+      "sha256": "3a9cb82c7bd47b146a2f78a6cadc89474b213689d61e3d7b093bb7b3e493dce5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0049.jsonl",
+      "bytes": 107732,
+      "sha256": "6946ebd986d2963e1b14c00083dcf4814e200bed69280d61e2fa84520d59e4af"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0050.jsonl",
+      "bytes": 107238,
+      "sha256": "6b9f2eede2f279c5750d0a4839f3f0adb48548ed0b2070ee6ff0d53b6ed6e6e2"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0051.jsonl",
+      "bytes": 107608,
+      "sha256": "928e5df3588f0545e68aabc2b2849b7937a2a7b17e926ee0aaea95f77bb7fe81"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0052.jsonl",
+      "bytes": 107656,
+      "sha256": "d3bddd5f535ac2caa1885d4889e7502506896b8225f1ef1b06ab800731c37b63"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0053.jsonl",
+      "bytes": 107526,
+      "sha256": "9a18d8f436da65f9e51757350f3cfd057c231038c596032d8077b205ca8a0881"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0054.jsonl",
+      "bytes": 107660,
+      "sha256": "fcd9d7d6118534c60ed1eb455e2784af25735e74c8125d61291e326d2da14065"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0055.jsonl",
+      "bytes": 107911,
+      "sha256": "bbb879e476a2663c13f9990895ea6ba7f68bdec40430ca4c38d782fb811e3a2e"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0056.jsonl",
+      "bytes": 107765,
+      "sha256": "ff412efcc6ead146790ceef0e1d5b3d588350f7c2baebc6ef65397a9fb182797"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0057.jsonl",
+      "bytes": 107813,
+      "sha256": "55304fd2983fb788b48cc9a72cafa7c247c0a32533b8740d328f9db04f30cadc"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0058.jsonl",
+      "bytes": 107250,
+      "sha256": "63e15015266d8104018206722255a58c61d9a3baf0609605ca94d667dfa22b53"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0059.jsonl",
+      "bytes": 107901,
+      "sha256": "267866e4ea303be85a1f49643a1f118ad007f0cfd09fe9b3a4dd352bb8252aa1"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0060.jsonl",
+      "bytes": 107775,
+      "sha256": "13ef0626f5ca863ee37d8fe9f3e396704b3ee0a15c690fb6ac4deffd07a7a0b0"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0061.jsonl",
+      "bytes": 107831,
+      "sha256": "a74c27e2dd89314ef24f50d3a15bc408afa82f13dbd6b6e608ec9dfaceb442cf"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0062.jsonl",
+      "bytes": 107204,
+      "sha256": "46c9d2124e60f0b740d6714ec2c4c02ac18b9f2cc1012441f0e7befd8e5f4449"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0063.jsonl",
+      "bytes": 107492,
+      "sha256": "3f627b5894dca44125643242cb8d96b2ddd8158cecab6bf5d1a34a2ba166e499"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0064.jsonl",
+      "bytes": 107256,
+      "sha256": "a05e95021323b39efc676f8d631f777eddabf37859f88e5a62a130c628f8d8a6"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0065.jsonl",
+      "bytes": 107937,
+      "sha256": "4b68833c151be5cc7b00a8d1e4bc3fd47248bf0df411ecc4bb1c10bbb64b679f"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0066.jsonl",
+      "bytes": 107971,
+      "sha256": "c2b0f996f71910d5ebc6de3d706eb52c77970df71d63001562a9d2e802a6fd64"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0067.jsonl",
+      "bytes": 107844,
+      "sha256": "4a4e7c0beac223782b7b575810e23b293bece8e29aba373edaa8ba2bc3347bf8"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0068.jsonl",
+      "bytes": 107757,
+      "sha256": "c93e319d82a3a00c46f0a59d7bd339dd51bef14c30b7b534f8c2468ff02e3c66"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0069.jsonl",
+      "bytes": 108361,
+      "sha256": "4ce73ae1060d6f4a96970b045f7c8d9a247b077d2018a7dca8bbb3cd7a0c43d9"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0070.jsonl",
+      "bytes": 107494,
+      "sha256": "76dc40f8602c1fddd63a170ef43bbd859be6074c538e816b68d85da7efab08fe"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0071.jsonl",
+      "bytes": 107928,
+      "sha256": "3fd6b4925a8b23c7cadc3ae53edb3fbb938646c8faaa00d8fac504bbc54d607c"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0072.jsonl",
+      "bytes": 107930,
+      "sha256": "e98d5b95aae497610343b706a44a1a7f3f4e285ac96b13bc43ba2b9d6a8bbe7d"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0073.jsonl",
+      "bytes": 107212,
+      "sha256": "5a88c2e90108a5b4889cd2c691a8fabbeb112574a639ee1cdde830b67907a8b1"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0074.jsonl",
+      "bytes": 107356,
+      "sha256": "bd302bd4ab2b546ac77f4cdfacb9059e56c376446b0d910c42f6af99f52f03f3"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0075.jsonl",
+      "bytes": 107692,
+      "sha256": "73ca82260c0ec7659d05e0dfbabc37b122483f3b719e1a1380bea6e4caed32f8"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0076.jsonl",
+      "bytes": 107591,
+      "sha256": "71a75d265a13554c92ff7b945704737c1910db46ccfa2ea3e74c358c20560d69"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0077.jsonl",
+      "bytes": 107954,
+      "sha256": "12ef90d22ec39f0481a969fb7e811947b63e454dddbc6535cffab1d18575e59f"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0078.jsonl",
+      "bytes": 107687,
+      "sha256": "f1c3c6e44e22dacbd2c2811397139f6fdec55916950bfbfb4afc2f51e3170338"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0079.jsonl",
+      "bytes": 107879,
+      "sha256": "e98f597238dcff37a48a6af2db147927396c441007efe3b41f0ef3d4591deb2f"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0080.jsonl",
+      "bytes": 107389,
+      "sha256": "40e524bc7b5e43e8bff1c362736ba64b78f2637b9fcd980d803938e6366f761b"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0081.jsonl",
+      "bytes": 107728,
+      "sha256": "623e69d57b818827b63ffaeadeaf6bfbb9ab1062d11a8befc190e0fc67782f42"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0082.jsonl",
+      "bytes": 107719,
+      "sha256": "9c4e75c737eed6f52df4e363d56f2ff501006a1986d05d5ea68ef234cddecd13"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0083.jsonl",
+      "bytes": 107666,
+      "sha256": "8a31489083fbb8b5b15706cfce4bf27121ffbc14b8cdb8c0db66eca22fdc18fe"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0084.jsonl",
+      "bytes": 107903,
+      "sha256": "e62ecc5a5dc4b0400a9af576c27efa90ad87cd05e6e7f1de994127d795ff5ddc"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0085.jsonl",
+      "bytes": 108027,
+      "sha256": "82d24815dfb071fb781d4e5fd1d5a2167f7465acdf5d5f6472fa007c0eb6a606"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0086.jsonl",
+      "bytes": 107644,
+      "sha256": "393ea169653ac2e2f05f172e59081ba21f039b1b3f298c8a5e36bdbd9f001570"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0087.jsonl",
+      "bytes": 107586,
+      "sha256": "4b94af1dddd86f9f59f8e76401926a42125add797a0301fea545e83038ef271a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0088.jsonl",
+      "bytes": 107497,
+      "sha256": "827f62b80c447ef90f230c3421dee3e75dcfedee58e9901198066586cd9fb3ec"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0089.jsonl",
+      "bytes": 107773,
+      "sha256": "a23d17beca9f5728423ac73457d7afec42b7ff960e8291ed3718069c24cfaad9"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0090.jsonl",
+      "bytes": 108183,
+      "sha256": "5c7e75e398253e2372d34019b8851fa433e1eb4494ae1a362545c2f242e51209"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0091.jsonl",
+      "bytes": 108139,
+      "sha256": "6af72995e87adbd92f52c9ab78db4657d780dc0d6d37dd72c7b3f2df316bdecc"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0092.jsonl",
+      "bytes": 108021,
+      "sha256": "8f13bc5a1388047c16e715a22ba23d77cf22f415b2bb272d4fee221bb8c52cb3"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0093.jsonl",
+      "bytes": 107499,
+      "sha256": "f9d792d1bb8b8e6b61a968cede567107e47271887acc5e33a517b5c6a6b39e4a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0094.jsonl",
+      "bytes": 107810,
+      "sha256": "9255d19920befdfd133d641d1f82e49e808166c72d94be20b7482698c3c16e02"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0095.jsonl",
+      "bytes": 108237,
+      "sha256": "149e7c15e9f2f726d465ce386b5f39c184196cf1699449c548cb4c9994dd35ca"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0096.jsonl",
+      "bytes": 107831,
+      "sha256": "bd842387bf7a177eb671a6a8d91af6ddb673bb7a68160927af61bea0d587c978"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0097.jsonl",
+      "bytes": 107725,
+      "sha256": "666e0a749a2f0accf51c19b42fee03737770d69bdd3e9f72816b516c13dcb056"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0098.jsonl",
+      "bytes": 108070,
+      "sha256": "3c7281907b6e888d23371b472b2bec3dfbe0550dd8065658f74aa0077b24b8ad"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0099.jsonl",
+      "bytes": 107395,
+      "sha256": "7d5c2a3481d5b194ad5566aec7b18e2ce46a79bf93fca3fbadd696522ff6a74a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0100.jsonl",
+      "bytes": 107356,
+      "sha256": "e4e973549ca671d7a31c4fbdb8ba7d606fc73cbb8676e78b63552602d70abf70"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0101.jsonl",
+      "bytes": 107608,
+      "sha256": "215ff62995f2f05e6fec2532aae5ce294d85ec372352b98ed8929275ecf8a79f"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0102.jsonl",
+      "bytes": 108170,
+      "sha256": "6c90dc6ed85a5e2f345f4258a4ad75dbc6124ee1038be75d0b4fd4d180f4b6d8"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0103.jsonl",
+      "bytes": 107440,
+      "sha256": "5acbaf3c744568321ce8d7a6db50bf74db188333c743fda3dd8c14f5a6a47cbe"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0104.jsonl",
+      "bytes": 107814,
+      "sha256": "9f0b4c130f43e731d0b56627a0c86a31f32ed9cf570ed8f130cdd7f8b9cd8ac4"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0105.jsonl",
+      "bytes": 107522,
+      "sha256": "96ce8710efa9a3d897776ffa45fdcd3bdca713e1bc516f9811718279c4509362"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0106.jsonl",
+      "bytes": 107655,
+      "sha256": "9c6947d0800cb3e28cc5335a9457219b29b9d00b46b5feed5b0f334c6bcebf0e"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0107.jsonl",
+      "bytes": 107827,
+      "sha256": "d50dc0dabe53458c91c5cc3262e61f4e663e1c05c57010ff79a53c8e600d3e46"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0108.jsonl",
+      "bytes": 107592,
+      "sha256": "a05d63e4723b782225a3576e5f570160bf28ca5238b8e7e5bcd75d7916aa35f2"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0109.jsonl",
+      "bytes": 107980,
+      "sha256": "5cc03f2e9c94a103acf991a5f551ca35cc79f67f3fd64efc298de3e84868897e"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0110.jsonl",
+      "bytes": 108089,
+      "sha256": "f59e42076c5fe3c3e6fc1111329f87a45a0ed85836f5b1b0e1e5683b91201b5a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0111.jsonl",
+      "bytes": 107531,
+      "sha256": "99db9d794cf127a659da7aed63a494a274337bd61184617538d2aac3d0863f36"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0112.jsonl",
+      "bytes": 107588,
+      "sha256": "102d45fadbea106e88dd1eb483e96591652bb50713a26e36640dda20597a61e4"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0113.jsonl",
+      "bytes": 107643,
+      "sha256": "4a878dd9cdb1b317d3e4aca1b92e57c529afe523f8d7e779f22bbbca2f9426f2"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0114.jsonl",
+      "bytes": 107519,
+      "sha256": "e1283d737975c5a02bc647838518e29c1056dd79c8ec96e4f3b92695ab032228"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0115.jsonl",
+      "bytes": 107897,
+      "sha256": "d4c2938912f8d92ed880aeb1d202eeb96561567485af9f7927ec0d00482ad166"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0116.jsonl",
+      "bytes": 107893,
+      "sha256": "7ed01bbc94354ed20bfc8d6abc84f9051c73668b392d4080557dd068b06bb3a5"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0117.jsonl",
+      "bytes": 107658,
+      "sha256": "36f1d3e27f904e55c160e85b071248c8325f32aeee4f5a53fb5e9aeb3a272e0a"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0118.jsonl",
+      "bytes": 107868,
+      "sha256": "c9121c0766f33ddeac082dbabc70c057d49b1db6e7f267342ad22867d9cbb4ee"
+    },
+    {
+      "path": "datalake/landing/usage_events_stream/events_part_0119.jsonl",
+      "bytes": 108173,
+      "sha256": "7890be3fc18b8155b8fb0d136a71ad41063caba551445329c4f8ff77a3393b15"
+    },
+    {
+      "path": "datalake/landing/users.csv",
+      "bytes": 70683,
+      "sha256": "e66c8cec889ed3699172315709e27da8fa1e64330cfb23db7dfbf781abade021"
+    }
+  ]
+}

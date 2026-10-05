@@ -1,5 +1,12 @@
 # Cloud Provider Analytics
 
+Primera evaluación parcial. Diseño y fundación de datos. 05/10/2026.
+
+[Problema](#problema-y-objetivos) · [Datos y 5V](#datos-y-exploración-inicial) ·
+[Arquitectura v1](#arquitectura-v1) · [Matriz requisito–componente](#matriz-requisitocomponente) ·
+[Data Lake](#organización-del-data-lake) · [Decisiones](#registro-de-decisiones) ·
+[Plan inicial](#plan-inicial)
+
 ## Problema y objetivos
 
 Un proveedor cloud necesita entender cómo cambia el consumo de sus clientes
@@ -8,6 +15,12 @@ poder revisar una organización y servicio, comparar días consecutivos y
 priorizar tanto aumentos porcentuales como diferencias en dólares. Soporte
 necesita seguir tickets críticos e incumplimientos de SLA; Producto, analizar
 uso de servicios y GenAI.
+
+Las preguntas principales son qué organizaciones y servicios aumentaron su
+costo respecto del día anterior, cuánto aumentaron en dólares y en porcentaje,
+y qué parte del resultado puede compararse sin problemas de calidad. Soporte
+consultará los tickets críticos y el SLA de los últimos 30 días; Producto,
+los servicios de mayor costo en 14 días y el uso de GenAI.
 
 El costo registrado en los eventos y el ingreso por facturación son medidas
 distintas. Se analizarán por separado, sin asumir que deben coincidir ni
@@ -37,8 +50,11 @@ de nuevo el CLI.
 
 El paquete sintético `cloud_provider_challenge_dataset_v1`, disponible en el
 campus, contiene siete CSV y 120 archivos JSONL dentro de `datalake/landing/`.
-Se leyeron los CSV y cada línea JSON sin modificar los originales. Los conteos
-siguientes provienen de esa inspección.
+El script [profile_data.py](../scripts/profile_data.py) lee los CSV y cada
+línea JSON sin modificar los originales. La [evidencia](../evidence/profile.json)
+registra conteos, nulos, tipos JSON, claves, referencias, fechas y SHA256 por
+archivo. Las [instrucciones de datos](../data/README.md) permiten repetir la
+lectura con Python estándar. Los resultados siguientes coinciden con esa ejecución.
 
 | Fuente | Registros | Grano y clave observada | Campos principales y calidad |
 | --- | ---: | --- | --- |
@@ -51,7 +67,7 @@ siguientes provienen de esa inspección.
 | billing_monthly.csv | 240 | Factura, invoice_id; una por organización-mes | Montos, moneda y tipo de cambio; 137 créditos vacíos y 13 subtotales negativos |
 | usage_events_stream/*.jsonl | 43.200 | Evento, event_id | Timestamp, organización, recurso, servicio, métrica, valor, unidad, costo y versión de esquema |
 
-La muestra ocupa aproximadamente 13,3 MB sin comprimir. Los eventos van del
+La muestra ocupa aproximadamente 13,24 MB sin comprimir. Los eventos van del
 03/07/2025 a las 00:02 al 31/08/2025 a las 23:58 UTC, con 720 eventos por día.
 Cada archivo mezcla 59 o 60 fechas, por lo que el orden de los archivos no
 representa el orden temporal de los eventos. La facturación cubre junio,
@@ -81,6 +97,13 @@ Es una frecuencia propuesta; las fechas de las filas no prueban la frecuencia
 de llegada. Los atributos de los maestros describen su snapshot, sin asumir
 que representan el estado histórico de cada cliente.
 
+Los identificadores y categorías se interpretarán como texto; fechas y tiempos,
+como date o timestamp UTC; importes y medidas, como decimales; conteos y tokens,
+como enteros; active, clicked, converted y sla_breached, como booleanos. Los CSV
+llegan como texto y requieren casts explícitos. tags_json contiene JSON anidado.
+Los tipos observados del JSONL y los vacíos por columna están en la evidencia;
+esos tipos no sustituyen el contrato de validación de Silver.
+
 ### Las 5V en este caso
 
 | Dimensión | Implicación para el diseño |
@@ -91,8 +114,7 @@ que representan el estado histórico de cada cliente.
 | Veracidad | Conservar nulos, conflictos, tipos ambiguos y problemas de moneda con trazabilidad y calidad por medida |
 | Valor | Explicar variaciones de costo, priorizar su revisión y relacionar consumo con información de Soporte y Producto |
 
-
-## Arquitectura
+## Arquitectura v1
 
 Se propone un patrón híbrido. Structured Streaming procesa los eventos para
 el operativo; el batch incorpora CSV, calcula resultados diarios y corrige
@@ -101,13 +123,16 @@ corrección histórica no depende de conservar todo el estado del streaming.
 
 ```mermaid
 flowchart TD
-    F["7 CSV + 120 JSONL"] --> L
+    F["7 CSV: snapshots"] --> L
+    E["120 JSONL: reproducción de eventos"] --> L
+    L --> I["Ingesta PySpark: lectura batch CSV y readStream JSONL"]
+    I --> B
     subgraph H["Data Lake en HDFS"]
-      L["Landing: originales"] --> B["Bronze: tipos y trazabilidad"]
-      B --> S["Silver: detalle validado"]
+      L["Landing: originales"]
+      B["Bronze: tipos y trazabilidad"] -->|"PySpark: validación por medida"| S["Silver: detalle validado"]
       B -.-> Q["Quarantine: incidencias y variantes"]
       S -.-> Q
-      S --> G["Gold: resultados analíticos"]
+      G["Gold: resultados analíticos"]
     end
     S --> N["Nuevas contribuciones válidas"]
     N --> ST["Structured Streaming: ventanas de una hora UTC"]
@@ -119,6 +144,9 @@ flowchart TD
     P --> C["Cassandra/AstraDB: tablas por consulta"]
     C --> R["CLI: tablas y reporte HTML con Plotly"]
     T["Esquemas, permisos, calidad, manifiestos y métricas"] -.-> H
+    T -.-> I
+    T -.-> ST
+    T -.-> BA
     T -.-> P
 ```
 
@@ -127,6 +155,31 @@ y períodos concretos. PySpark calculará los agregados y Cassandra guardará
 tablas preparadas para esas consultas. Las novedades operativas viajarán en
 archivos derivados internos. Todavía falta validar las versiones y el entorno
 de ejecución.
+
+### Elección del patrón
+
+| Patrón | Evaluación para este caso |
+| --- | --- |
+| Batch | Alcanza para reportes diarios, pero con corridas horarias no cumple el objetivo operativo de 60 segundos |
+| Lambda | Separa vistas rápidas y batch que luego deben conciliarse; mantener dos cálculos completos agrega trabajo para esta muestra |
+| Kappa | Centra el cálculo en el stream y sus replays; integrar snapshots CSV y reparar períodos históricos resulta menos directo |
+| Híbrido, elegido | Streaming para horas operativas y batch para snapshots, días cerrados y reparaciones, con detalle Silver compartido y reglas de publicación explícitas |
+
+La combinación se parece a Lambda en su separación de latencias. Aquí el batch
+tiene responsabilidades propias y reconstruye desde Silver; el consumidor no
+fusiona una vista rápida con otra histórica para responder una misma consulta.
+
+## Matriz requisito–componente
+
+| Requisito u objetivo | 5V relacionadas | Componentes y decisión | Cómo se comprobará |
+| --- | --- | --- | --- |
+| Comparar costos D/D−1 y priorizar aumentos | Valor, veracidad | PySpark batch sobre Silver, tablas FinOps en Cassandra y CLI; separar diferencia USD y porcentaje | Casos con base cero, fecha ausente y costo parcial; excluir rankings no comparables |
+| Consultar operativo en hasta 60 s | Velocidad | Reproducción JSONL, Structured Streaming, ventanas horarias y serving por grupo | Medir desde archivo disponible hasta resultado consultable; reparaciones se miden aparte |
+| Recalcular historia y repetir lotes | Veracidad, velocidad | HDFS conserva detalle; batch horario reconstruye días y activa versiones completas | Reintentar una corrida y corregir D sin duplicar aportes; verificar también D+1 y ventanas de 14 días |
+| Integrar CSV y JSONL v1/v2 | Variedad | Esquemas explícitos en Bronze y normalización por medida en Silver | Perfil de columnas, nulos, casts, referencias y cobertura de campos v2 |
+| Leer períodos y columnas concretos al crecer | Volumen | HDFS, Parquet y particiones diarias; recálculo completo para los 720 eventos diarios actuales | Medir bytes leídos, duración, archivos y memoria antes de aumentar particiones o recursos |
+| Conservar origen y explicar exclusiones | Veracidad | Hashes, manifiestos, Quarantine e indicadores de calidad; detalle restringido | Trazar una salida a archivo y reglas; conteos por motivo sin exponer datos personales |
+| Consultas de Soporte, Producto y FinOps | Valor, variedad | Marts Gold, tablas Cassandra por consulta y reporte HTML con Plotly | Verificar las consultas, su período, corte y cobertura sin joins en serving |
 
 ## Organización del Data Lake
 
@@ -347,7 +400,43 @@ su motivo. También mediremos la duración de los lotes y los días pendientes d
 reparación. Estas salidas servirán para comprobar las reglas de calidad durante
 la implementación.
 
-## Riesgos, recursos y plan
+## Registro de decisiones
+
+Las decisiones vigentes y su costo se resumen aquí. Las reglas completas están
+en las secciones de calidad, procesamiento y consumo; los cambios se conservan
+en el historial de Git.
+
+| Decisión | Motivo y costo aceptado |
+| --- | --- |
+| Reconstruir días desde Silver y agrupar correcciones por corrida | Evita depender de horas provisionales; relee el día completo y actualiza comparaciones y ventanas afectadas |
+| Validar por medida y comparar variantes antes de deduplicar | Conserva costos utilizables con consumo incompleto; exige propagar parcialidad e incidencias |
+| HDFS y partición diaria, con despliegue pendiente | Permite trabajar con las zonas del Lake sin fragmentar la muestra por organización y servicio |
+| Conservar copias hasta cierre más 30 días | Permite revisión y reproceso; exige limpieza coordinada y protección de versiones en uso |
+| Batch horario y autoridad batch sobre horas reparadas | Evita que un acumulador streaming obsoleto reemplace una corrección; sus novedades también esperan la próxima corrida |
+| Watermark de 60 días para la muestra | Admite el desorden de los archivos originales; retiene más estado que un margen corto |
+| CLI y HTML sobre agregados | Permite consultas y reportes reproducibles sin hospedar una aplicación; actualizar el HTML requiere otra ejecución |
+| Mantener la última publicación completa y su calidad | Sostiene las consultas ante fallos; se debe mostrar antigüedad y excluir resultados invalidados |
+| Revenue separado del costo de uso; USD con factor 1 | Evita una conciliación sin respaldo; créditos vacíos y subtotales negativos reducen la cobertura hasta validar su significado |
+
+## Plan inicial
+
+### Supuestos y decisiones abiertas
+
+- Los JSONL simulan llegadas mediante reproducción; no existe una fuente en vivo
+  ni una frecuencia de llegada observada. Los 60 segundos son un objetivo a medir.
+- Los CSV representan snapshots. La revisión diaria y el batch horario son
+  decisiones de diseño, no frecuencias garantizadas por el proveedor.
+- Un `event_id` identifica el evento; v2 cambia su esquema. Falta un contrato de
+  revisión que permita resolver versiones contradictorias automáticamente.
+- Los 30 días de retención después del cierre y la fórmula de revenue son
+  convenciones del proyecto. Los vacíos y negativos no tienen interpretación
+  contable confirmada por el paquete.
+
+Siguen abiertos el entorno validado para ejecutar el pipeline, versiones,
+topología de HDFS, scheduler y calibración de anomalías. Se resolverán al
+preparar la implementación posterior, antes de medir latencias o publicar resultados.
+
+### Riesgos y mitigaciones
 
 | Riesgo | Mitigación |
 | --- | --- |
@@ -359,36 +448,36 @@ la implementación.
 | APIs, driver o consistencia incompatibles | Fijar versiones y comprobar recuperación y publicación antes de integrar |
 | Entorno alternativo sin validar | Resolver la condición de Colab o equivalente validado antes de implementar el pipeline |
 
-Para el perfilado inicial se prevé Python 3 con biblioteca estándar en un
-equipo local, leyendo por filas. Como referencia de planificación: 2 CPU
+### Roles y recursos
+
+Un integrante cubre tres responsabilidades: análisis de negocio para preguntas
+y reglas; ingeniería de datos para ingesta, calidad y publicación; y validación
+para evidencia, reproducción y medición. En esta etapa sólo se ejecuta la
+exploración inicial.
+
+El perfilado usa Python 3.9 o posterior con biblioteca estándar en un equipo
+local. Recorre los JSONL por línea y conserva claves, fechas y los CSV en memoria;
+no es un perfilador distribuido. Como referencia de planificación: 2 CPU
 lógicas, 4 GB de RAM y 200 MB libres para entradas y resultados, además del
 entorno instalado. El dimensionamiento del pipeline requerirá medir bytes por
 capa, versiones retenidas, réplicas, checkpoints y memoria del estado.
 
-| Próximo trabajo | Esfuerzo estimado | Resultado |
+### Esfuerzo y próximos pasos
+
+Estimación inicial para la primera parte; los rangos no son horas registradas.
+
+| Trabajo | Esfuerzo estimado | Resultado |
 | --- | --- | --- |
 | Revisión del diseño | 1–2 h | Corregir inconsistencias entre flujos, métricas y consultas |
 | Perfilado de las ocho fuentes | 3–5 h | Script con tipos, nulos, claves, relaciones, fechas y calidad |
 | Evidencia e instrucciones | 1–2 h | Comando, versión de Python, hashes y salida sin datos personales |
 | Reproducción desde entorno limpio | 1–2 h | Verificar que la exploración pueda repetirse |
 
-La estimación total es de 6–11 horas para un responsable. El perfilado deberá
-regenerar los conteos y hallazgos de este documento, registrar diferencias y
-mantener los originales intactos. Para la implementación posterior quedan
-la elección del entorno, versiones, despliegue, programación de jobs y
-calibración del detector de anomalías.
-
-### Correspondencia con la consigna
-
-| Requisito | Resolución en el diseño |
-| --- | --- |
-| Problema, objetivos y 5V, §5.2 | Caso FinOps, criterios medibles y escala observada |
-| Data Lake, §4.2 | Zonas, Parquet, particiones, trazabilidad, retención y promoción |
-| Batch y streaming, §§4.3–4.4 | Esquema explícito, watermark, deduplicación, checkpoints y recuperación |
-| Batch conceptual, §5.2.9 | Map, shuffle y reduce sobre contribuciones por organización, servicio y día |
-| Calidad, features y anomalías, §4.4 | Reglas por medida, métricas y método candidato con calibración pendiente |
-| Serving y consultas, §§7.3–7.4 | Tablas por consulta para FinOps, Soporte y Producto |
-| Gobierno y reproducción, §8.2 | Roles, versionado, hashes y plan de evidencia reproducible |
+La estimación total es de 6–11 horas para un responsable. Ya se incorporaron
+el script de exploración, su salida y las instrucciones. El siguiente paso es
+repetir la lectura desde otra copia del paquete y revisar las observaciones de
+la evaluación. No se requiere desplegar HDFS, Spark ni Cassandra para reproducir
+esta evidencia. La implementación completa corresponde a las próximas etapas.
 
 ## Referencias
 
