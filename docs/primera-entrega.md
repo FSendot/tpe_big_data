@@ -13,11 +13,11 @@ El costo registrado en los eventos y el ingreso por facturación son medidas
 distintas. Se analizarán por separado, sin asumir que deben coincidir ni
 calcular un margen a partir de ellas.
 
-La solución propone un Data Lake en HDFS, procesamiento con PySpark y tablas
-de consulta en Cassandra/AstraDB. Un CLI generará tablas y un reporte HTML
-con Plotly. Esta etapa cubre el diseño y la exploración inicial. La integración
-del pipeline, las consultas ejecutadas y el despliegue corresponden a las
-etapas siguientes.
+En esta entrega diseñamos el recorrido de los CSV y JSONL desde Landing hasta
+las consultas. Elegimos HDFS y Parquet para el almacenamiento, PySpark para
+procesar los datos y Cassandra/AstraDB para servir resultados. El CLI mostrará
+tablas y un reporte HTML con Plotly. La ejecución completa del pipeline queda
+para las próximas entregas.
 
 | Objetivo | Criterio de evaluación |
 | --- | --- |
@@ -92,9 +92,6 @@ que representan el estado histórico de cada cliente.
 | Veracidad | Conservar nulos, conflictos, tipos ambiguos y problemas de moneda con trazabilidad y calidad por medida |
 | Valor | Explicar variaciones de costo, priorizar su revisión y relacionar consumo con información de Soporte y Producto |
 
-El tamaño actual no justifica por sí solo un clúster. La ampliación es un
-escenario para revisar particiones, memoria y tiempos, no una previsión del
-negocio ni una garantía de escalabilidad lineal.
 
 ## Arquitectura
 
@@ -126,12 +123,11 @@ flowchart TD
     T -.-> P
 ```
 
-PySpark permite expresar transformaciones y agregaciones con DataFrames/SQL.
-Parquet aporta almacenamiento columnar y lectura por particiones; HDFS aloja
-las zonas del Lake. Cassandra sirve resultados preparados para cada consulta.
-Las novedades operativas son archivos derivados internos: no se agrega un
-broker. HDFS sigue el modelo de almacenamiento estudiado en la materia;
-proveedor y topología se definirán al preparar el entorno.
+Usaremos Parquet en las capas transformadas porque las consultas leen columnas
+y períodos concretos. PySpark calculará los agregados y Cassandra guardará
+tablas preparadas para esas consultas. Las novedades operativas viajarán en
+archivos derivados internos. Todavía falta validar las versiones y el entorno
+de ejecución.
 
 ## Organización del Data Lake
 
@@ -154,11 +150,10 @@ numerosos archivos por organización y servicio. Con 720 eventos diarios,
 agregar esas divisiones fragmentaría demasiado los datos. Los snapshots
 versionados permiten leer un corte estable mientras se prepara otro.
 
-Cada promoción verifica lectura, esquema, tipos, referencias y calidad de las
-medidas, y termina con un manifiesto de las salidas. Los casts fallidos generan
-incidencias; los campos adicionales de v2 conservan su cobertura. Se guardan
-hash de entrada, lote, fila de origen y versión de reglas para reconstruir un
-resultado.
+Antes de pasar eventos a Silver comprobaremos el identificador, la fecha, las
+referencias a organización y recurso, y la validez de costo y consumo por
+separado. Guardaremos las filas con problemas junto con el archivo y la regla
+que los detectó. Un manifiesto identificará las salidas de cada promoción.
 
 Las copias de trabajo se conservarán durante el proyecto y su evaluación.
 Serán elegibles para limpieza automática 30 días después del cierre registrado.
@@ -286,25 +281,12 @@ y reconciliar el estado streaming en esta etapa.
 
 ### Publicación y recuperación ante fallos
 
-Los resultados se escriben bajo una versión nueva y se verifican antes de
-activar su referencia en Cassandra. El reporte fija una publicación para
-leer juntos totales, comparaciones y rankings. Si falla una carga, sigue
-disponible la última versión terminada con su fecha y estado; sin una versión
-previa, se informa que el resultado no está disponible.
-
-Cada publicación identifica su corte de entradas. El control comprueba el
-predecesor esperado y que el corte no retroceda; para horas operativas comprueba
-además autoridad y generación. Un candidato obsoleto se rechaza o recalcula.
-Los reintentos completan las salidas previstas del lote sin duplicar aportes.
-Las actualizaciones condicionales de Cassandra no son una transacción global
-entre tablas: se usarán datos inmutables y referencias activas, con niveles
-de consistencia a validar.
-
-Las incidencias conocidas siguen visibles aunque el valor publicado sea
-anterior. El reporte verifica una revisión estable de calidad antes de
-presentar rankings. Un resultado pendiente de recálculo necesita actualizarse;
-un total parcial tiene contribuciones no utilizables. Son estados distintos,
-y terminar una publicación no elimina sus problemas de calidad.
+Los resultados se publicarán por versión para que una carga incompleta no
+reemplace el último corte válido. El reporte mostrará la fecha de ese corte y
+las incidencias conocidas, incluso si un resultado todavía espera recálculo o
+tiene un total parcial. En la implementación tendremos que probar qué ocurre
+ante reintentos, correcciones históricas y escrituras simultáneas de batch y
+streaming.
 
 ## Consultas y consumo
 
@@ -348,11 +330,10 @@ Un cambio de interpretación requiere reproceso trazable. Emails, responsables
 comerciales y texto libre se restringen al detalle cuando sean necesarios;
 reportes, logs y evidencia omiten datos personales y credenciales.
 
-Se medirán filas leídas, válidas y excluidas por medida, duplicados, conflictos,
-referencias inválidas, cobertura v1/v2, duración de lotes, backlog, estado del
-watermark y checkpoints. También se registrarán días pendientes de reparación,
-filas esperadas frente a publicadas y fallos de activación. La frescura
-ordinaria y la demora de reparación se evaluarán por separado.
+Registraremos cuántas filas entran y cuántas quedan fuera de cada cálculo, con
+su motivo. También mediremos la duración de los lotes y los días pendientes de
+reparación. Estas salidas servirán para comprobar las reglas de calidad durante
+la implementación.
 
 ## Riesgos, recursos y plan
 
