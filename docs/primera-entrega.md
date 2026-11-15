@@ -156,6 +156,25 @@ tablas preparadas para esas consultas. Las novedades operativas viajarán en
 archivos derivados internos. Todavía falta validar las versiones y el entorno
 de ejecución.
 
+### Elección del almacenamiento
+
+HDFS se mantiene como decisión de diseño para estudiar almacenamiento
+distribuido y un escenario de crecimiento; los 13,3 MB de la muestra no lo
+requieren. Su despliegue queda sujeto a validar el aporte frente a su costo
+operativo. Una instalación en un único equipo no tolera la pérdida de ese equipo.
+
+| Alternativa | Aporte y costo para el proyecto |
+| --- | --- |
+| Archivos locales | Suficientes para el perfilado actual, sin servicios adicionales; no demuestran almacenamiento distribuido |
+| HDFS | Permite estudiar bloques y replicación; exige operar NameNode/DataNodes, permisos y recuperación |
+| Almacenamiento de objetos | Alternativa para separar cómputo y almacenamiento; requiere configurar acceso y revisar costos y contratos de publicación |
+
+Si HDFS dificulta la reproducción sin aportar una ventaja demostrable, se
+revisará la elección, el diagrama y las garantías de publicación. Parquet y
+las zonas no dependen de HDFS, pero el rename previsto sí requiere revisión
+al cambiar de backend. La decisión se apoya en Hadoop, p. 5; HDFS, pp. 8–11;
+e Introducción, p. 27.
+
 ### Elección del patrón
 
 | Patrón | Evaluación para este caso |
@@ -207,12 +226,23 @@ referencias a organización y recurso, y la validez de costo y consumo por
 separado. Guardaremos las filas con problemas junto con el archivo y la regla
 que los detectó. Un manifiesto identificará las salidas de cada promoción.
 
-Las copias de trabajo se conservarán durante el proyecto y su evaluación.
-Serán elegibles para limpieza automática 30 días después del cierre registrado.
-Originales, código, documentación y evidencia se archivarán por separado.
-La limpieza de HDFS y Cassandra deberá proteger versiones en uso, checkpoints
-y reprocesamientos activos. El watermark limita estado de procesamiento;
-no determina la retención del Lake.
+### Retención y operación
+
+Un integrante registrará el cierre al concluir la evaluación y sus
+correcciones. Desde esa fecha se cuentan los 30 días de conservación adicional,
+una decisión del proyecto. El watermark no determina la retención del Lake.
+
+| Activos | Conservación y condición de limpieza |
+| --- | --- |
+| Landing original, código, documentación y evidencia | Se archivan por separado; originales privados y evidencia sin datos personales. Sin borrado programado: su conservación se revisa al cierre |
+| Bronze, Silver, Gold, novedades y serving | Elegibles desde cierre + 30 días, protegiendo versiones activas, lectores y reprocesos; limpieza coordinada entre Lake y serving |
+| Quarantine | Mismo plazo, siempre que las incidencias estén resueltas |
+| Control, manifiestos y checkpoints | Mismo plazo, sólo cuando no sean necesarios para reanudar procesos o reconstruir resultados |
+
+Santos Galarraga autorizará y ejecutará la limpieza: revisar candidatos y
+dependencias, verificar archivos de respaldo y hashes, y registrar rutas,
+fecha, motivo y resultado. Las dependencias activas posponen el borrado.
+No hay limpieza automática implementada.
 
 ## Reglas de calidad y cálculo
 
@@ -464,20 +494,40 @@ capa, versiones retenidas, réplicas, checkpoints y memoria del estado.
 
 ### Esfuerzo y próximos pasos
 
-Estimación inicial para la primera parte; los rangos no son horas registradas.
+El plan inicial estimaba 6–11 h para diseño, perfilado y evidencia, ya disponibles.
+Para las correcciones se estiman 3–4,5 h adicionales; no son horas registradas.
+Santos Galarraga es responsable de todas las tareas siguientes.
 
-| Trabajo | Esfuerzo estimado | Resultado |
+| Tarea | Esfuerzo | Dependencia | Criterio de cierre |
+| --- | --- | --- | --- |
+| Registrar feedback y justificar HDFS | 1–1,5 h | Devolución y arquitectura | Observaciones trazables; alternativas y límites explícitos |
+| Precisar retención | 0,5–1 h | Zonas y publicación | Plazos, responsable y protecciones definidos |
+| Reproducir perfilado | 0,5–1 h | Dataset y script | Hashes y estadísticas comparados; diferencias explicadas |
+| Priorizar validaciones y sincronizar documentos | 1 h | Tareas anteriores | Plan, README y contexto consistentes |
+
+Las correcciones documentales y la reproducción están realizadas. Las próximas
+validaciones se priorizan así; quedan pendientes para la implementación y no
+forman parte del trabajo ejecutado en esta entrega:
+
+| Orden | Validación | Criterio de aceptación |
 | --- | --- | --- |
-| Revisión del diseño | 1–2 h | Corregir inconsistencias entre flujos, métricas y consultas |
-| Perfilado de las ocho fuentes | 3–5 h | Script con tipos, nulos, claves, relaciones, fechas y calidad |
-| Evidencia e instrucciones | 1–2 h | Comando, versión de Python, hashes y salida sin datos personales |
-| Reproducción desde entorno limpio | 1–2 h | Verificar que la exploración pueda repetirse |
+| 1 | Entorno y versiones | Colab o equivalente validado, ejecución mínima y versiones registradas |
+| 2 | Fuentes y calidad | Casos válidos e inválidos, compatibilidad v1/v2 y reglas independientes por medida |
+| 3 | Recorrido mínimo hasta serving | Conexión comprobada y salida trazable con conteos e importes conciliados |
+| 4 | Reinicio e idempotencia | Repetición y recuperación sin duplicar filas ni contribuciones |
+| 5 | Latencia y operación | Medir frescura, backlog, memoria, bytes y archivos antes de afirmar el objetivo de 60 segundos |
 
-La estimación total es de 6–11 horas para un responsable. Ya se incorporaron
-el script de exploración, su salida y las instrucciones. El siguiente paso es
-repetir la lectura desde otra copia del paquete y revisar las observaciones de
-la evaluación. No se requiere desplegar HDFS, Spark ni Cassandra para reproducir
-esta evidencia. La implementación completa corresponde a las próximas etapas.
+## Correcciones posteriores al feedback
+
+Revisión del 15/11/2026. Los ajustes se integraron en las secciones existentes;
+la versión evaluada se conserva en Git. No se implementa el segundo parcial.
+
+| Observación | Resolución |
+| --- | --- |
+| Complejidad de HDFS | Alternativas y condición de revisión en Arquitectura |
+| Retención y operación | Plazos, protecciones y responsable en Organización del Data Lake |
+| Responsabilidades y prioridades | Tareas asignadas y orden de validación en Plan inicial |
+| Reproducibilidad | Perfilado repetido: hashes de entradas y estadísticas coinciden; diferencias de entorno en [evidencias](../evidence/README.md) |
 
 ## Referencias
 

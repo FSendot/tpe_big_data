@@ -44,7 +44,17 @@ El script verifica las ocho fuentes y no modifica los originales. La salida
 contiene estadísticas y hashes, sin filas de clientes, emails ni comentarios.
 Las [instrucciones de datos](data/README.md) detallan qué comprueba.
 
-## Convenciones
+## Correcciones posteriores a la evaluación
+
+La [respuesta al feedback](docs/primera-entrega.md#correcciones-posteriores-al-feedback)
+registra las acciones, responsables y evidencias. Se mantiene HDFS como decisión
+de diseño, con alternativas y límites explícitos; se precisan retención,
+operación y prioridades de validación. El responsable es Santos Galarraga.
+Estos ajustes corresponden a la primera entrega: no implementan el pipeline
+ni adelantan el segundo parcial. La reproducción con el paquete correcto se
+documenta en [evidencias](evidence/README.md).
+
+## Convenciones de trabajo
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
 - Fechas de eventos y agregaciones en UTC; costos de uso separados de revenue.

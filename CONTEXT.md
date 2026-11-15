@@ -6,6 +6,15 @@ aquí se conservan detalles de implementación y verificaciones pendientes.
 
 ## Estado y límites
 
+Las correcciones del feedback de la primera entrega están registradas en
+`docs/primera-entrega.md`, sección "Correcciones posteriores al feedback".
+Santos Galarraga es responsable de diseño, gobierno, reproducción y revisión.
+HDFS se mantiene como elección académica, no como necesidad de la muestra.
+La política por zona, el cierre registrado y la limpieza revisada se definen
+en Organización del Data Lake; no hay limpieza automática. Las prioridades futuras son entorno,
+contratos/calidad, recorrido mínimo, recuperación y medición. No se ejecutan
+como parte de estas correcciones ni autorizan ampliar el alcance actual.
+
 Hay diseño y una exploración reproducible de las ocho fuentes en
 `scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
 No hay pipeline ni infraestructura. El script usa Python estándar, recibe la
