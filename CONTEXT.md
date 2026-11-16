@@ -9,7 +9,8 @@ aquí se conservan detalles de implementación y verificaciones pendientes.
 Las correcciones del feedback de la primera entrega están registradas en
 `docs/primera-entrega.md`, sección "Correcciones posteriores al feedback".
 Santos Galarraga es responsable de diseño, gobierno, reproducción y revisión.
-HDFS se mantiene como elección académica, no como necesidad de la muestra.
+En esa primera entrega HDFS se mantuvo como elección académica, no como
+necesidad de la muestra; la revisión posterior se describe más abajo.
 La política por zona, el cierre registrado y la limpieza revisada se definen
 en Organización del Data Lake; no hay limpieza automática. Las prioridades futuras son entorno,
 contratos/calidad, recorrido mínimo, recuperación y medición. No se ejecutan
@@ -17,14 +18,18 @@ como parte de estas correcciones ni autorizan ampliar el alcance actual.
 
 Hay diseño y una exploración reproducible de las ocho fuentes en
 `scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
-No hay pipeline ni infraestructura. El script usa Python estándar, recibe la
-ruta del paquete y conserva los originales. No ampliar la primera entrega a
-consultas analíticas, CLI de consumo, detector ni despliegue.
+No hay pipeline. El perfilador usa Python estándar, recibe la ruta del paquete
+y conserva los originales. La primera entrega se mantiene como antecedente.
+El usuario autorizó iniciar la segunda entrega, sección 1: el entorno Docker,
+la configuración y las pruebas están en `docs/segunda-entrega.md`. Las siguientes
+secciones se implementarán por separado.
 
-HDFS está elegido; entorno, hosting, topología, scheduler y versiones siguen
-abiertos. Se prefiere CLI/script y HTML a Jupyter. Docker Compose es una opción
-posterior, no una obligación. La consigna pide Colab o equivalente validado
-para el pipeline; la elección de CLI no resuelve esa validación.
+La segunda entrega revisa HDFS: se usa un volumen local de Docker para el flujo
+mínimo, Python 3.11.15, Java 17 y Spark 3.5.8. Cassandra local permite probar CQL;
+Astra está configurado y la conexión CQL al keyspace fue verificada. Santos Galarraga
+confirmó el 15/11/2026 que Docker está permitido como equivalente a Colab. Los contratos
+de publicación HDFS de las notas siguientes son diseño previo, no garantías
+implementadas ni trasladables automáticamente al backend local.
 
 ## Vocabulario
 

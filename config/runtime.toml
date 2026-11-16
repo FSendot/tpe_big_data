@@ -1,0 +1,10 @@
+# Rutas dentro del contenedor; los originales se montan en solo lectura.
+dataset_root = "/dataset"
+lake_root = "/lake"
+evidence_root = "/workspace/evidence/environment"
+
+[spark]
+master = "local[2]"
+driver_memory = "1g"
+shuffle_partitions = 2
+timezone = "UTC"

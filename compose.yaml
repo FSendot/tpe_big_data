@@ -1,0 +1,49 @@
+services:
+  runtime:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile
+    environment:
+      APP_CONFIG: /workspace/config/runtime.toml
+      SERVING_MODE: ${SERVING_MODE:-local}
+      CASSANDRA_HOST: cassandra
+      ASTRA_TOKEN: ${ASTRA_TOKEN:-}
+      ASTRA_BUNDLE: ${ASTRA_BUNDLE:-/run/secrets/secure-connect.zip}
+      ASTRA_KEYSPACE: ${ASTRA_KEYSPACE:-}
+    volumes:
+      - ./src:/workspace/src:ro
+      - ./scripts:/workspace/scripts:ro
+      - ./tests:/workspace/tests:ro
+      - ./config:/workspace/config:ro
+      - ./evidence:/workspace/evidence
+      - ./secrets:/run/secrets:ro
+      - type: bind
+        source: ${DATASET_PATH:-./data/landing}
+        target: /dataset
+        read_only: true
+        bind:
+          create_host_path: false
+      - lake:/lake
+    mem_limit: 3g
+    cpus: 2
+
+  cassandra:
+    image: cassandra:5.0.6@sha256:b494afb347bfd20765d80817d89d9e6e31ae77a339bfb34e82c6ea868a51c9c1
+    profiles: [local-serving]
+    environment:
+      MAX_HEAP_SIZE: 512M
+      HEAP_NEWSIZE: 128M
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    healthcheck:
+      test: [CMD-SHELL, "cqlsh -e 'SELECT release_version FROM system.local' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    mem_limit: 2g
+    cpus: 2
+
+volumes:
+  lake:
+  cassandra-data:

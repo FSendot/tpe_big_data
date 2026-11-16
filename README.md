@@ -3,8 +3,9 @@
 Proyecto integrador de Big Data, ITBA, segundo cuatrimestre de 2026.
 
 Análisis de costos y consumo de un proveedor cloud, con foco en FinOps y
-métricas de Soporte y Producto. La propuesta combina PySpark, HDFS y
-Cassandra, con consultas por CLI y reportes HTML.
+métricas de Soporte y Producto. El diseño inicial combina PySpark, HDFS y
+Cassandra, con consultas por CLI y reportes HTML. La segunda entrega revisa
+el almacenamiento para comenzar con un entorno local reproducible.
 
 La [primera entrega](docs/primera-entrega.md) reúne el diseño completo.
 Entrega: **05/10/2026**. La exploración inicial se puede ejecutar; el pipeline
@@ -54,7 +55,17 @@ Estos ajustes corresponden a la primera entrega: no implementan el pipeline
 ni adelantan el segundo parcial. La reproducción con el paquete correcto se
 documenta en [evidencias](evidence/README.md).
 
-## Convenciones de trabajo
+## Segunda entrega
+
+La [sección 1: entorno y configuración](docs/segunda-entrega.md) prepara Spark
+en Docker, Parquet en un volumen local y pruebas de conexión a serving.
+Incluye instrucciones para Cassandra local y AstraDB, configuración sin
+secretos y evidencia de ejecución. Docker está permitido como entorno
+equivalente a Colab; la conexión CQL a Astra fue verificada. El pipeline aún
+no está implementado; HDFS se revisa a favor de almacenamiento local para
+el flujo mínimo, según la decisión documentada allí.
+
+## Convenciones del repositorio
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
 - Fechas de eventos y agregaciones en UTC; costos de uso separados de revenue.
