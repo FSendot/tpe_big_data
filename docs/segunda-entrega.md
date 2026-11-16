@@ -423,7 +423,61 @@ volver a disponer de ese archivo Bronze en su estado original.
 Resultados, casos de prueba y comandos exactos en la
 [evidencia de Silver](../evidence/silver/README.md).
 
+## 5A. Agregaciones y mart Gold
+
+`org_daily_usage_by_service` tiene grano `(org_id, event_date, service)`,
+con fecha UTC. Usa una única publicación Silver cuyo ID, manifiesto y
+archivos se verifican. Cada fila registra el `silver_publication_id`.
+
+```sh
+docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id> --report-name first
+```
+
+Se suman sólo aportes válidos de `daily_cost_usd`, `requests`, `cpu_hours`,
+`storage_gb_hours`, `carbon_kg` y `genai_tokens`. Los importes y consumos
+usan decimal(38,12). Tokens se ensancha a decimal(38,0) antes de sumar.
+Una suma sin aportes válidos queda nula y un cero válido se conserva.
+Si desborda una suma de grupo o de conciliación, se aborta la publicación.
+
+Cada columna de medida tiene un struct `<medida>_coverage` con
+`eligible`, `valid`, `quarantined`, `absent`, `valid_fraction` y
+`state`. La fracción es válidos sobre elegibles y queda nula con
+denominador cero. Los conteos del denominador corresponden a filas Silver.
+
+| Medida | Población elegible |
+| --- | --- |
+| Costo y carbono | Todos los eventos Silver del grupo. Carbono sin reporte cuenta como ausente. |
+| Requests, CPU y almacenamiento | Eventos de la métrica correspondiente. Para consumo en quarantine se usa la declaración original si todas las variantes coinciden en una métrica conocida. Cada ID cuenta una vez. |
+| Tokens | Eventos GenAI y reportes bloqueados fuera de GenAI. |
+
+Los estados son `complete` cuando hay aporte válido y cobertura completa,
+`partial` cuando hay aporte válido y faltantes o bloqueos,
+`unavailable` cuando hay bloqueos y ningún aporte válido, `absent` cuando
+todos los aportes elegibles están ausentes y `not_applicable` cuando el
+denominador es cero y no hay bloqueos. `unassigned_usage_events` cuenta
+eventos con métrica ambigua o desconocida. Esos casos bloquean la completitud
+de las tres medidas de consumo sin asignarlos a ningún denominador.
+La completitud describe el corte observado.
+
+Un evento excluido por completo afecta todas las medidas del grupo si su
+variante tiene fecha UTC interpretable y el recurso Silver confirma la
+organización y el servicio declarados. Se cuentan IDs distintos por grupo,
+o huellas distintas si falta el ID. Un ID contradictorio puede afectar
+varias claves sin que esas claves representen varios eventos. Un grupo
+observado sólo en quarantine se publica con sumas nulas. Las variantes que
+carecen de ubicación confiable se registran en el manifiesto, incluida la
+posibilidad de que un mismo ID tenga variantes ubicadas y otras sin ubicar.
+
+El mart está en
+`/lake/gold/publication_id=<id>/org_daily_usage_by_service/event_date=YYYY-MM-DD/`.
+Se particiona sólo por fecha para podar lecturas temporales con pocas
+particiones. Se concilian los totales y conteos válidos del Parquet releído
+contra Silver antes del rename local. El manifiesto vincula la publicación
+y el SHA-256 del manifiesto Silver con el código y los checksums Gold.
+Repetir con el mismo origen y código verifica y reutiliza la salida.
+Los resultados están en la [evidencia de Gold](../evidence/gold/README.md).
+
 ## Secciones siguientes
 
-Pendientes, en orden: 5. agregaciones Gold y analítica; 6. serving del
+Pendientes, en orden: 5B. anomalías; 6. serving del
 mart y consultas; 7. integración e idempotencia; 8. documentación final y backlog.

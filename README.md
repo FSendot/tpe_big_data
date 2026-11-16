@@ -92,6 +92,14 @@ docker compose run --rm runtime python scripts/build_silver.py --stream-id usage
 docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --batch-id <batch_id> --archive-cut <cut_id>
 ```
 
+La [sección 5A](docs/segunda-entrega.md#5a-agregaciones-y-mart-gold) publica
+`org_daily_usage_by_service` con totales y cobertura por medida. Usar el
+`manifest.publication_id` del informe de Silver.
+
+```sh
+docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id>
+```
+
 ## Convenciones del repositorio
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.

@@ -1,0 +1,26 @@
+docker compose run --rm --no-deps runtime python -W ignore::ResourceWarning -m unittest discover -s tests -v
+
+test_atomic_publication_retry_and_tamper_detection (test_batch.BatchTests.test_atomic_publication_retry_and_tamper_detection) ... ok
+test_bad_header_and_record_width_are_blocked (test_batch.BatchTests.test_bad_header_and_record_width_are_blocked) ... ok
+test_billing_preserves_negatives_and_missing_credits (test_batch.BatchTests.test_billing_preserves_negatives_and_missing_credits) ... ok
+test_decimal_overflow_and_excess_precision_are_flagged (test_batch.BatchTests.test_decimal_overflow_and_excess_precision_are_flagged) ... ok
+test_duplicate_copies_collapse_but_conflicting_variants_survive (test_batch.BatchTests.test_duplicate_copies_collapse_but_conflicting_variants_survive) ... ok
+test_invalid_types_are_distinct_from_missing_values (test_batch.BatchTests.test_invalid_types_are_distinct_from_missing_values) ... ok
+test_astra_bundle_uses_writable_temporary_directory (test_environment.EnvironmentTests.test_astra_bundle_uses_writable_temporary_directory) ... ok
+test_connection_errors_do_not_expose_secrets (test_environment.EnvironmentTests.test_connection_errors_do_not_expose_secrets) ... ok
+test_evidence_cannot_overlap_lake (test_environment.EnvironmentTests.test_evidence_cannot_overlap_lake) ... ok
+test_invalid_partition_count (test_environment.EnvironmentTests.test_invalid_partition_count) ... ok
+test_missing_astra_credentials_do_not_connect (test_environment.EnvironmentTests.test_missing_astra_credentials_do_not_connect) ... ok
+test_outputs_cannot_overlap_originals (test_environment.EnvironmentTests.test_outputs_cannot_overlap_originals) ... ok
+test_valid_configuration (test_environment.EnvironmentTests.test_valid_configuration) ... ok
+test_decimal_group_overflow_blocks_publication (test_gold.GoldTests.test_decimal_group_overflow_blocks_publication) ... ok
+test_finops_coverage_conflicts_and_reuse (test_gold.GoldTests.test_finops_coverage_conflicts_and_reuse) ... ok
+test_complete_archive_quality_and_atomic_publication (test_silver.SilverTests.test_complete_archive_quality_and_atomic_publication) ... ok
+test_all_invalid_rows_are_preserved_and_missing_checkpoint_is_blocked (test_streaming.StreamingTests.test_all_invalid_rows_are_preserved_and_missing_checkpoint_is_blocked) ... ok
+test_replay_detects_modified_inbox_and_invalid_namespace (test_streaming.StreamingTests.test_replay_detects_modified_inbox_and_invalid_namespace) ... ok
+test_restart_late_data_conflicts_and_recovery_between_queries (test_streaming.StreamingTests.test_restart_late_data_conflicts_and_recovery_between_queries) ... ok
+test_superset_and_invalid_json_preserve_original (test_streaming.StreamingTests.test_superset_and_invalid_json_preserve_original) ... ok
+
+Ran 20 tests in 80.877s
+
+OK

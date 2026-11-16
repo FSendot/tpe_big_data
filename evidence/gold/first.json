@@ -1,0 +1,1397 @@
+{
+  "status": "created",
+  "publication_path": "/lake/gold/publication_id=ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+  "manifest": {
+    "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+    "inputs": {
+      "contract": "finops-gold-v1",
+      "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+      "silver_manifest_sha256": "068cab73a84b62478e7d2045e4f6c8ca602e3e8f43bdf8197ab23c42856e36f1",
+      "spark_version": "3.5.8",
+      "timezone": "UTC",
+      "implementation_sha256": {
+        "gold.py": "50e8446de313fd2ba9d24af4f606d37a7d17b62049d5be96dead93161209bd7f",
+        "silver.py": "e91ec8c9f99e00b1d8255a52c72ec8f711af55d85233032076419deb6da7cf27",
+        "silver_quality.py": "89eb5f91b21c853a918e594c24136f42796cd7d4113416cf367f990d6b816db7"
+      }
+    },
+    "grain": [
+      "org_id",
+      "event_date",
+      "service"
+    ],
+    "published_at": "2026-11-16T14:00:08.722008+00:00",
+    "tables": {
+      "org_daily_usage_by_service": {
+        "rows": 11050,
+        "partition_by": "event_date"
+      }
+    },
+    "quality": {
+      "exclusions": {
+        "event_scope_rows": 0,
+        "excluded_event_ids": 0,
+        "excluded_unidentified_fingerprints": 0,
+        "unlocated_event_ids": 0,
+        "unlocated_unidentified_fingerprints": 0,
+        "unlocated_rows_without_identity": 0,
+        "has_unlocated_exclusions": false
+      },
+      "groups_only_in_quarantine": 0,
+      "groups_with_exclusions": 0,
+      "unassigned_usage_events": 0,
+      "coverage_states": [
+        {
+          "measure": "carbon_kg",
+          "state": "absent",
+          "count": 2790
+        },
+        {
+          "measure": "carbon_kg",
+          "state": "complete",
+          "count": 8260
+        },
+        {
+          "measure": "cpu_hours",
+          "state": "complete",
+          "count": 6374
+        },
+        {
+          "measure": "cpu_hours",
+          "state": "not_applicable",
+          "count": 3998
+        },
+        {
+          "measure": "cpu_hours",
+          "state": "partial",
+          "count": 394
+        },
+        {
+          "measure": "cpu_hours",
+          "state": "unavailable",
+          "count": 284
+        },
+        {
+          "measure": "daily_cost_usd",
+          "state": "complete",
+          "count": 10837
+        },
+        {
+          "measure": "daily_cost_usd",
+          "state": "partial",
+          "count": 213
+        },
+        {
+          "measure": "genai_tokens",
+          "state": "absent",
+          "count": 283
+        },
+        {
+          "measure": "genai_tokens",
+          "state": "complete",
+          "count": 848
+        },
+        {
+          "measure": "genai_tokens",
+          "state": "not_applicable",
+          "count": 9919
+        },
+        {
+          "measure": "requests",
+          "state": "complete",
+          "count": 8404
+        },
+        {
+          "measure": "requests",
+          "state": "not_applicable",
+          "count": 1416
+        },
+        {
+          "measure": "requests",
+          "state": "partial",
+          "count": 984
+        },
+        {
+          "measure": "requests",
+          "state": "unavailable",
+          "count": 246
+        },
+        {
+          "measure": "storage_gb_hours",
+          "state": "complete",
+          "count": 7070
+        },
+        {
+          "measure": "storage_gb_hours",
+          "state": "not_applicable",
+          "count": 3092
+        },
+        {
+          "measure": "storage_gb_hours",
+          "state": "partial",
+          "count": 557
+        },
+        {
+          "measure": "storage_gb_hours",
+          "state": "unavailable",
+          "count": 331
+        }
+      ]
+    },
+    "reconciliation": {
+      "silver_events": 43200,
+      "gold_silver_events": 43200,
+      "measures": {
+        "daily_cost_usd": {
+          "silver_valid_contributions": 42984,
+          "gold_valid_contributions": 42984,
+          "silver_total": "148351.600900000000",
+          "gold_total": "148351.600900000000"
+        },
+        "requests": {
+          "silver_valid_contributions": 18215,
+          "gold_valid_contributions": 18215,
+          "silver_total": "2186404.000000000000",
+          "gold_total": "2186404.000000000000"
+        },
+        "cpu_hours": {
+          "silver_valid_contributions": 9995,
+          "gold_valid_contributions": 9995,
+          "silver_total": "18880.271200000000",
+          "gold_total": "18880.271200000000"
+        },
+        "storage_gb_hours": {
+          "silver_valid_contributions": 12075,
+          "gold_valid_contributions": 12075,
+          "silver_total": "124661.374000000000",
+          "gold_total": "124661.374000000000"
+        },
+        "carbon_kg": {
+          "silver_valid_contributions": 32400,
+          "gold_valid_contributions": 32400,
+          "silver_total": "367.502378000000",
+          "gold_total": "367.502378000000"
+        },
+        "genai_tokens": {
+          "silver_valid_contributions": 3132,
+          "gold_valid_contributions": 3132,
+          "silver_total": "2558359",
+          "gold_total": "2558359"
+        }
+      }
+    },
+    "files": [
+      {
+        "path": "org_daily_usage_by_service/._SUCCESS.crc",
+        "bytes": 8,
+        "sha256": "1d44f510ec2ed7595badbec80583316defc14e8dd89130d719724149adfaa07d"
+      },
+      {
+        "path": "org_daily_usage_by_service/_SUCCESS",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-03/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "c6dafc3d94010d863e3fd020807d3f60ff5f178915796f022d69cf139782d81c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-03/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "6d78ec4cc387ca0821f9bb08f685271b0e09e090fb4158ee112a171af91f280e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-03/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21264,
+        "sha256": "c18acc034b854f16b21925f67cf46e379ff9824daff3e542f3ca3afd9bb17cae"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-03/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21294,
+        "sha256": "2460ee7de0bd83f9f207d6865726efebd91c8bac0beb6a400e491435a4890fbe"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-04/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "2fc4356603c18d01c4715e8b839751aa56b580175a2d7ebbefe2a1661697b1f6"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-04/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "fedb223b1f08db20b089ad36a016dcc3c70e215517b157992295d9d8159a7840"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-04/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21515,
+        "sha256": "84b5f53c26947255600fafc1edc1725898595224876b2a0da888f37994bb1969"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-04/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20684,
+        "sha256": "85aa5079105c0ac134c1644e773f08459b5fd7277fadff7a8cc93cdae74c3d5c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-05/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "04908f09d9abd25a1423551826e2b395135d9a248c64bf8bccca4a9cb91d65b2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-05/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "476767305a4d58e216114a7c9a00566fe42aa2eb182affb666bd605e1af320d0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-05/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20672,
+        "sha256": "bce19cd352a71ee3c89d7cd487438777b4031c353099777b9266f61d74a627dd"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-05/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21471,
+        "sha256": "70f9e0ed84f3b9e849c04269e5674be873e1a70be501e1b8b82b35d1507e58b4"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-06/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "1f2bf4c87df50d0b107a94579c4b69077cf12d6f966332754f6151db18b62ce6"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-06/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "594b20d8f6d639b0a41b0ea644e65c06c22b330d37257189862288cd9ec4096a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-06/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21123,
+        "sha256": "86bc188ed829c41d473851009474c976733636301c581e8967f2e5ab2792bba2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-06/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21269,
+        "sha256": "7374b36613679359c1ffe3f99601d2d319888411e0c78d7ba97d5ca6287dcce3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-07/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "bf4fbf4153afa53b8332582169f21e195d809df31f471a9ee239fde9247faee1"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-07/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "be456ff5d1623c2056cb4305a4e3feb54754cfa6955b3deb1896b4cdd02dae97"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-07/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21458,
+        "sha256": "d096c063b9df2939d26cbb32cda023f3eb63b06f2ca77e1648b35527757f7f9d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-07/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21216,
+        "sha256": "6ded50009310269777a731ebf809321f6fe7139abe523df8fe1e90d28bc24d8b"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-08/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "bcfe5bfc7a4ded72d21f297faa69a0c23c679b28c26199e92e68af721655039f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-08/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "5612295ac4184c9e8504eeee0c670bf178e1ede0a121dcb23c0873775c31cab5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-08/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21404,
+        "sha256": "cb15f576845d12ffe426a3cfe7512f50f8f211961a8341e081e784fa3b44b919"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-08/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20915,
+        "sha256": "9ff25f8f1e232a27f7accadd3680f4d8fc567d6847e15baa1a193f6a296d2c97"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-09/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "6a528b464315d1bd0b2829460c43edc975ba852b1fa48a8208be8f0306a1d508"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-09/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "328083c2d14f39bcb673d32e7017d111419491265c25f08c2fd384fc70d35656"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-09/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21177,
+        "sha256": "b9a9498650912960a1c1d237c39d7b9d822a2e7610c60ba20789b355cf6686f2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-09/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21192,
+        "sha256": "bb78ac7b85ae995f2ddadcccbca2566d9541f408e9f59fa135df83af5b6dd315"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-10/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "085e9c972503febdb94b63c504e30076f9fc1c294facf3ff981c182e3d399686"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-10/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "b89e09ea1f972cadfe5bfcbb137cf0c14d5ba080e4e024243d2e9d8e48efd0be"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-10/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21305,
+        "sha256": "bb25be3bc19fc69d2bb44f143111b56db222b6487a922db933a17c1406f32814"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-10/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21266,
+        "sha256": "e5ad537fc42cb5b7418d811bc9a15b1f51e56c8ac4de5d112d535eca9b7b14c5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-11/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "509c94d1bcb65642e54847c208820bb39a470be4c7cb9ef67b2c8eff1ee10cdd"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-11/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "ef8b8a0555f0f6a5c93d88c7c975f14545ba0fde63cd732d5c5fbb3bc567c0c0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-11/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21349,
+        "sha256": "685a5824c1f1663b46060026f20237802d81402a87a7ac0b99b0685ea4a5af27"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-11/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21285,
+        "sha256": "4ab2f0709a87d5c5b4f61022e593a7afbac130a6b16044fded523664f0391d6e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-12/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "1b5c41b1d6523d81812abb0b6a038d2f94cd259439198de2c4e6b5ae4e95cf27"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-12/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "a3d0cf2b3e81f960ff23747e3a75325eda67d78e4234602fd1a9a188e73ca0f0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-12/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21060,
+        "sha256": "de684d48574e9e6e223685dc84f59ab3e77133d3b12937f3ef087188d7a4f544"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-12/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21593,
+        "sha256": "b5ce6cb99b72fc6ac5407e761e336f2db566f4487b8a98c0a330e7be06c3f5da"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-13/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "3eb2a85cf38a654e44a2fe8e31f2a049a60a0ec84772e35af9679200fb117c45"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-13/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "ef2443f57370f60ae6b0dd4d362ac7fbd13067f38799c0c171c88078cbf86f80"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-13/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21595,
+        "sha256": "174f03285c57417fa7fbea357b67d9081b6aceeebe13cffe926ffc1f07ab65e0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-13/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20918,
+        "sha256": "a99ea9252851bb554d1ea67ddc677a7582d8d916ec4a4349ec78617157f2908e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-14/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "5cd744fb9e8069254ec8be0fc2c9c160fbbc2ae8bd9360a689a7512bd69ea5de"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-14/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "e215651643857ea4ad75cda1c3cd8e61236fa92c6ff5bc6962ccc59351b61caa"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-14/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21763,
+        "sha256": "961adcf8aa97a510fddd594e21e7f3e48d9302492b7233e40e05cc6c66512bbb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-14/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20762,
+        "sha256": "63211a56edf0621faf8b10bed5325a235254df8b7859631a0d6b05ef7f9a7234"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-15/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "607e5e85587a3631af847d20a43e6e4d481f5513c08ed140adb67d9a9a58b1e8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-15/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 172,
+        "sha256": "9cff27ab0d114ea3e06fe144b9f8552b8038b0488d7c06dcfd1aad9143a678ba"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-15/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21517,
+        "sha256": "c546c7d601074a63b9eefbe6ed8bef891e558ad674b94fd55f30cf7ae8627e6f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-15/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 20902,
+        "sha256": "241ab86552e22b755c0fd00b27a597cb42ddc505d3cebf12e534558e9976fc74"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-16/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "ffd6ff0bed028bd3173ecf5e9fdcf1fc399d41a43b6ce91a71d753041a641da8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-16/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "b095f1f7ca60561b7ca60a2774b76b04efba21cc446df81dded924caa3bd6b91"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-16/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21497,
+        "sha256": "610686345b71eff3ab403844f1ed4acb2e5fa3579471d68335746b69f6b9ff65"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-16/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21244,
+        "sha256": "a9fb1474d50049530bcd3fb2a9f0ecd15ff593df575fc4820566a678a1a5c8a3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-17/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "39ba486b9ccf317e56f623d099900d50507406f440a5eeb219cc239cdd80be53"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-17/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "235ef2a66b54c558258d6a04d7a82ebb1fd7e09be6bc3a6e065f13f118f45b72"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-17/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21188,
+        "sha256": "1b64334077eb34c736ed18cec043b91c18a7286bf667a36ee92c13f1d19915ba"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-17/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21054,
+        "sha256": "7d4d8718bd3c70c2f8de3180a58cd14dc1d50dfd7e51d1b473506dcf228908b9"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-18/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "0c452cb3e7699cffa5b9de0cb92d20d713aa6519d7af97448b3dcfd9fb8cbdbe"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-18/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "a71df3147e36e230ea2780f6326f86172a49451bc684b30a0af679feadf41d00"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-18/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21790,
+        "sha256": "f8e7efd9a921107b47a05c3ca9a319192bbb844ac2be4f0b88d6de2d0f1117e5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-18/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22055,
+        "sha256": "8a2c2a9b7a7a38312685fd32740f4b4d8eca3e5ba9bd5b43fd747a347584e73c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-19/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "75801e98d45b2babf3002d5284c385c76084e0bbdab058ff4b90e52cb519fdad"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-19/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "79c5f6db2cfa48d13b0d0a589e737af9e08a2fec6fb8336955d9083f04c43a3e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-19/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22081,
+        "sha256": "6ab47310524272206c35da94476745cf36b9e87c84a73da3b07bca91b6d769c2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-19/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22485,
+        "sha256": "8a4cdb61037e02994149fc262296206d450d069172d75c32e378659be53c1bc6"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-20/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "b776c9ac695a49967a97516c3d5adbbed9108f1d01bb3cb371c63f9f87e24d2f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-20/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "6c2d7400daf2c0a1e3ca4b2db4a1b48f29614b5f5be8c82712897d8260dda2b3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-20/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22145,
+        "sha256": "52f99939c5a74ae782254e54cef5ebed988e3574307527de231e3472579a6d7a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-20/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21978,
+        "sha256": "b0bf1b8b5de9256847f4ecb07eee290e6b2ddfb4c9d8b850e64975ae121af11a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-21/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "cfb0017a3faabf08eae28c4417284952c450762462e5a7789b3eeb5fef986e69"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-21/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "03cb286546dddae3a78056c3668ecb7ebb7f265abd2015fa1a10a50522bcb489"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-21/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22598,
+        "sha256": "a731e2eb997b066453ad4273de41be9d22ff6ba91b49def7589d451854c6dca8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-21/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21565,
+        "sha256": "a399e12521f3dd39a1ebe5ab8cc6c88c05453c8ad74962ded95e72a136d15ea0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-22/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "9570ac12c8451ade7adaee38d59cf377abe68a5bd66d9da0f774701862a24eaf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-22/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "5cce3daa13d6a727b913ede0772a7b74db2aa6378df59aface12e5cbf733c52a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-22/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21877,
+        "sha256": "a541650a1eb2780cd2d7054079e950764937acb96d43b4219723e25c336954a5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-22/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22720,
+        "sha256": "946ef903f60fba0112e9c11371d538fb2f023dcb3d3f175cc4e69337e0f4babb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-23/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "6bb13e12e7c261eee941072f908f1dbb41f50a771b5c8efeb1148ad719f2b01b"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-23/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "453e10447ed95adc4db62601abfaaa7d45fa99a8a7bba49e04e5ebd524933d05"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-23/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22311,
+        "sha256": "3a4de19bbd409c60affda292cbdb143bed6db33113750754b090ad1116997787"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-23/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21683,
+        "sha256": "7855067eafd96093dbad80daf0bd8b7cc9ec556dec875de58bb48c51a7f301fb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-24/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7a56abcdf5d988ff73f4a9ad7fe1a409bee01acfed49346c9728eb157097f6bf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-24/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "23ee2b6a666831d7e0a2666f83b927bc6377c6c2bb95217dec42e288edd4ceec"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-24/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22081,
+        "sha256": "eafb691e03110085912def0340399e08e061d0c0b16b2a27ce9c02fdb653f391"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-24/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22174,
+        "sha256": "6c9fc528509ba492c50755394debcba46db6157d038313dc4bd921b79b7ff22f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-25/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "37b7b0040b949efed0d57d01701fc17ebcddc51100ce82b88760db14ab24b86a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-25/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "44f6b83e6e709d98804a6a1cfb8ad7e9d053a4fb9f7dc83ba7eda30ee2ebf905"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-25/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21952,
+        "sha256": "6cac0573c2b10cd236c080587922eadc06acd684ece39debfb5c5f6bd6bae975"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-25/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22238,
+        "sha256": "92d3b789d9009056860231ca78316342310b48301ddb93f1c4a2733abc7ae46f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-26/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "2d52c945e2a2d423fd596fef6e46129e5c20fee6cc8451357ad2ace8ecd1dccb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-26/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "631e2f2f5aff1ef174d3b75d0cb6a0a88b2dcd94e2931b3f55419bb393ab28fa"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-26/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22094,
+        "sha256": "c8c91a7e7c77133bf063bbe1877ed30304a6cb06019734287e2f8d7b2120c394"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-26/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22030,
+        "sha256": "3867ab0f70699fea2122f8207a007c61341a5aee670a87ebde379b8e353d17f7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-27/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "93a9f2dbe3f0d93c60a3a4e0c441a04e6d8b9f4104acdedeaca2386cceb5797a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-27/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "164f7cc0d989a7000702850891b613d0d8407a5da578433d48819b7f65d22a98"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-27/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21710,
+        "sha256": "5acb3e2f2960017cad1226adca3dbd6d51fc4bfa7485fb98989860765486c05f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-27/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22818,
+        "sha256": "aaf70b358148bc376d543aba69da157745f9cc5070d7ed5c6fc800644719e01e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-28/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "8638c591dfecda0d5fae6cd3266f69511f49d0920089618691660b97b5f44810"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-28/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "ec7ed070411e80591d78073a789f9a9b2adfe52b2c6351b05adec31b18999eb8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-28/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22218,
+        "sha256": "2bcc5c7e5f3998ca49ed5aa2357fce7898b549fe02ad505e43b09f425c2b9225"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-28/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22022,
+        "sha256": "1c9125bd5b027aae66a78c919bdb6f80e642d9e24abd5a0045b9990856e4af7f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-29/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "7dd1ea37125e40d4424b992ea7914c8a10697b84784cd3e6730ccfec27a95dcb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-29/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "49807cfb68238ef40c513ba7b2e8871b89221ed83c5480cb12100b53f79a900f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-29/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21835,
+        "sha256": "deacc4eb724dfcf7804452ad8de2b7a8f0e2ca3e9ca99a97e137d1ffcbb66f37"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-29/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22918,
+        "sha256": "aec74f75e2508442b6cd5f880ffb5692a5bbdce8f5d4767f687552b8425ca0c8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-30/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "b2c991815009875d33d5b918496a74c6f7f8310d819f72ce9556e05ac7437fda"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-30/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "dfadb8ef1f89d9224de1735cee6b535007445827184f3bf9635571b82b0442a1"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-30/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21996,
+        "sha256": "9462d2661dde3ef735b5c5bc4a74bac684b53a1c09cb31f13d61a017d9064f30"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-30/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22225,
+        "sha256": "ce5e8e26ababa49f0a2b7a243b4ac0f935e67c276a35d0957eb343c214baa99f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-31/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "b4c43334fd8de0c64bf6bad8609c6dd80b73f4863a67dca4bfb7880c49a8e18d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-31/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "ecbe1b54e4b0fcaf6cc480df108dc5d4617e584f9ebf2f969a6d73b794c1e53f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-31/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22109,
+        "sha256": "97f5c2aaf76ee46769073d36b812c353dca2f034014d24e5621825411cc287cf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-07-31/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21942,
+        "sha256": "cb9cc04d49b508d55f189ff3a979afa4f5361d992188cef0f414fef1a979588d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-01/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7d89eab5c9cb25504def0ad90167a740f3372cd8b95766601dd6551100388c92"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-01/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "af3bbc4ac1e6d89459d3395db5e87e5f075c14ba54f9d2da000ac98b88371127"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-01/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22109,
+        "sha256": "245aac05052b4362e0632378e314f05e16585b330e8524c2b07c9597e044feec"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-01/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22352,
+        "sha256": "8883f6241fa8795b58d6b7abfe73d8da4b15dbdfd409db8b1fc667c3b7cbceaf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-02/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "89a403241567d78cdb3860ce8231c0512613a5dffa1caffdf124e77294b54bf3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-02/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7963b6c9ef8bd0dad392650c77a2164e9228a3baa4434a9ac490b324ff9c48e2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-02/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22054,
+        "sha256": "5636f300b90480412313519849c4da0d0fee4fd1e39660b3d3630af512db7bea"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-02/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22437,
+        "sha256": "6832ebe6032e8d2a123d50968e0804e1d778bf329bd3fcf68a6fa29ef95106ff"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-03/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "ac298e25f0b0b03f9340f7371be42211973af6cc0a1eb77fd3bcc4bbe66541d5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-03/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "311bb3a0b0f66e82387107b0d93aa0fccba741452da27f3875b5166c3665c3a7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-03/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22283,
+        "sha256": "320236280a533662d94cb5d0071a53c8358a4e59fd0eb04df28750e4847c5cc2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-03/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21749,
+        "sha256": "5848cc3f97c9f19da3d09bb16581936a1b444658221486a5c582b3d6979f0165"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-04/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "71d6c062b78a8efd35aa18b87221cb0cf739af2d1c284d254ee054d1da92ca0d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-04/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "afb824b1f8ae709997f5b2b34f1e3adc22bd6d3c058342c21991567461de7f13"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-04/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22196,
+        "sha256": "b354d02524b4378f9378fc800a27dd862bea29b643071d918e1e31f81380af7c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-04/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22167,
+        "sha256": "d9f2f7f041ff3f87bb93ae4b94cd68417209c4908ea597437d239f61abf71af0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-05/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "b175896ecfacd44f7668eda23c8250cc121c9a77a7f58c79e00e496f2a033c9c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-05/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7f9d2b3422f073cacb5991d4c0b227843f065a0e6cc3ba5685b50f495d397de8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-05/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22260,
+        "sha256": "772872c2fc736a7993fa9b2ce0f9f000bbaa019f590f4d2fe96b8da0df3e6bc6"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-05/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22022,
+        "sha256": "da6d558e9308862a7131154e46d117ea1863956d0f3421302779ac0d215edb00"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-06/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "968a407c75cf386a2de25925962ed99829f994a6ddc8e6dad76a551650c69ff3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-06/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "77d40877de04dcb037491276eba17438d216d2c5bc0841c822ccc152107ebc6e"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-06/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22244,
+        "sha256": "84e6770e00b7e28738e821c9d2789a33bb775adc9bb1a5738322873663aab204"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-06/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21899,
+        "sha256": "09ae8df8bd94532dde39e4a00367f5e452e899dda523a2d505e264c901974db3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-07/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "f4f1d126019af9d0b3a31c615bb7e43efc7a24968c2d6c9e45258faa112bc30d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-07/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "39051b6b147f9844c1b07f3387e3eb0f77da952a398941b389a4713284c6ac77"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-07/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22415,
+        "sha256": "5fef20e2c7914d4a08c5a3b3253f54e85c9213154752dc038afda26e7c6526b2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-07/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21629,
+        "sha256": "9fa8632b5471589489573fd57c262a6336a3ef766c759cae9b18ee71ceea520b"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-08/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "9305f4c93942be12913d1459c9d2f310867f06abe9df544843b18a3b7b6b5c2f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-08/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "2fc13896cd3cd4c20587d07989cbbdfbab482a449e3c0105815b290b73115a36"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-08/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22484,
+        "sha256": "ecf0121b47c6808f3655b7845ff8f6ff58390540a23a1e7f896ceffc852aaa05"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-08/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21695,
+        "sha256": "35c6faf176a7b6c64e16d8339882c415397c2569470f82fab01dfc68feaa0a70"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-09/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e476c6ef3a20a7cf4e47e38449b58bcee7f925cc245f54925c461eb429b13837"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-09/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "0a0093c44b1b3ada0753916806c8e7e8c70e76a72dede6597a9c9aa091128125"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-09/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22383,
+        "sha256": "43a0fa41121fceeafb18024ba483f5fa01040aa54f57387824611b0d90bd7065"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-09/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22103,
+        "sha256": "5f32b3214d128d144f8209697855dddd8c04293d37e796d4ee8b6853a0eac514"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-10/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "9ad43ec9c98256de386dfb8cb4f49873485335100cb72e217ca8103bf0ef4316"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-10/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "d52638c37660a4cbf100f5a12ada65b23d0d7202178cbc5f4b195ad82019477d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-10/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22367,
+        "sha256": "09c7a24ee12074f122af2e5ee06733724de2d408f4000d5503969f6a6d59b3e2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-10/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21423,
+        "sha256": "8553284fb8528f221e7fdc853af5c96ad49d20e5ea553636bbaa0f3b0b0570b5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-11/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "10f2f0246868b885df2c40085f99011c3abd7c632e11137543d3091fa5a5b59f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-11/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e75b889d8b452aafc0fd7d5728be0acbecf3d9c85eb39a422c65231ceca9be57"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-11/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22024,
+        "sha256": "454b9dac2d6bc373649a30b664301b883da1cca7c84b410de38a5cd266fed9e3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-11/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22411,
+        "sha256": "03f1890dce17bb52acca251d6ba0963c6efcacd5fb8f47c5fe2ed6666b65d67a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-12/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "cc7eb3bff0a47198dfcc531f47c665109fe418f19c1675547689f75a19a387a6"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-12/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "80de77728bba36eb052236b91d3f67a0fad32e266d811e0857310c40c23c71c0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-12/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22425,
+        "sha256": "01b97302d96077819525922097e665aea904f2307a947c07e05f3ad3cb367791"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-12/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22411,
+        "sha256": "0e340d5cf54b629b7f579dd67efc36b7e92e675c36f6207b2b8a92382cebda0c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-13/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7286406adae4e2a6b8f884692b75ce9964d163d9d2d556460a86d9ce300f8ea7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-13/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "a0cdc54d41908e1dc662878265b900b5caba3892d4036b8092a6eb1b0d425dfb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-13/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22461,
+        "sha256": "8247ec8b9a30ac932f87a714a5554177333ae6cf2181a11e52ab70d3255206e2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-13/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21864,
+        "sha256": "a92c0b948fdaa6350a0b4fcd34dfc832566a8f3bee1f37d0c51229d6fd181b8f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-14/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "796c7f9abae9f5e3d399edfa3f56f64a063143b70aa4693bea3e7e03cb580caa"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-14/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "48b187a98a4a15e5ee36a432b2614a14b00104c916006379c9f64b746c111e90"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-14/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21827,
+        "sha256": "1557b3948edffd2e2efa8504049700589af149ed95d5ea0dd35fe7898015ec36"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-14/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22707,
+        "sha256": "e4e0d69cfbe5cbe08d109ee3fef71aa7cad8668f020a4b01291f675dde9efb67"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-15/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "c2040ed685321c629cd077b77cabbde46853d7252b2b61eced7962be54ebdefd"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-15/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "49456a68836106169be44b158b7d6b806ae14d669c698d48676213330d251a6d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-15/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21901,
+        "sha256": "ba1e3505af55e066448184a4a9411376b6b1e171bbd50ddbd0084ef27f922000"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-15/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22349,
+        "sha256": "b2c433d43cdcbb3e75be70ed2e5dcdda9d994d41f42c3e90f669dd739522620f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-16/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "72eb817c5ee2812ad5df971b4051f0ecb37cccbb19901831ef0ce8564ee7df8d"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-16/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "d3b0a662942eb9328e55f11b70f007b481dc0920b45071506e9498b1493b6d2c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-16/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22261,
+        "sha256": "b8d2e595cd86d09bcd49fbd98570c115f5b1f8e678f4dc72a5c2278c910a8a9b"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-16/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22182,
+        "sha256": "f71b546d9e98c56b51c7237f78e33ddec063d8db380fd73bc4347af28ddd4d84"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-17/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e458d7f5dab975d5361f802e68ca52d033bb43f5c6f0b2c5f370561d74425582"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-17/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "1c9bf93c8661f724850af3d9ef9a0fb0962fba391e53a8970405dd7d5841b7a5"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-17/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22203,
+        "sha256": "0b17e0ffac674e04ce0253aa70022c6f77c871805f005f9b512c79564ea794c8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-17/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22271,
+        "sha256": "547424b6da32082fa8f7bc5a8a6899a95041a07c4de6bbd79d7ffebde720b1db"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-18/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "d6c32681b7a13bf1295e1339f1d13c98a169de689bd4da87b016c8c2313c3803"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-18/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "a5a4955c356c1328c3d0fb117d81ef9cbe0fed14509ddd80056a1c7f06f5d806"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-18/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22391,
+        "sha256": "2ca9ea70ccdd29c4c06caef99bd46aed489141ccba35c0f1b3ce46a3c99e1fb7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-18/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21936,
+        "sha256": "04a7442cc1aceb4e586b35e77c3a53735237417bb14c45f93a95570a502bb3f0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-19/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "5046efa27ac817e9c8c49c37d6c5051f594dcb93b206c60d3e18882ec1c2f420"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-19/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e3c73a910a0440456781649b920daee4cff08bfa889f12ba061865e7e0f886eb"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-19/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22095,
+        "sha256": "9e231ad54818be6eb3134a29920a27985fb24d0d5da17b804c44a70ec6c8d872"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-19/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22378,
+        "sha256": "42e62385885b71beb85aa6961094e795dbc62a5e81341f0eecbb4ad5ff1e7ecc"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-20/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "7a424357e43d76126fe81b12b8a20123bd02e9defb2b5e87cc0e7b1719e884af"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-20/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "7b95df8fadcd7d0b6688172e85894863e5749fb161a133ac75a4b4de52f7c06a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-20/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22408,
+        "sha256": "8cca99f247c1190994599fd7d120d6eee3d1bd9886d01324b60a517401627924"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-20/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21981,
+        "sha256": "fee1fabb62d9217c67421c8515fcdcd524d4db021c01413f3aa92b61113e77c8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-21/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "9d3d5a055da15d1dea9f64d4bf26dfbce4d406754d075a938fbe588c2794161c"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-21/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "ea350f07c2c7c74ff60e9fc08be163983fdaf6623e524b2a0f1e1b14d3465cee"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-21/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22362,
+        "sha256": "46abfcfc78d37bef8a8f73adb1d8fca1e2706b5356e501988870c216171176f7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-21/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21948,
+        "sha256": "cbea4e33b104e063b0643cd76af4a793adb26c44ff0dc2a78c59a3df35b872bd"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-22/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "fc35405ecb05854b3508981e5adbc38c99d00df92941151c2e3197720e68654a"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-22/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "cdb414a25a70ca295a5385b30bd19fe1ae0eb2f4e07b5b6202fbddc89f0aff96"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-22/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21706,
+        "sha256": "1632a004aeb6a243d4ac21bc7185f364b71149587d03679f635cd28ac69adef1"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-22/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22435,
+        "sha256": "3baf96c322b7565890df58eda6811c308ae08673075ef4e480d35b4de90ccd89"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-23/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "93a6229340192775f0a09e0362402630263f129aa8614169b33b07b0156797f8"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-23/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "fc128a56b657b004130be6b960fa10f6d451708eb3c3c3939389ef97b9bff180"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-23/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22499,
+        "sha256": "ef63602a8d1304d14e66d10ce55a76321fca39b562c59e7219579bbceb4c7a66"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-23/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22023,
+        "sha256": "3f5a8071d2c2a8955fe19b073a80e0f05de6fa9e017c3db0bf9a2ca729045b97"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-24/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "10c1a0e0a45b78fd07e0044397da44254a19c610dc50ea2e537c836a81352ccf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-24/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "0d39abae0396e37684d7460dabce9f31fc3b584450b0c4ab483a0d752ebf15e3"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-24/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21465,
+        "sha256": "291ea56d8a31dbf0e38303a74cba439595d7832979399cbcb2c65c916e8d0fe2"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-24/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22466,
+        "sha256": "fb52b96884ab56e7627f4be58cac4a72fcf369a79776a9623b3071143e39459f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-25/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "cff8b183a05a3992933effc116df049226364ec0d62467cb0c5898baf540e6e9"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-25/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "0068eac28152e693c83ed85e8cbf959e1403627aa1e3516b2a495475aea23320"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-25/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22647,
+        "sha256": "cbf250ddc060d5651a50a7c9bfbd1857b4779a215b158b3ff89b9f7566193ede"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-25/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21807,
+        "sha256": "0a7ca05c4f5e9895e1e0831f67415a2aa5414bf1587e38ecd5bcf5ecef730ec0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-26/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e3105fe57af767987820f95bfe7d9809ce7b1ca6d06b74e8917f4f10f9d9ca46"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-26/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "e162aa60f73adba2bbeb3833676adb150bc0ddfe57bdf1218c376093f88075ea"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-26/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22098,
+        "sha256": "b1b7421f88ea89a2863b824fc4e139e237eef8db351e1bb5de079852f6bb8dac"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-26/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22325,
+        "sha256": "126225ba23b9efd93a3e9695dbcc3e0a16cddc96ab157768e4eb108eb3cf42a9"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-27/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "5eec0956966ae05623b94266e3200db7b4bc297f061fe23ddaf131b37e452326"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-27/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "6d8543094049580408bc9bd70ce0cd67ac85ec1076f783c553de08ad9039e3c0"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-27/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22223,
+        "sha256": "97f98c2fd2eb563c1b5f29e8f75782ab3c532964aeee4c2b8cd8da035dc5edcf"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-27/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21909,
+        "sha256": "aafb4ec12b9d9cc62406d189c6b04385679e1233f4e8ea0cb477b53cb80dfc0b"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-28/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "12db4ef2e7eadf92d4bd78f96404a8f9703c1d7e126245f05212949389bd08cd"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-28/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "c2478d47f08e20b056c2639d0ba41576b1e0bb105b648813b839067cdbbb2967"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-28/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22718,
+        "sha256": "548fc7ca5dd2a335ba25cb157cdcdd355322c2df1fc124675e28784977ff3ae1"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-28/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21961,
+        "sha256": "8b05267957d0d0b861faf12aff2ef651cdd5c8cb259b91edd08d6c86744ed121"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-29/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "92d7f50da27590a133411f6aafe4fd8e9429fc4da9a32536742a0f129ea03c51"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-29/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "9129786c2e865817ebdeacd92ea77a4723241c0e4d07c09de2213f084038cc59"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-29/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22297,
+        "sha256": "c5f4e4868be771c40cdfeff619e6a30039f1592c2b0bc2a8760996b6b47eef11"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-29/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22103,
+        "sha256": "b188ef60f03b06baea26320ff864abf33fb998f0e2d3b5a6f8fff32e97bc2b2f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-30/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "1b16ecc50e1821b50837a7665ad42a50c02c0b32684a1a8c5b501d7c3e2f8847"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-30/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 188,
+        "sha256": "f2e2cb2f2c1975e0c9abbae66e7d1ac8423f61830c1ee21d13673df8a4683299"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-30/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21668,
+        "sha256": "75efee57dd58a3ed01585674b08209180e71690abd7632fbd80ea56bc99fc1e7"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-30/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22751,
+        "sha256": "004dff5eecf0e6c1e6e4423ebf805e0b3afcb38a8c85a9a677250a2935a92953"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-31/.part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 184,
+        "sha256": "5eb2ee319b2c2c9e8cf3c0cd4a0e140c15188c5a9d8e118498a684636a2a4600"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-31/.part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet.crc",
+        "bytes": 180,
+        "sha256": "78e81f886482481d5fddc592b235dc7d1bc152272e4bbf6c7bc8c190f0cb699f"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-31/part-00000-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 22384,
+        "sha256": "d49d485f478c50ad5612de2661a5ce33686d7cc79f6b36c55ef276dff76b8f69"
+      },
+      {
+        "path": "org_daily_usage_by_service/event_date=2025-08-31/part-00001-85d2ddb0-04c1-474e-9d0c-75a582a5b3cd.c000.snappy.parquet",
+        "bytes": 21822,
+        "sha256": "62f6b1100b933e7d7dd413e7e05f6a4481186d7b20eb0bb11808b48ac5147c47"
+      }
+    ]
+  },
+  "duration_seconds": 20.63
+}

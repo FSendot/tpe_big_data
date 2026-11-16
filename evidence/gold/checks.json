@@ -1,0 +1,16 @@
+{
+  "gold_publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+  "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+  "matches_manifest_after_retry": true,
+  "parquet_rows": 11050,
+  "unique_grain_keys": 11050,
+  "utc_dates": {
+    "min": "2025-07-03",
+    "max": "2025-08-31",
+    "distinct": 60
+  },
+  "distinct_orgs": 80,
+  "distinct_services": 6,
+  "group_measure_or_event_count_mismatches_against_silver": 0,
+  "data_bytes": 2630976
+}

@@ -18,10 +18,10 @@ como parte de estas correcciones ni autorizan ampliar el alcance actual.
 
 Hay diseño y una exploración reproducible de las ocho fuentes en
 `scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
-Hay entorno, batch y streaming a Bronze y publicación batch de Silver. El perfilador
+Hay entorno, batch y streaming a Bronze y publicación batch de Silver y del mart Gold. El perfilador
 usa Python estándar, recibe la ruta del paquete
 y conserva los originales. La primera entrega se mantiene como antecedente.
-El usuario autorizó las secciones 1 a 4 de la segunda entrega. Entorno, contratos
+La implementación llega a la sección 5A de la segunda entrega. Entorno, contratos
 y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
 cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
 manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
@@ -32,8 +32,11 @@ antes del conformado batch. Usar `usage-v1`; la
 sesión local `usage` fue una prueba preliminar del parser, no es la validada.
 La sección 4 fija un batch y un corte Bronze y publica los maestros, los
 eventos con validez por medida y sus incidencias bajo un único manifiesto.
+La sección 5A toma una publicación Silver y versiona el mart diario FinOps
+con conciliación y cobertura por medida.
 La propuesta de tres queries, reconciliación y activación que sigue abajo es
-diseño futuro. El funcionamiento de Silver está en `docs/segunda-entrega.md`.
+diseño futuro. Las publicaciones batch implementadas se describen en
+`docs/segunda-entrega.md`.
 
 La segunda entrega revisa HDFS: se usa un volumen local de Docker para el flujo
 mínimo, Python 3.11.15, Java 17 y Spark 3.5.8. Cassandra local permite probar CQL;
