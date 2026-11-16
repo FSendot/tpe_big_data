@@ -2,14 +2,15 @@
 
 Proyecto integrador de Big Data, ITBA, segundo cuatrimestre de 2026.
 
-Análisis de costos y consumo de un proveedor cloud, con foco en FinOps y
-métricas de Soporte y Producto. El diseño inicial combina PySpark, HDFS y
-Cassandra, con consultas por CLI y reportes HTML. La segunda entrega revisa
-el almacenamiento para comenzar con un entorno local reproducible.
+El MVP del segundo parcial ingiere CSV y JSONL con PySpark en Docker.
+Publica Bronze, Silver, quarantine y Gold en Parquet sobre un volumen
+local. Calcula señales estadísticas de costo y publica el mart diario
+FinOps en AstraDB para consultas CQL. El usuario autorizó Docker como
+entorno equivalente a Colab.
 
-La [primera entrega](docs/primera-entrega.md) reúne el diseño completo.
-Entrega: **05/10/2026**. La exploración inicial se puede ejecutar; el pipeline
-queda diseñado para las próximas etapas.
+La [segunda entrega](docs/segunda-entrega.md) documenta el flujo ejecutado.
+La [primera entrega](docs/primera-entrega.md) conserva el diseño histórico
+con HDFS, operación horaria y reportes HTML.
 
 ## Artefactos de la primera entrega
 
@@ -25,11 +26,14 @@ queda diseñado para las próximas etapas.
 ## Estructura
 
 ```text
-docs/primera-entrega.md    Diseño, diagrama, matriz, decisiones y plan
+docs/                     Diseño histórico y documentación del MVP
+src/cloud_analytics/      Ingesta, transformaciones, analítica y serving
+scripts/                  Comandos por etapa y validación integrada
+config/                   Runtime y esquema CQL
+tests/                    Pruebas de calidad, publicación y recuperación
 data/README.md            Obtención y uso del paquete del campus
-scripts/profile_data.py   Exploración con Python estándar
-evidence/                 Resultado agregado y hashes de las entradas
-CONTEXT.md                Notas internas para la implementación posterior
+evidence/                 Resultados verificables por etapa
+CONTEXT.md                Estado técnico y diseño productivo propuesto
 ```
 
 ## Reproducir la exploración
@@ -38,83 +42,40 @@ Descargar `cloud_provider_challenge_dataset_v1` del campus y extraerlo fuera
 del repo. Con Python 3.9 o posterior, desde la raíz del repositorio:
 
 ```sh
-python3 scripts/profile_data.py /ruta/cloud_provider_challenge_dataset_v1 --output evidence/profile.json
+python3 scripts/profile_data.py /ruta/cloud_provider_challenge_dataset_v1 --output evidence/profile-local.json
 ```
 
 El script verifica las ocho fuentes y no modifica los originales. La salida
 contiene estadísticas y hashes, sin filas de clientes, emails ni comentarios.
 Las [instrucciones de datos](data/README.md) detallan qué comprueba.
 
-## Correcciones posteriores a la evaluación
+## Quickstart
 
-La [respuesta al feedback](docs/primera-entrega.md#correcciones-posteriores-al-feedback)
-registra las acciones, responsables y evidencias. Se mantiene HDFS como decisión
-de diseño, con alternativas y límites explícitos; se precisan retención,
-operación y prioridades de validación. El responsable es Santos Galarraga.
-Estos ajustes corresponden a la primera entrega: no implementan el pipeline
-ni adelantan el segundo parcial. La reproducción con el paquete correcto se
-documenta en [evidencias](evidence/README.md).
-
-## Segunda entrega
-
-La [sección 1: entorno y configuración](docs/segunda-entrega.md) prepara Spark
-en Docker, Parquet en un volumen local y pruebas de conexión a serving.
-Incluye instrucciones para Cassandra local y AstraDB, configuración sin
-secretos y evidencia de ejecución. Docker está permitido como entorno
-equivalente a Colab; la conexión CQL a Astra fue verificada. HDFS se revisa
-a favor de almacenamiento local para
-el flujo mínimo, según la decisión documentada allí.
-
-La [sección 2](docs/segunda-entrega.md#2-contratos-e-ingesta-batch-a-bronze)
-implementa la ingesta de cuatro CSV a Bronze con contratos, trazabilidad,
-errores de conversión y reejecución sin duplicados.
+1. Con Docker Desktop en modo Linux y Compose v2, extraer el paquete del
+   campus fuera del repositorio. Configurar `DATASET_PATH` en `.env` a
+   partir de `.env.example`. [Puesta en marcha](docs/segunda-entrega.md#puesta-en-marcha).
+2. Preparar un keyspace Astra y guardar el token y bundle en la
+   configuración local. [Configuración Astra](docs/segunda-entrega.md#preparar-astradb).
+3. Desde la raíz, construir el runtime y validar el flujo con un ID y un
+   nombre de informe libres. El comando ingiere el dataset, encadena los
+   IDs de publicación, carga el mart y verifica dos consultas en Astra.
 
 ```sh
-docker compose run --rm runtime python scripts/ingest_batch.py --report-name latest
+docker compose build runtime
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id cierre-01 --report-name cierre-first
 ```
 
-La [sección 3](docs/segunda-entrega.md#3-streaming-de-eventos-a-bronze) incorpora
-replay JSONL, Bronze completo y candidatos deduplicados con watermark y
-checkpoints. Conserva eventos tardíos y conflictos para su tratamiento posterior.
+El [guion de demo](docs/segunda-entrega.md#guion-de-demo) incluye el chequeo de
+entorno, una demostración con publicaciones existentes, pruebas y reintento.
+Para una verificación por etapa, consultar la
+[documentación técnica](docs/segunda-entrega.md#arquitectura-ejecutada).
 
-```sh
-docker compose run --rm runtime python scripts/replay_usage.py
-docker compose run --rm runtime python scripts/ingest_stream.py --report-name latest
-```
-
-La [sección 4](docs/segunda-entrega.md#4-silver-calidad-y-quarantine) publica
-eventos enriquecidos, organizaciones, recursos y quarantine en Parquet. Usa
-el `batch_id` del informe de ingesta batch y el `cut_id` de la inspección del
-archivo Bronze completo. Repetir con ambos IDs verifica y reutiliza la salida.
-
-```sh
-docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --inspect-cut
-docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --batch-id <batch_id> --archive-cut <cut_id>
-```
-
-La [sección 5A](docs/segunda-entrega.md#5a-agregaciones-y-mart-gold) publica
-`org_daily_usage_by_service` con totales y cobertura por medida. Usar el
-`manifest.publication_id` del informe de Silver.
-
-```sh
-docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id>
-```
-
-La [sección 5B](docs/segunda-entrega.md#5b-análisis-estadístico-de-picos-de-costo)
-publica `cost_anomaly_mart` con señales estadísticas y motivos de evaluación.
-Usar el `manifest.publication_id` del informe de Gold.
-
-```sh
-docker compose run --rm runtime python scripts/build_cost_anomalies.py --gold-publication-id <publication_id>
-```
-
-La [sección 6](docs/segunda-entrega.md#6-serving-en-astradb-y-consultas-cql)
-carga y verifica el mart diario en AstraDB. Usar las credenciales de la
-sección 1 y el `manifest.publication_id` de Gold.
-
-```sh
-docker compose run --rm --no-deps runtime python scripts/serve_finops.py load --gold-publication-id <publication_id>
-```
+La [evidencia integrada](evidence/integration/README.md) registra 43.200
+eventos Silver, 11.050 filas Gold y Astra y una reejecución sin nuevas
+filas ni upserts. La [matriz de cumplimiento](docs/segunda-entrega.md#matriz-de-cumplimiento)
+separa lo verificado de las decisiones pendientes. El
+[backlog de la final](docs/segunda-entrega.md#backlog-para-la-entrega-final)
+prioriza las cuatro consultas obligatorias restantes y los artefactos de defensa.
 
 ## Convenciones del repositorio
 

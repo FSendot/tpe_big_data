@@ -1,0 +1,30 @@
+{
+  "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+  "selection": "Primera fila por motivo, ordenada por event_id entre incidencias con evento en Silver. Proyección de estados y nulidad sin claves ni valores de negocio.",
+  "samples": [
+    {
+      "scope": "usage",
+      "reason": "missing_unit",
+      "cost_status": "valid",
+      "usage_status": "quarantined",
+      "silver_cost_is_null": false,
+      "silver_usage_value_is_null": true
+    },
+    {
+      "scope": "usage",
+      "reason": "missing_value",
+      "cost_status": "valid",
+      "usage_status": "quarantined",
+      "silver_cost_is_null": false,
+      "silver_usage_value_is_null": true
+    },
+    {
+      "scope": "cost",
+      "reason": "negative_cost_pending",
+      "cost_status": "quarantined",
+      "usage_status": "valid",
+      "silver_cost_is_null": true,
+      "silver_usage_value_is_null": false
+    }
+  ]
+}

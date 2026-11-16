@@ -1,53 +1,37 @@
 # Contexto de implementación
 
-Notas de trabajo. El documento entregable es `docs/primera-entrega.md` y no
-depende de este archivo. Las reglas de negocio y los tradeoffs están allí;
-aquí se conservan detalles de implementación y verificaciones pendientes.
+Notas de trabajo. La [segunda entrega](docs/segunda-entrega.md) documenta el
+MVP ejecutado y su backlog. La [primera entrega](docs/primera-entrega.md)
+conserva el diseño histórico y las correcciones derivadas del feedback.
 
-## Estado y límites
+## MVP ejecutado
 
-Las correcciones del feedback de la primera entrega están registradas en
-`docs/primera-entrega.md`, sección "Correcciones posteriores al feedback".
-Santos Galarraga es responsable de diseño, gobierno, reproducción y revisión.
-En esa primera entrega HDFS se mantuvo como elección académica, no como
-necesidad de la muestra; la revisión posterior se describe más abajo.
-La política por zona, el cierre registrado y la limpieza revisada se definen
-en Organización del Data Lake; no hay limpieza automática. Las prioridades futuras son entorno,
-contratos/calidad, recorrido mínimo, recuperación y medición. No se ejecutan
-como parte de estas correcciones ni autorizan ampliar el alcance actual.
+El usuario autorizó Docker. El runtime usa Python 3.11.15, Java 17 y Spark
+3.5.8 en local[2], con Landing de solo lectura y Parquet en un volumen Docker.
+El flujo usa cuatro CSV batch y dos consultas streaming `availableNow`
+con checkpoints. Silver toma el archivo Bronze completo y el snapshot
+batch explícito, conforma organizaciones y recursos y separa incidencias en
+quarantine. Gold agrega el uso diario. Las anomalías quedan en Parquet como
+señales estadísticas. La aceptación docente como equivalente a ML sigue
+sin confirmación.
 
-Hay diseño y una exploración reproducible de las ocho fuentes en
-`scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
-Hay entorno, batch y streaming a Bronze y publicación batch de Silver y del mart Gold. El perfilador
-usa Python estándar, recibe la ruta del paquete
-y conserva los originales. La primera entrega se mantiene como antecedente.
-La implementación llega a la sección 6 de la segunda entrega. Entorno, contratos
-y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
-cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
-manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
-duplicados exactos. La sección 3 usa dos queries
-availableNow con checkpoints: archivo completo antes del watermark, y candidatos
-deduplicados provisionales. Audita conflictos y contribuciones no emitidas
-antes del conformado batch. Usar `usage-v1`; la
-sesión local `usage` fue una prueba preliminar del parser, no es la validada.
-La sección 4 fija un batch y un corte Bronze y publica los maestros, los
-eventos con validez por medida y sus incidencias bajo un único manifiesto.
-La sección 5A toma una publicación Silver y versiona el mart diario FinOps
-con conciliación y cobertura por medida.
-La sección 5B toma una publicación Gold y versiona las señales estadísticas
-de costo con una ventana móvil retrospectiva.
-La sección 6 carga una publicación Gold del mart FinOps en Astra y habilita
-su lectura cuando los datos coinciden con Gold.
-La propuesta de tres queries, reconciliación y activación que sigue abajo es
-diseño futuro. Las publicaciones batch implementadas se describen en
-`docs/segunda-entrega.md`.
+El mart diario fue cargado y verificado en Astra. Su clave de partición
+es `(publication_id, org_id, service, usage_month)` y su clustering es
+`event_date ASC`. El marcador `finops_publications` distingue cargas
+`loading` y `complete`. El comando oficial usa IDs explícitos y sólo acepta
+publicaciones completas. [Esquema ejecutado](config/finops-serving.cql).
 
-La segunda entrega revisa HDFS: se usa un volumen local de Docker para el flujo
-mínimo, Python 3.11.15, Java 17 y Spark 3.5.8. Cassandra local permite probar CQL;
-Astra está configurado y la conexión CQL al keyspace fue verificada. Santos Galarraga
-confirmó el 15/11/2026 que Docker está permitido como equivalente a Colab. Los contratos
-de publicación HDFS de las notas siguientes son diseño previo, no garantías
-implementadas ni trasladables automáticamente al backend local.
+La validación aislada y su reintento enlazan IDs, manifiestos, consultas y
+recuperación. `usage-v1` corresponde a la prueba por etapas y
+`integration-section-7-v1` a la integración registrada. La sesión
+`usage` fue una prueba preliminar del parser.
+[Evidencia integrada](evidence/integration/README.md).
+
+Santos Galarraga figura como responsable de diseño, gobierno, reproducción
+y revisión. La política por zona, el cierre registrado y la limpieza
+controlada están en la primera entrega. La limpieza automática y los
+controles de producción quedan pendientes.
+[Retención y operación](docs/primera-entrega.md#retención-y-operación).
 
 ## Vocabulario
 
@@ -106,25 +90,34 @@ Datos adicionales a los resumidos en la entrega:
 
 ## Contratos de transformación
 
-Propuesta numérica: decimal(38,12) para montos/medidas e int64 para conteos;
-validar precisión y overflow al elegir runtime. Guardar valor crudo y parseado.
-Bronze añade ingest_ts, source_file, source_hash, batch_id, fila y contrato.
-Silver usa superset v1/v2, versión de maestros y manifiesto por snapshot.
-Quarantine particiona por ingesta para admitir fechas de evento inválidas.
+Los montos y consumos de Silver usan decimal(38,12) y los tokens bigint.
+Gold ensancha tokens a decimal(38,0) antes de sumar y rechaza desbordes.
+Bronze conserva el original interpretado, `ingest_ts`, `source_file`,
+`source_hash`, `source_record_hash`, el contrato y el ID batch o sesión
+según la ingesta. Silver usa el superset v1/v2 y fija los maestros en el
+manifiesto. Quarantine particiona por ingesta para admitir fechas inválidas.
 
 Equivalencia de eventos excluye metadatos de ingesta y aplica sólo casts y
-normalizaciones admitidos. Comparar antes de deduplicar, también contra el
-historial, para no ocultar conflictos entre lotes. Un conflicto de una medida
-no invalida otras si identidad, fecha y dimensiones coinciden; si discrepan,
-marcar todos los grupos potencialmente afectados. Índice de identidad
-reconstruible desde originales, sin depender sólo del estado streaming.
+normalizaciones admitidos. Se compara contra el historial retenido para
+reconocer conflictos entre lotes. Si identidad, fecha y dimensiones
+coinciden, se evalúa cada medida por separado. Si discrepan, las variantes
+pueden afectar varios grupos o quedar sin ubicación confiable. El archivo
+completo permite reconstruir desde el corte seleccionado.
 
-Cambios de día, organización o servicio invalidan asignaciones anterior y
-nueva. Una corrección diaria actualiza comparaciones adyacentes y todas las
-ventanas de 14 días que incluyan el día. Reutilizar agregados coherentes de días
-sin cambios. CSV y dimensiones invalidan resultados dependientes del snapshot.
+## Diseño operativo propuesto
 
-## Propuesta de streaming y recuperación
+Las notas siguientes describen la evolución del MVP. HDFS, la tercera
+consulta de agregación horaria, la selección de publicación activa por
+generación y el objetivo operativo de 60 segundos pertenecen al diseño.
+El contrato de rename actual está validado en el volumen local.
+
+En ese diseño, un cambio de día, organización o servicio invalidaría
+las asignaciones anterior y nueva. Una corrección diaria actualizaría
+comparaciones adyacentes y las ventanas de 14 días que incluyan el día.
+Se podrían reutilizar agregados coherentes de días sin cambios. CSV y
+dimensiones invalidarían resultados dependientes del snapshot.
+
+### Streaming y recuperación operativa
 
 1. Un script de reproducción ofrecería copias de los JSONL originales completos
    al directorio de entrada. No reordena eventos ni modifica Landing. La tasa
@@ -137,7 +130,7 @@ sin cambios. CSV y dimensiones invalidan resultados dependientes del snapshot.
    de query, lote y archivos, sin duplicar la contribución.
 3. Sólo se emiten como novedades operativas nuevas contribuciones canónicas.
    Una query separada deduplica por event_id con watermark de 60 días; se prevé
-   dropDuplicatesWithinWatermark, sujeto a compatibilidad del runtime. Su salida
+   reutilizar `dropDuplicatesWithinWatermark` del MVP. Su salida
    es append a Parquet. Conflictos y eventos fuera de margen quedan preservados
    antes de este operador y registrados para recuperación.
 4. Otra query agrega esas novedades por org-servicio-ventana de una hora UTC,
@@ -175,15 +168,14 @@ aunque Spark hubiera incorporado algunas: reemplazar desde detalle evita
 sumarlas otra vez. Esta reparación no depende de inferir un descarte exacto.
 
 Las garantías de operadores y limitaciones de consultas están documentadas por
-[Spark](https://spark.apache.org/docs/latest/streaming/apis-on-dataframes-and-datasets.html).
+[Spark 3.5.8](https://spark.apache.org/docs/3.5.8/structured-streaming-programming-guide.html).
 foreachBatch puede reintentarse; la aplicación debe hacer sus escrituras
 idempotentes. Los archivos de novedades, snapshots y manifiestos comprometidos
-son inmutables. Repetir un lote verifica/reutiliza su salida; cambios después
-de su corte forman otro lote. La compatibilidad de APIs, checkpoints y driver
-queda por validar al fijar versiones, no se atribuye exactly-once al pipeline
-por usar Spark.
+son inmutables. Repetir un lote verifica/reutiliza su salida. Los operadores
+adicionales, la compatibilidad de checkpoints al migrar y el tráfico
+concurrente del operativo requerirán validación propia.
 
-## Publicación y consistencia
+### Publicación y consistencia operativa
 
 - Cada resultado lleva source_cut, publication_id, schema_version, estado de
   calidad y generated_at. generated_at no decide autoridad sobre otro escritor.
@@ -237,13 +229,12 @@ son ejes distintos: una publicación terminada puede contener un total parcial.
 La retención conserva las versiones activas y las que estén siendo leídas o
 reprocesadas. Tras cierre y margen de 30 días se coordina limpieza de Lake y serving.
 
-## Claves de serving
+### Claves de serving propuestas
 
 `pub` identifica la publicación batch fijada por el CLI.
 
 | Tabla propuesta | Partition key | Clustering / orden | Consulta y contenido |
 | --- | --- | --- | --- |
-| org_daily_usage_by_service | org_id, service, month, pub | usage_date ASC | Costo, requests, cpu_hours, storage_gb_hours, carbono y calidad diarios; enumerar servicios para una vista conjunta |
 | top_services_14d | org_id, reference_date, pub | rank ASC, service | Top-N por costo acumulado de los 14 días calendario terminados en reference_date; importe, cobertura y elegibilidad |
 | tickets_by_org_date | org_id, severity, month, pub | date ASC | Conteos, breached_count, indicador válido, tasa y CSAT; critical y rango de 30 días |
 | revenue_by_org_month | org_id, year, pub | month ASC | Importe USD o no calculable, componentes, FX original/aplicado e incidencias |
@@ -257,7 +248,7 @@ reprocesadas. Tras cierre y margen de 30 días se coordina limpieza de Lake y se
 | quality_status_by_period | domain, period, quality_revision | org_id, service, hour_scope, measure | Estado agregado, elegibilidad, motivos resumidos y recálculo pendiente; sin variantes originales |
 | quality_head | dataset_id | — | Revisión de calidad activa que el reporte fija y vuelve a verificar |
 
-## Validaciones de la implementación posterior
+### Validaciones de la implementación posterior
 
 - Reintentar un lote en cada punto de fallo: tras promover Silver, antes de
   emitir novedades y durante la carga de Cassandra. Comprobar todas las salidas.

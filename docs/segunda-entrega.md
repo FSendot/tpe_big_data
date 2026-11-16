@@ -1,5 +1,49 @@
 # Segunda entrega: implementación
 
+## Arquitectura ejecutada
+
+```mermaid
+flowchart TB
+    subgraph L["Landing de solo lectura"]
+        CSV["Cuatro CSV"]
+        JSONL["Eventos JSONL v1/v2"]
+    end
+    subgraph D["Docker · Spark local[2] · Parquet en volumen local"]
+        B["Bronze batch · snapshot"]
+        A["Bronze streaming · archivo completo"]
+        C["Candidatos provisionales"]
+        K["Checkpoints separados<br/>archivo y deduplicación"]
+        S["Silver · eventos, organizaciones y recursos"]
+        Q["Quarantine · incidencias Parquet"]
+        G["Gold · uso diario por organización y servicio"]
+        N["Gold · señales de anomalías"]
+        M["Manifiestos y checksums<br/>batch, Silver, Gold y anomalías"]
+        JSONL -->|replay y readStream| A
+        CSV -->|batch| B
+        A -->|watermark y deduplicación| C
+        K -.-> A
+        K -.-> C
+        B --> S
+        A --> S
+        S --> Q
+        S --> G
+        Q -.-> G
+        G --> N
+        M -.-> S
+        M -.-> G
+    end
+    G -->|driver CQL, ID de publicación| DB["AstraDB · mart FinOps<br/>marcador complete"]
+    DB --> U["Consultas CQL · rango y detalle"]
+```
+
+El MVP combina batch para maestros y publicación por corte con Structured
+Streaming para archivar y deduplicar eventos. Comparte un solo conformado y
+un único cálculo diario desde Silver, lo que evita mantener dos vistas de
+serving al estilo Lambda. Los maestros y sus snapshots siguen explícitos,
+sin convertir cada fuente en un stream como en Kappa. La publicación
+operativa por hora y los objetivos de frescura pertenecen al diseño
+productivo. [Diseño histórico y alternativas](primera-entrega.md#elección-del-patrón).
+
 ## 1. Entorno y configuración
 
 Se usa Docker Desktop con contenedores Linux y Compose: Python 3.11.15,
@@ -8,32 +52,17 @@ Java 17 y PySpark 3.5.8. Las dependencias Python están fijadas con hashes en
 de los repositorios Debian y su versión efectiva se registra en la evidencia.
 No se promete una reconstrucción binaria idéntica de los paquetes del sistema.
 
-Docker aísla el runtime del Java instalado en Windows. Se adopta como entorno
-equivalente a Colab: Santos Galarraga confirmó el 15/11/2026 que Docker está
-permitido. La evidencia de ejecución comprueba su funcionamiento técnico.
+Docker aísla el runtime del Java instalado en Windows. Santos Galarraga
+autorizó el uso de Docker como entorno equivalente a Colab el 15/11/2026.
+[Evidencia de funcionamiento y versiones](../evidence/environment/README.md).
 
 ### Decisión de almacenamiento
 
-Para el flujo mínimo se revisa la elección de HDFS de la primera entrega:
-Spark usará Parquet en un volumen local persistente, sin NameNode ni DataNodes.
-La muestra no requiere almacenamiento distribuido y se prioriza reproducir el
-flujo antes de agregar servicios. HDFS queda como alternativa de crecimiento.
-Este entorno no demuestra alta disponibilidad ni tolerancia a la pérdida del
-equipo. Los contratos de publicación dependientes de HDFS del diseño inicial
-deberán adaptarse y probarse antes de implementarlos.
-
-```mermaid
-flowchart LR
-    D[Dataset original: solo lectura] --> R[Runtime Docker: Python, Java, Spark local]
-    R --> V[Volumen local: prueba Parquet]
-    R --> E[Evidencia agregada]
-    R --> C[Cassandra local opcional: consulta CQL de lectura]
-    R --> A[AstraDB: conexión CQL verificada]
-```
-
-Este diagrama representa la prueba de entorno de la sección 1. Su prueba
-Parquet usa dos filas sintéticas; de las fuentes verifica acceso, inventario
-y hashes. La ingesta batch real se describe en la sección 2.
+El volumen Docker persistente alcanza para la muestra y reduce el costo de
+operación. Los jobs escriben Parquet local y publican snapshots mediante rename
+dentro del mismo volumen. HDFS queda como alternativa de crecimiento. La
+pérdida del equipo, una migración de backend y la alta disponibilidad requieren
+validaciones independientes.
 
 ### Puesta en marcha
 
@@ -42,15 +71,15 @@ Requisitos: Docker Desktop en modo Linux y Compose v2. Presupuesto inicial:
 Es una referencia de instalación, no un dimensionamiento productivo.
 
 1. Extraer el ZIP del campus en una carpeta que contenga `datalake/landing`.
-2. Copiar `.env.example` a `.env` y ajustar `DATASET_PATH` a esa carpeta.
+2. Si todavía no existe `.env`, copiar `.env.example` a `.env`. Ajustar
+   `DATASET_PATH` a la carpeta extraída.
    En Windows usar barras `/`; no apuntar al ZIP ni directamente a `landing`.
 3. Crear una carpeta vacía `secrets/` en la raíz. Los secretos no se versionan.
 4. Ejecutar desde la raíz del repositorio:
 
 ```sh
 docker compose build runtime
-docker compose run --rm runtime python -m unittest discover -s tests -v
-docker compose run --rm runtime python scripts/check_environment.py
+docker compose run --rm --no-deps runtime python scripts/check_environment.py
 ```
 
 El primer build descarga Spark y Java. La configuración no secreta está en
@@ -66,10 +95,8 @@ docker compose run --rm runtime python scripts/check_environment.py --serving
 docker compose --profile local-serving stop cassandra
 ```
 
-Cassandra sólo es accesible desde la red de Compose, sin puertos publicados al
-host. Es un servicio de desarrollo sin autenticación; no debe exponerse a una
-red compartida. La prueba consulta `system.local`; no crea keyspaces, tablas
-ni datos de negocio. La carga del mart corresponde a la sección de serving.
+Cassandra local queda en la red de Compose sin puertos publicados al host.
+El chequeo usa `system.local` para verificar la conexión CQL.
 
 ### Preparar AstraDB
 
@@ -82,8 +109,7 @@ ni datos de negocio. La carga del mart corresponde a la sección de serving.
    `secrets/secure-connect.zip`. Generar un token con acceso al keyspace.
 4. Completar localmente en `.env`: `SERVING_MODE=astra`, `ASTRA_KEYSPACE` y
    `ASTRA_TOKEN`. No pegar el token en el chat, logs o documentación.
-5. Ejecutar el mismo comando `check_environment.py --serving`. Para Astra no
-   hace falta iniciar Cassandra local.
+5. Ejecutar el chequeo Astra del [guion de demo](#guion-de-demo).
 
 Sin esos datos, el chequeo informa `pending` y termina con código 1; no declara
 una conexión exitosa. Un fallo de conexión informa sólo el tipo de error para
@@ -91,31 +117,12 @@ evitar volcar secretos. Revisar modo, base activa, permisos, bundle y salida
 de red antes de reintentar. Nunca compartir el resultado de `docker compose
 config` si contiene credenciales interpoladas.
 
-### Evidencia y límites
+El chequeo registra versiones, hashes del dataset y un round-trip de Parquet
+sintético. Con `--serving` agrega una consulta CQL de lectura. La verificación
+de escritura del mart está en la sección 6. El comando `stop` de la prueba
+local conserva el volumen de Cassandra.
 
-Los comandos generan `evidence/environment/spark.json` y `serving.json`:
-versiones efectivas, hashes de entradas, conteo y suma del round-trip Parquet,
-y resultado de la consulta CQL. `--serving` exige que todos los chequeos pasen;
-sin ese flag, serving queda explícitamente como no comprobado. Cada ejecución
-actualiza su informe y escribe Parquet en un directorio nuevo del volumen.
-
-La [ejecución verificada](../evidence/environment/README.md) completó siete
-pruebas, el round-trip Parquet y una consulta real a AstraDB. También se había
-comprobado la conexión a Cassandra local. El driver extrae el bundle en el
-directorio temporal del contenedor mediante `use_default_tempdir`, conservando
-el montaje de secretos en solo lectura.
-
-La sección 1 está verificada y el uso de Docker está confirmado. La prueba
-de conexión no acredita permisos de escritura ni carga desde Spark.
-
-Para detener el entorno conservando los datos: `docker compose --profile
-local-serving down`. Los volúmenes persisten; no usar `down -v` para un reinicio
-normal. Si falta el dataset, corregir `.env`; si Cassandra aún inicia, esperar
-su estado saludable. Si falta memoria, revisar los recursos de Docker antes
-de aumentar los límites del proyecto.
-
-Fuentes: [compatibilidad de Spark 3.5.8](https://spark.apache.org/docs/3.5.8/)
-y [conexión Python a Astra](https://docs.datastax.com/en/astra-db-serverless/drivers/python-driver.html).
+[Documentación de Spark 3.5.8](https://spark.apache.org/docs/3.5.8/).
 
 ## 2. Contratos e ingesta batch a Bronze
 
@@ -179,8 +186,8 @@ no leer toda la raíz Bronze como si las cuatro fuentes tuvieran el mismo esquem
 El ID depende de hashes de entradas, contrato, implementación y versión de Spark.
 Una repetición verifica archivos y checksums y devuelve `reused`, conservando
 la fecha de ingesta original. Un cambio produce otro lote: no debe acumularse
-como si fuera otro fragmento del mismo snapshot. La selección de snapshots
-para Silver se implementará en su sección.
+como si fuera otro fragmento del mismo snapshot. Silver recibe el ID batch
+de forma explícita.
 
 Se escribe primero en `.bronze-staging`, se verifica el round-trip Parquet y
 que las entradas no hayan cambiado, y se promueve el directorio completo con
@@ -198,15 +205,8 @@ procesa en local[2]; no se afirma escalabilidad distribuida medida.
 Con la configuración de la sección 1, ejecutar desde la raíz:
 
 ```sh
-docker compose run --rm runtime python scripts/ingest_batch.py --report-name first
-docker compose run --rm runtime python scripts/ingest_batch.py --report-name repeat
-docker compose run --rm runtime python -m unittest discover -s tests -v
+docker compose run --rm --no-deps runtime python scripts/ingest_batch.py --report-name revision
 ```
-
-Los informes agregados quedan en `evidence/batch/first.json` y `repeat.json`;
-no contienen filas, emails ni valores de campos personales. Los datos raw y
-tipificados sólo quedan en el volumen local. `evidence_root` configura la raíz
-común: los chequeos del entorno siguen escribiendo en su subcarpeta `environment`.
 
 El comando devuelve código 1 ante fallos, con tipo de error y código seguro
 cuando corresponde. Encabezado o estructura inválidos bloquean todo el lote;
@@ -221,18 +221,6 @@ Bronze, aplica watermark y deduplicación por `event_id` y escribe candidatos.
 Se ejecutan en ese orden con `availableNow`: cada consulta procesa los archivos
 disponibles en micro-lotes y termina. Al volver a ejecutarla retoma su checkpoint.
 No es una lectura batch ni una demostración de latencia continua de 60 segundos.
-
-```mermaid
-flowchart LR
-    L[Landing JSONL inmutable] --> R[Replay: copias completas]
-    R --> I[Directorio de entrada]
-    I --> A[readStream + contrato v1/v2]
-    A --> B[Bronze completo: raw y tipificado]
-    B --> D[readStream + watermark + dedupe]
-    D --> C[Candidatos provisionales]
-    B --> V[Auditoría de identidad y no emitidos]
-    C --> V
-```
 
 ### Contrato y reproducción
 
@@ -272,15 +260,15 @@ Después de ambas consultas se audita todo el archivo retenido. Más de una
 variante interpretada por event_id identifica un conflicto; se guardan sus
 IDs y se excluyen al contar candidatos sin conflictos. Una variante puede
 haber sido emitida antes de descubrir otra: la salida deduplicada es provisional
-y **no debe usarse directamente para métricas ni serving**. Silver deberá partir
+y queda para auditoría. Silver parte
 del archivo completo y aplicar sus reglas por medida.
 
 También se guardan en `deferred` las contribuciones elegibles sin una salida
 equivalente, incluidos eventos tardíos y variantes descartadas por deduplicación.
 No se afirma que todas sean tardías: los descartes por watermark se registran
 aparte en las métricas de Spark. JSON y tiempos inválidos siguen en el archivo
-completo con sus errores. No se implementan aún reparaciones batch ni quarantine
-de negocio; éstas corresponden a las etapas siguientes.
+completo con sus errores. Silver publica quarantine y reconstruye desde el
+corte retenido. El recálculo incremental por grupos corregidos queda pendiente.
 
 ### Estado, reinicio y ejecución
 
@@ -307,11 +295,8 @@ no borrar sólo checkpoints ni sumar entre sí ejecuciones del mismo histórico.
 La sesión predeterminada y verificada es `usage-v1`.
 
 ```sh
-docker compose run --rm runtime python scripts/replay_usage.py --limit 60
-docker compose run --rm runtime python scripts/ingest_stream.py --report-name first
-docker compose run --rm runtime python scripts/replay_usage.py
-docker compose run --rm runtime python scripts/ingest_stream.py --report-name resumed
-docker compose run --rm runtime python scripts/ingest_stream.py --report-name repeat
+docker compose run --rm --no-deps runtime python scripts/replay_usage.py --stream-id usage-v1
+docker compose run --rm --no-deps runtime python scripts/ingest_stream.py --stream-id usage-v1 --report-name revision
 ```
 
 En una sesión ya procesada no se vuelven a ingerir esos archivos. Las pruebas
@@ -326,19 +311,6 @@ y [deduplicación dentro del watermark](https://spark.apache.org/docs/3.5.8/api/
 
 ## 4. Silver, calidad y quarantine
 
-```mermaid
-flowchart LR
-    CSV[Snapshot Bronze de CSV] --> M[Organizaciones y recursos conformados]
-    JSONL[Archivo Bronze de eventos] --> S[Validar y conformar el corte]
-    M --> S
-    S --> E[Eventos enriquecidos]
-    M --> Q[Quarantine]
-    S --> Q
-    M --> P[Publicación Parquet con manifiesto]
-    E --> P
-    Q --> P
-```
-
 ### Selección de entradas
 
 Usar el `manifest.batch_id` que devuelve `ingest_batch.py` y el `cut_id`
@@ -352,7 +324,7 @@ publicación rechaza el corte anterior. La evidencia usa `usage-v1`.
 
 ```sh
 docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --inspect-cut
-docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --batch-id <batch_id> --archive-cut <cut_id> --report-name first
+docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --batch-id <batch_id> --archive-cut <cut_id> --report-name revision
 ```
 
 ### Contrato y reglas
@@ -430,7 +402,7 @@ con fecha UTC. Usa una única publicación Silver cuyo ID, manifiesto y
 archivos se verifican. Cada fila registra el `silver_publication_id`.
 
 ```sh
-docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id> --report-name first
+docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id> --report-name revision
 ```
 
 Se suman sólo aportes válidos de `daily_cost_usd`, `requests`, `cpu_hours`,
@@ -523,8 +495,8 @@ y los parámetros. Reejecutar verifica y reutiliza la publicación.
 
 El método es una regla estadística sin entrenamiento. La referencia se
 calcula directamente del historial de cada fila. Los picos son señales para
-investigar y los costos permanecen
-en Gold. La muestra permite verificar el cálculo y el volumen de señales.
+investigar y los costos permanecen en Gold. La muestra permite verificar el
+cálculo y el volumen de señales.
 La evaluación de precisión y recall requiere etiquetas. La ventana no
 ajusta por estacionalidad o cambios de nivel.
 [Evidencia del análisis estadístico](../evidence/anomalies/README.md).
@@ -584,13 +556,13 @@ mart se escribe mediante este cargador. Usar IDs explícitos evita mezclar
 snapshots y permite consultar una publicación anterior.
 
 ```sh
-docker compose run --rm --no-deps runtime python scripts/serve_finops.py load --gold-publication-id <publication_id> --report-name first
-docker compose run --rm --no-deps runtime python scripts/serve_finops.py query --gold-publication-id <publication_id> --org-id <org_id> --service <service> --start <yyyy-mm-dd> --end <yyyy-mm-dd> --detail <yyyy-mm-dd> --report-name queries
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py load --gold-publication-id <publication_id> --report-name revision
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py query --gold-publication-id <publication_id> --org-id <org_id> --service <service> --start <yyyy-mm-dd> --end <yyyy-mm-dd> --detail <yyyy-mm-dd> --report-name revision-query
 ```
 
 Los comandos exactos, las consultas CQL y las verificaciones están en la
 [evidencia de serving](../evidence/serving/README.md).
-El driver se configura según la [guía de Astra para Python](https://docs.datastax.com/en/astra-db-serverless/drivers/python-driver.html).
+[Guía del driver Python para Astra](https://docs.datastax.com/en/astra-db-serverless/drivers/python-driver.html).
 
 ## 7. Validación integrada, idempotencia y recuperación
 
@@ -600,12 +572,8 @@ Gold para cargar Astra y verificar ambas consultas. El Lake y los informes
 de cada job quedan en `/lake/integration/<validation-id>/`, con una sesión
 de streaming propia y el dataset configurado en sólo lectura.
 
-```sh
-docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id section-7-v1 --report-name first --exercise-serving-recovery
-docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id section-7-v1 --report-name repeat --compare-to first
-```
-
-Para una corrida nueva, elegir un `--validation-id` y nombres de informe
+Usar los comandos del [guion de demo](#guion-de-demo). Para una corrida nueva,
+elegir un `--validation-id` y nombres de informe
 nuevos. Para reintentar, conservar el ID de validación y los parámetros de
 consulta. `--compare-to` exige los mismos IDs, hashes de manifiesto, conteos,
 conciliación Silver–Gold, resultados CQL e IDs de queries de streaming.
@@ -642,6 +610,106 @@ reutilizó las publicaciones y validó los mismos resultados con cero
 filas nuevas en streaming y cero upserts en Astra.
 [Resultados y comandos de validación](../evidence/integration/README.md).
 
-## Secciones siguientes
+## 8. Cierre del segundo parcial
 
-Pendiente la sección 8 de documentación final y backlog.
+### Matriz de cumplimiento
+
+La revisión cubre los §§6.2–6.4 y el checklist §9.2 de la consigna original
+del ITBA, edición 2C 2026, pp. 9–10 y 15. La sección siguiente de backlog
+separa el alcance de la final (§§7.2–7.6 y §9.3, pp. 11–12 y 15).
+
+| Requisito del segundo parcial | Implementación | Evidencia | Estado |
+| --- | --- | --- | --- |
+| Correcciones priorizadas y arquitectura coherente | Feedback registrado, retención y responsables definidos. Diagrama actualizado al volumen local y al flujo FinOps. | [Correcciones históricas](primera-entrega.md#correcciones-posteriores-al-feedback), [diagrama](#arquitectura-ejecutada) | Documentado |
+| Batch a Bronze de al menos tres fuentes | Cuatro CSV a Parquet particionado con esquema explícito, `ingest_ts`, `source_file` y deduplicación de filas idénticas. | [Conciliación batch](../evidence/batch/README.md) | Verificado |
+| Streaming a Bronze | Esquema v1/v2, watermark, deduplicación por `event_id`, archivo completo para datos tardíos y dos checkpoints. | [Corridas y casos tardíos](../evidence/streaming/README.md) | Verificado |
+| Silver con eventos, maestro y features | Conformado y joins de organizaciones y recursos. Silver prepara las contribuciones tipificadas y Gold agrega seis medidas. | [Silver](../evidence/silver/README.md), [conciliación de medidas](../evidence/gold/README.md#conciliación) | Verificado |
+| Calidad y quarantine con muestras | Identidad, unidad cuando hay valor y regla alternativa de costo. Se aíslan todos los negativos pendientes de validación y se señalan picos sobre costos diarios. | [Reglas](#contrato-y-reglas), [muestras sin identificadores](../evidence/silver/quarantine-samples.json) | Verificado con regla alternativa justificada |
+| Mart diario Gold | `org_daily_usage_by_service` por organización, día UTC y servicio, con cobertura. | [Gold](../evidence/gold/checks.json) | Verificado |
+| Keyspace, tabla query-first, carga Spark y dos consultas | Keyspace Astra configurado, esquema CQL versionado, carga verificada y consultas de rango y fecha exacta. | [CQL y resultados](../evidence/serving/queries.json), [carga](../evidence/serving/first.json) | Verificado en Astra |
+| Componente analítico o ML | Score estadístico unilateral con mediana y MAD, sin entrenamiento ni etiquetas. | [Método](#5b-análisis-estadístico-de-picos-de-costo), [resultados](../evidence/anomalies/README.md) | Analítica verificada. Si la cátedra exige equivalencia con ML, falta confirmación |
+| Idempotencia, pruebas, logs y reproducción | Quickstart, pruebas sintéticas, ejecución real aislada y reintento sin duplicados. | [Quickstart](../README.md#quickstart), [ejecución](../evidence/integration/first.json), [reintento](../evidence/integration/repeat.json), [30 pruebas](../evidence/integration/tests.log) | Verificado en el entorno Docker configurado |
+| Gobierno preliminar | Contratos, manifiestos, reglas de acceso a secretos, trazabilidad y responsable de limpieza. | [Política de operación](primera-entrega.md#retención-y-operación), [configuración](#1-entorno-y-configuración) | Documentado. Falta probar operación final |
+| Backlog y decisiones técnicas | Prioridades y criterios de aceptación, decisiones de patrón, particiones, claves CQL y umbral. | [Arquitectura](#arquitectura-ejecutada), [backlog](#backlog-para-la-entrega-final) | Documentado |
+
+### Guion de demo
+
+**Demo rápida con publicaciones existentes.** Verificar primero el entorno y
+la conexión de lectura a Astra. El chequeo deja su informe en un directorio
+temporal del contenedor para conservar el informe versionado.
+
+```sh
+docker compose run --rm --no-deps -e SERVING_MODE=astra runtime sh -c 'sed "s|/workspace/evidence|/tmp/demo-evidence|" "$APP_CONFIG" > /tmp/demo.toml && APP_CONFIG=/tmp/demo.toml python scripts/check_environment.py --serving'
+```
+
+1. Seguir los IDs del [informe integrado](../evidence/integration/first.json)
+   desde Bronze hasta Gold y mostrar 43.200 eventos Silver y 11.050 claves Gold.
+2. Mostrar [quarantine](../evidence/silver/quarantine-samples.json) y la
+   cobertura por medida. Una unidad ausente puede dejar consumo nulo y
+   conservar el aporte de costo.
+3. Ejecutar ambas consultas sobre la publicación del punto 6. Requiere su
+   Parquet en el volumen configurado y el estado `complete` en Astra. Usar un
+   nombre de informe nuevo si ya se generó `demo-query`.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py query --gold-publication-id ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52 --org-id org_he7ur23g --service compute --start 2025-07-29 --end 2025-08-04 --detail 2025-08-03 --report-name demo-query
+```
+
+4. Abrir `evidence/serving/demo-query.json` y contrastar con el
+   [resultado registrado](../evidence/serving/queries.json). Señalar siete
+   filas de rango y el detalle de 40,4290 USD con cobertura parcial, cinco
+   aportes válidos de seis elegibles.
+5. En el [informe de anomalías](../evidence/anomalies/first.json), mostrar
+   9.003 evaluadas, 243 señales y 2.047 no evaluables. Explicar los 213 casos
+   de costo parcial y los 1.834 con historial insuficiente.
+6. Comparar [primera corrida](../evidence/integration/first.json) y
+   [reintento](../evidence/integration/repeat.json). Mostrar que los IDs y
+   resultados se conservaron, sin nuevas filas ni upserts. Explicar cómo
+   se retomaron los checkpoints, cómo el fallo de rename dejó la salida sin
+   publicar y por qué Astra bloqueó las consultas mientras estaba en
+   `loading`. [Pruebas y recuperación](../evidence/integration/README.md#recuperación-verificada).
+
+Si no están disponibles el volumen original o Astra, usar los informes
+versionados para mostrar los resultados registrados y explicar el bloqueo
+del entorno en vivo. La alternativa con evidencia no requiere una recarga.
+
+**Corrida completa desde cero.** Completar la [puesta en marcha](#puesta-en-marcha)
+y la [configuración Astra](#preparar-astradb). Elegir un ID y nombres de
+informe libres. El primer comando procesa el dataset y publica un nuevo ID
+Gold en Astra. El segundo repite esa corrida y valida la reutilización.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id cierre-01 --report-name cierre-first
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id cierre-01 --report-name cierre-repeat --compare-to cierre-first
+docker compose run --rm --no-deps runtime python -W ignore::ResourceWarning -m unittest discover -s tests -v
+```
+
+Las interrupciones de streaming y Silver se reproducen con la suite
+sintética. La prueba de fallo real en Astra se puede agregar con
+`--exercise-serving-recovery` sólo al primer comando de un corte nuevo.
+
+### Backlog para la entrega final
+
+El orden del backlog queda propuesto para revisión con el feedback de la
+cátedra. La final exige cinco consultas desde Cassandra/AstraDB. La serie diaria
+FinOps cubre la primera. El detalle puntual satisface el segundo parcial.
+Las cuatro consultas restantes, sus artefactos y la defensa son pendientes
+de la final. [Evidencia de la consulta ya disponible](../evidence/serving/README.md).
+
+| Prioridad | Tarea | Dependencias | Criterio de aceptación | Responsable |
+| --- | --- | --- | --- | --- |
+| Obligatorio 1 | Resolver alcance analítico con la cátedra | Evidencia del score estadístico y criterio docente | Registrar si se acepta el componente actual y acordar el cierre si se exige otra alternativa. Documentar métricas y límites sin inferir precisión ni recall. | Por asignar |
+| Obligatorio 2 | Top-N de servicios por costo de los últimos 14 días | FinOps diario, ventana calendario, regla de elegibilidad ante cobertura parcial y esquema query-first | Resultado reproducible en Astra para una organización y fecha, cotejado con Gold, con orden y casos parciales explicados. | Por asignar |
+| Obligatorio 3 | Tickets críticos, tasa de SLA y mart de Soporte | Ingesta de `support_tickets.csv`, severidad, indicador SLA y cobertura de CSAT | Consulta diaria de 30 días en Astra con conteos y tasa conciliados y nulos preservados. | Por asignar |
+| Obligatorio 4 | Revenue mensual en USD con créditos, impuestos y FX | Billing Bronze, criterios para créditos vacíos, montos negativos y tipos de cambio | Mart organización–mes y consulta en Astra con conversión trazable, parciales e importes conciliados. | Por asignar |
+| Obligatorio 5 | Tokens GenAI y costo diario estimado | Contribuciones GenAI de Silver, regla explícita de costo y cobertura | Mart organización–día y consulta verificable en Astra; documentar cómo se obtiene el costo y qué aportes faltan. | Por asignar |
+| Obligatorio 6 | Operación, seguridad y cierre de evidencias | Marts y consultas finales, política de retención, configuración externalizada | Probar reinicio y limpieza controlada, registrar tamaños, conteos y errores, y verificar que informes y repositorio excluyan secretos. | Santos Galarraga para gobierno, retención y limpieza |
+| Obligatorio 7 | Reproducción y defensa de la final | Cinco consultas, diccionario de datos, arquitectura final y resultados integrados | Validar el Quickstart desde un entorno limpio, preparar un dataset reducido reproducible, conservar CQL y salidas de las cinco consultas, y completar presentación, video y defensa remota. | Santos Galarraga para revisión y reproducción; presentación, video y defensa por asignar |
+| Deseable | Medir desempeño y ensayar la demo reducida | Integración final, casos de cobertura y criterio de medición | Repetir la demo con tiempos y recursos medidos. Revisar el objetivo operativo con mediciones de frescura y backlog. | Por asignar |
+| Fuera de alcance del MVP final propuesto | Migrar a HDFS o activar serving operativo por hora, rankings D/D−1 o dashboards adicionales | Revisión de alcance, demanda y pruebas de escala | Mantenerlos como propuestas hasta justificar su incorporación sin comprometer los requisitos obligatorios. | Por asignar |
+
+Las responsabilidades nominales retoman el [plan inicial](primera-entrega.md#esfuerzo-y-próximos-pasos)
+y la [política de retención](primera-entrega.md#retención-y-operación).
+El MVP ejecutado valida cortes finitos en Spark local. La alta disponibilidad,
+la frescura continua, la limpieza automática y el desempeño distribuido
+quedan fuera de la evidencia del segundo parcial.
