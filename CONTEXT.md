@@ -18,10 +18,14 @@ como parte de estas correcciones ni autorizan ampliar el alcance actual.
 
 Hay diseño y una exploración reproducible de las ocho fuentes en
 `scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
-No hay pipeline. El perfilador usa Python estándar, recibe la ruta del paquete
+Hay entorno y batch a Bronze; no hay todavía un pipeline completo. El perfilador
+usa Python estándar, recibe la ruta del paquete
 y conserva los originales. La primera entrega se mantiene como antecedente.
-El usuario autorizó iniciar la segunda entrega, sección 1: el entorno Docker,
-la configuración y las pruebas están en `docs/segunda-entrega.md`. Las siguientes
+El usuario autorizó las secciones 1 y 2 de la segunda entrega. Entorno, contratos
+y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
+cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
+manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
+duplicados exactos; no implementa todavía las reglas de Silver. Las siguientes
 secciones se implementarán por separado.
 
 La segunda entrega revisa HDFS: se usa un volumen local de Docker para el flujo

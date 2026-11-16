@@ -61,9 +61,18 @@ La [sección 1: entorno y configuración](docs/segunda-entrega.md) prepara Spark
 en Docker, Parquet en un volumen local y pruebas de conexión a serving.
 Incluye instrucciones para Cassandra local y AstraDB, configuración sin
 secretos y evidencia de ejecución. Docker está permitido como entorno
-equivalente a Colab; la conexión CQL a Astra fue verificada. El pipeline aún
-no está implementado; HDFS se revisa a favor de almacenamiento local para
+equivalente a Colab; la conexión CQL a Astra fue verificada. HDFS se revisa
+a favor de almacenamiento local para
 el flujo mínimo, según la decisión documentada allí.
+
+La [sección 2](docs/segunda-entrega.md#2-contratos-e-ingesta-batch-a-bronze)
+implementa la ingesta de cuatro CSV a Bronze con contratos, trazabilidad,
+errores de conversión y reejecución sin duplicados. Streaming, Silver, Gold y
+carga a serving siguen pendientes.
+
+```sh
+docker compose run --rm runtime python scripts/ingest_batch.py --report-name latest
+```
 
 ## Convenciones del repositorio
 

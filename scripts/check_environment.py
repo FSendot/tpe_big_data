@@ -79,9 +79,10 @@ def main():
     report["serving"] = check_serving() if args.serving else {"status": "not_checked"}
     required = ["dataset", "parquet"] + (["serving"] if args.serving else [])
     report["status"] = "passed" if all(report[k]["status"] == "passed" for k in required) else "incomplete"
-    settings.evidence_root.mkdir(parents=True, exist_ok=True)
+    directory = settings.evidence_root / "environment"
+    directory.mkdir(parents=True, exist_ok=True)
     suffix = "serving" if args.serving else "spark"
-    path = settings.evidence_root / f"{suffix}.json"
+    path = directory / f"{suffix}.json"
     path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({"status": report["status"], "evidence": str(path),
                       "checks": {k: report[k]["status"] for k in ("dataset", "parquet", "serving")}}))

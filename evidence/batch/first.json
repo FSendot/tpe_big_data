@@ -1,0 +1,910 @@
+{
+  "started_at": "2026-11-16T12:57:44.138031+00:00",
+  "python": "3.11.15",
+  "status": "created",
+  "manifest": {
+    "batch_id": "bbdccc35eab9288ce7d018bca0ae19440c9d551ec18e55a882617b7336851dc4",
+    "ingest_ts": "2026-11-16T12:57:46.502177+00:00",
+    "inputs": {
+      "customers_orgs": {
+        "source_file": "datalake/landing/customers_orgs.csv",
+        "sha256": "33b4acd3a86a9cc84ba2e5b18ea6ff92bdbc56ae420ccb89a2881f4f376cb364",
+        "bytes": 7746,
+        "input_rows": 80
+      },
+      "users": {
+        "source_file": "datalake/landing/users.csv",
+        "sha256": "e66c8cec889ed3699172315709e27da8fa1e64330cfb23db7dfbf781abade021",
+        "bytes": 70683,
+        "input_rows": 800
+      },
+      "billing_monthly": {
+        "source_file": "datalake/landing/billing_monthly.csv",
+        "sha256": "89662f497cf2ad464763e832175c4c94ea0790cf0a320be81a264649d74072cc",
+        "bytes": 15854,
+        "input_rows": 240
+      },
+      "resources": {
+        "source_file": "datalake/landing/resources.csv",
+        "sha256": "ff00868ae96ddfd7556e4aaeadbf66781181699da5428320f8725b527e7faaba",
+        "bytes": 36703,
+        "input_rows": 400
+      }
+    },
+    "contract_version": "bronze-csv-v1",
+    "contract_hash": "ae6f9dd858b292418a3e794a589c883ca9b4871b195561eca31fe7f195f06de0",
+    "implementation_hash": "64f30b1bc5856258ebb9b45ebb6da4e0338642b178bfa31f9a8afd4a5a35e701",
+    "spark_version": "3.5.8",
+    "sources": {
+      "customers_orgs": {
+        "path": "customers_orgs",
+        "input_rows": 80,
+        "bronze_rows": 80,
+        "duplicate_rows_removed": 0,
+        "rows_with_errors": 0,
+        "errors_by_rule": {},
+        "nulls_by_column": {
+          "org_id": 0,
+          "org_name": 0,
+          "industry": 0,
+          "hq_region": 0,
+          "plan_tier": 0,
+          "is_enterprise": 0,
+          "signup_date": 0,
+          "sales_rep": 0,
+          "lifecycle_stage": 0,
+          "marketing_source": 0,
+          "nps_score": 11
+        },
+        "schema": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "org_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "org_name",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "industry",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "hq_region",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "plan_tier",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "is_enterprise",
+              "type": "boolean",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "signup_date",
+              "type": "date",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "sales_rep",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "lifecycle_stage",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "marketing_source",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "nps_score",
+              "type": "decimal(38,12)",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "source_occurrences",
+              "type": "long",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "key_variants",
+              "type": "long",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "raw",
+              "type": {
+                "type": "struct",
+                "fields": [
+                  {
+                    "name": "org_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "org_name",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "industry",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "hq_region",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "plan_tier",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "is_enterprise",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "signup_date",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "sales_rep",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "lifecycle_stage",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "marketing_source",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "nps_score",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_record_hash",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "parse_errors",
+              "type": {
+                "type": "array",
+                "elementType": "string",
+                "containsNull": true
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_file",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_hash",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "batch_id",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "contract_version",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_ts",
+              "type": "timestamp",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_date",
+              "type": "date",
+              "nullable": false,
+              "metadata": {}
+            }
+          ]
+        }
+      },
+      "users": {
+        "path": "users",
+        "input_rows": 800,
+        "bronze_rows": 800,
+        "duplicate_rows_removed": 0,
+        "rows_with_errors": 0,
+        "errors_by_rule": {},
+        "nulls_by_column": {
+          "user_id": 0,
+          "org_id": 0,
+          "email": 0,
+          "role": 0,
+          "active": 0,
+          "created_at": 0,
+          "last_login": 139
+        },
+        "schema": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "user_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "org_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "email",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "role",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "active",
+              "type": "boolean",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "created_at",
+              "type": "date",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "last_login",
+              "type": "date",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "source_occurrences",
+              "type": "long",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "key_variants",
+              "type": "long",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "raw",
+              "type": {
+                "type": "struct",
+                "fields": [
+                  {
+                    "name": "user_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "org_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "email",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "role",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "active",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "last_login",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_record_hash",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "parse_errors",
+              "type": {
+                "type": "array",
+                "elementType": "string",
+                "containsNull": true
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_file",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_hash",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "batch_id",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "contract_version",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_ts",
+              "type": "timestamp",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_date",
+              "type": "date",
+              "nullable": false,
+              "metadata": {}
+            }
+          ]
+        }
+      },
+      "billing_monthly": {
+        "path": "billing_monthly",
+        "input_rows": 240,
+        "bronze_rows": 240,
+        "duplicate_rows_removed": 0,
+        "rows_with_errors": 0,
+        "errors_by_rule": {},
+        "nulls_by_column": {
+          "invoice_id": 0,
+          "org_id": 0,
+          "month": 0,
+          "subtotal": 0,
+          "credits": 137,
+          "taxes": 0,
+          "currency": 0,
+          "exchange_rate_to_usd": 0
+        },
+        "schema": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "invoice_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "org_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "month",
+              "type": "date",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "subtotal",
+              "type": "decimal(38,12)",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "credits",
+              "type": "decimal(38,12)",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "taxes",
+              "type": "decimal(38,12)",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "currency",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "exchange_rate_to_usd",
+              "type": "decimal(38,12)",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "source_occurrences",
+              "type": "long",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "key_variants",
+              "type": "long",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "raw",
+              "type": {
+                "type": "struct",
+                "fields": [
+                  {
+                    "name": "invoice_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "org_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "month",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "subtotal",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "credits",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "taxes",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "currency",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "exchange_rate_to_usd",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_record_hash",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "parse_errors",
+              "type": {
+                "type": "array",
+                "elementType": "string",
+                "containsNull": true
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_file",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_hash",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "batch_id",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "contract_version",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_ts",
+              "type": "timestamp",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_date",
+              "type": "date",
+              "nullable": false,
+              "metadata": {}
+            }
+          ]
+        }
+      },
+      "resources": {
+        "path": "resources",
+        "input_rows": 400,
+        "bronze_rows": 400,
+        "duplicate_rows_removed": 0,
+        "rows_with_errors": 0,
+        "errors_by_rule": {},
+        "nulls_by_column": {
+          "resource_id": 0,
+          "org_id": 0,
+          "service": 0,
+          "region": 0,
+          "created_at": 0,
+          "state": 0,
+          "tags_json": 83
+        },
+        "schema": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "resource_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "org_id",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "service",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "region",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "created_at",
+              "type": "date",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "state",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "tags_json",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "source_occurrences",
+              "type": "long",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "key_variants",
+              "type": "long",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "raw",
+              "type": {
+                "type": "struct",
+                "fields": [
+                  {
+                    "name": "resource_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "org_id",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "service",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "region",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "tags_json",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_record_hash",
+              "type": "string",
+              "nullable": true,
+              "metadata": {}
+            },
+            {
+              "name": "parse_errors",
+              "type": {
+                "type": "array",
+                "elementType": "string",
+                "containsNull": true
+              },
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_file",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "source_hash",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "batch_id",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "contract_version",
+              "type": "string",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_ts",
+              "type": "timestamp",
+              "nullable": false,
+              "metadata": {}
+            },
+            {
+              "name": "ingest_date",
+              "type": "date",
+              "nullable": false,
+              "metadata": {}
+            }
+          ]
+        }
+      }
+    },
+    "files": [
+      {
+        "path": "billing_monthly/._SUCCESS.crc",
+        "bytes": 8,
+        "sha256": "1d44f510ec2ed7595badbec80583316defc14e8dd89130d719724149adfaa07d"
+      },
+      {
+        "path": "billing_monthly/_SUCCESS",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "billing_monthly/ingest_date=2026-11-16/.part-00000-81b30a5c-be82-4537-9f44-31c28e3b0c44.c000.snappy.parquet.crc",
+        "bytes": 356,
+        "sha256": "397e0f536753f846f77adc4c918722448eb84e4e0c53234062c6b8e2b9de6520"
+      },
+      {
+        "path": "billing_monthly/ingest_date=2026-11-16/part-00000-81b30a5c-be82-4537-9f44-31c28e3b0c44.c000.snappy.parquet",
+        "bytes": 44511,
+        "sha256": "a3f6ee6be6bbf05a15e17221c49608db430ac5b9fa10409ab84d1a3328875991"
+      },
+      {
+        "path": "customers_orgs/._SUCCESS.crc",
+        "bytes": 8,
+        "sha256": "1d44f510ec2ed7595badbec80583316defc14e8dd89130d719724149adfaa07d"
+      },
+      {
+        "path": "customers_orgs/_SUCCESS",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "customers_orgs/ingest_date=2026-11-16/.part-00000-f3d4ba02-33e0-442f-84be-bbf2638e5dff.c000.snappy.parquet.crc",
+        "bytes": 176,
+        "sha256": "3425ace58b0a47f957c1e06117d1bc4eb9cdbcd5abde296ed2a0f4566766e994"
+      },
+      {
+        "path": "customers_orgs/ingest_date=2026-11-16/part-00000-f3d4ba02-33e0-442f-84be-bbf2638e5dff.c000.snappy.parquet",
+        "bytes": 21504,
+        "sha256": "7d7e68673c41baced58287c311aad46bb2652b590829a734f302f89b54235f02"
+      },
+      {
+        "path": "resources/._SUCCESS.crc",
+        "bytes": 8,
+        "sha256": "1d44f510ec2ed7595badbec80583316defc14e8dd89130d719724149adfaa07d"
+      },
+      {
+        "path": "resources/_SUCCESS",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "resources/ingest_date=2026-11-16/.part-00000-c8c1892e-170d-4746-975d-b3e46134a54d.c000.snappy.parquet.crc",
+        "bytes": 424,
+        "sha256": "cd3796f3ea69e99b0fc92eebffd7744f6ffbe33ecda7c1c51a3e5418e604e363"
+      },
+      {
+        "path": "resources/ingest_date=2026-11-16/part-00000-c8c1892e-170d-4746-975d-b3e46134a54d.c000.snappy.parquet",
+        "bytes": 53161,
+        "sha256": "35293e0ad8274c7a633bdf74f7fd924722d87dff6562956e8355abe7884c1f04"
+      },
+      {
+        "path": "users/._SUCCESS.crc",
+        "bytes": 8,
+        "sha256": "1d44f510ec2ed7595badbec80583316defc14e8dd89130d719724149adfaa07d"
+      },
+      {
+        "path": "users/_SUCCESS",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "users/ingest_date=2026-11-16/.part-00000-fc3453a6-27aa-4436-8f8f-12f475c7ce39.c000.snappy.parquet.crc",
+        "bytes": 812,
+        "sha256": "9f815ad7b65943b6a202069adff8e81154756664990f4711bad1087f12ab7d11"
+      },
+      {
+        "path": "users/ingest_date=2026-11-16/part-00000-fc3453a6-27aa-4436-8f8f-12f475c7ce39.c000.snappy.parquet",
+        "bytes": 102703,
+        "sha256": "fe9a34261caf777e9236c19072164b3d67ea9f93bf3498d13638d8cf6efaeb3e"
+      }
+    ]
+  },
+  "batch_path": "/lake/bronze/batch_id=bbdccc35eab9288ce7d018bca0ae19440c9d551ec18e55a882617b7336851dc4",
+  "duration_seconds": 16.696
+}
