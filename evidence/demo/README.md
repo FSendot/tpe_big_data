@@ -1,10 +1,11 @@
 # Muestra reducida y reinicio — 16/11/2026
 
-Validación con datos sintéticos y AstraDB real para el ID `repro-demo-01`.
-La [entrada](dataset.json) identifica la semilla fija y los SHA-256 de los
-cuatro CSV y dos JSONL. No se copiaron filas de Landing. La [suite de
-pruebas](tests.log) generó la muestra en dos directorios independientes y
-comparó bytes, manifiestos y contratos.
+Se validó `repro-demo-01` con datos sintéticos en AstraDB. El manifiesto
+registra las fechas y los casos de la muestra, junto con los SHA-256
+de los cuatro CSV y dos JSONL.
+[Entrada de la demo](dataset.json).
+Se generó la muestra en dos directorios y se compararon los bytes, los
+manifiestos y los contratos. [Pruebas](tests.log).
 
 | Control | Resultado esperado y observado |
 | --- | ---: |
@@ -16,29 +17,27 @@ comparó bytes, manifiestos y contratos.
 | Anomalías | 4 evaluables, 1 señal y 10 no evaluables |
 | Consultas de rango y detalle | 6 filas y 1 fila, respectivamente |
 
-Los [casos observados](checks.json) incluyen el pico de 100 USD el
-01/08/2025 (ocho observaciones históricas), el costo cero con historial
-insuficiente y el costo parcial sin score. El detalle del 02/08 devolvió
-10 USD y 112 requests, con un aporte de costo válido de dos elegibles.
-La conciliación de seis medidas y ambas consultas están en la
-[primera corrida](first.json).
+El pico del 01/08/2025 fue de 100 USD y se evaluó con ocho observaciones.
+El costo cero quedó sin evaluar por historial insuficiente. El detalle
+del 02/08 devolvió 10 USD y 112 requests. El costo quedó parcial, con un
+aporte válido de dos elegibles, y quedó sin score. [Casos observados](checks.json)
+y [conciliación de seis medidas y consultas](first.json).
 
-El [reintento](repeat.json) mantuvo los IDs, manifiestos y resultados,
-con cero archivos nuevos, cero filas reingeridas y cero upserts.
-El plan se validó sobre el propio estado descartable. Se rechazaron un
-ID con traversal y el ID de una integración ajena. La aplicación retiró
-el directorio `work`; se cotejaron los hashes de los 127 archivos de Landing
-original y de evidencia, checkpoint y manifiesto de la corrida real. El
-dataset y los informes compactos de demo se conservaron. Se comprobó que
-la publicación de demo anterior seguía en `complete` en Astra y devolvía
-el mismo detalle.
+El reintento mantuvo los IDs, manifiestos y resultados. Hubo cero archivos
+nuevos, cero filas reingeridas y cero upserts. [Informe del reintento](repeat.json).
 
-El [arranque posterior](restart.json) creó checkpoints y publicaciones
-nuevos a partir del mismo manifiesto de entrada. Reprodujo los conteos,
-la conciliación, los motivos de evaluación y ambas consultas con otro
-ID Gold. La limpieza es local; las publicaciones de ambas corridas
-siguen en Astra. Este ensayo cubre una muestra fija, con una señal
-construida, y se conserva separado del [dataset completo](../integration/README.md).
+La limpieza retiró el directorio `work` de la demo. Rechazó una ruta con
+`../` y el ID de una integración ajena. Se cotejaron los hashes de los
+127 archivos de Landing, además de la evidencia, el checkpoint y el
+manifiesto de la corrida real. Se conservaron el dataset y los informes
+compactos de demo. La publicación previa seguía en `complete` en Astra
+y devolvió el mismo detalle. [Comprobaciones](checks.json).
+
+El arranque posterior usó el mismo manifiesto. Creó checkpoints y
+publicaciones con IDs nuevos. Se repitieron los conteos, la conciliación,
+los motivos de evaluación y ambas consultas. Las dos publicaciones siguen
+en Astra. [Informe del reinicio](restart.json) y
+[evidencia del dataset completo](../integration/README.md).
 
 ## Comandos
 
@@ -52,5 +51,5 @@ docker compose run --rm --no-deps runtime python scripts/validate_integration.py
 docker compose run --rm --no-deps runtime python -W ignore::ResourceWarning -m unittest discover -s tests -v
 ```
 
-Elegir un ID nuevo para repetir la prueba sin afectar el workspace
-registrado. Ver [muestra reducida y reinicio seguro](../../docs/segunda-entrega.md#muestra-reducida-y-reinicio-seguro).
+Usar un ID nuevo para empezar otra demo.
+[Procedimiento de reinicio](../../docs/segunda-entrega.md#muestra-reducida-y-reinicio-seguro).

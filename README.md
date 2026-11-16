@@ -2,19 +2,18 @@
 
 Proyecto integrador de Big Data, ITBA, segundo cuatrimestre de 2026.
 
-Integrantes: Francisco Sendot y Santos Galarraga. La primera entrega contó
-con la contribución principal de Francisco Sendot en el diseño, la documentación
-y la evidencia reproducible. La segunda entrega desarrolla esa base del proyecto.
+Integrantes: Francisco Sendot y Santos Galarraga.
+Francisco Sendot hizo el aporte principal al diseño, la documentación y la
+evidencia reproducible de la primera entrega.
 
-El MVP del segundo parcial ingiere CSV y JSONL con PySpark en Docker.
-Publica Bronze, Silver, quarantine y Gold en Parquet sobre un volumen
-local. Calcula señales estadísticas de costo y publica el mart diario
-FinOps en AstraDB para consultas CQL. El usuario autorizó Docker como
-entorno equivalente a Colab.
+Se ingieren CSV y JSONL con PySpark en Docker. Bronze, Silver, quarantine
+y Gold quedan en Parquet local. Se calculan señales de costo y se publica
+el mart diario de FinOps en AstraDB. Para este proyecto usamos Docker
+como entorno equivalente a Colab.
 
-La [segunda entrega](docs/segunda-entrega.md) documenta el flujo ejecutado.
-La [primera entrega](docs/primera-entrega.md) conserva el diseño histórico
-con HDFS, operación horaria y reportes HTML.
+La [segunda entrega](docs/segunda-entrega.md) describe el flujo implementado
+y los resultados. La [primera entrega](docs/primera-entrega.md) conserva el
+diseño histórico con HDFS, operación horaria y reportes HTML.
 
 ## Artefactos de la primera entrega
 
@@ -42,50 +41,41 @@ CONTEXT.md                Estado técnico y diseño productivo propuesto
 
 ## Reproducir la exploración
 
-Descargar `cloud_provider_challenge_dataset_v1` del campus y extraerlo fuera
-del repo. Con Python 3.9 o posterior, desde la raíz del repositorio:
+Descargar `cloud_provider_challenge_dataset_v1` del campus. Extraerlo fuera
+del repositorio y ejecutar desde la raíz con Python 3.9 o posterior.
 
 ```sh
 python3 scripts/profile_data.py /ruta/cloud_provider_challenge_dataset_v1 --output evidence/profile-local.json
 ```
 
-El script verifica las ocho fuentes y no modifica los originales. La salida
-contiene estadísticas y hashes, sin filas de clientes, emails ni comentarios.
-Las [instrucciones de datos](data/README.md) detallan qué comprueba.
+El script verifica las ocho fuentes en solo lectura. La salida guarda
+estadísticas y hashes. [Instrucciones de datos](data/README.md).
 
 ## Quickstart
 
-1. Con Docker Desktop en modo Linux y Compose v2, extraer el paquete del
-   campus fuera del repositorio. Configurar `DATASET_PATH` en `.env` a
-   partir de `.env.example`. [Puesta en marcha](docs/segunda-entrega.md#puesta-en-marcha).
-2. Preparar un keyspace Astra y guardar el token y bundle en la
+1. Abrir Docker Desktop en modo Linux con Compose v2. Copiar `.env.example`
+   a `.env` si el archivo falta. Apuntar `DATASET_PATH` al paquete extraído.
+   [Puesta en marcha](docs/segunda-entrega.md#puesta-en-marcha).
+2. Preparar un keyspace en Astra. Guardar el token y el bundle en la
    configuración local. [Configuración Astra](docs/segunda-entrega.md#preparar-astradb).
-3. Desde la raíz, construir el runtime y validar el flujo con un ID y un
-   nombre de informe libres. El comando ingiere el dataset, encadena los
-   IDs de publicación, carga el mart y verifica dos consultas en Astra.
+3. Construir el runtime desde la raíz. Usar un ID y un nombre de informe
+   libres. El comando carga el mart y verifica las dos consultas en Astra.
 
 ```sh
 docker compose build runtime
 docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id cierre-01 --report-name cierre-first
 ```
 
-El [guion de demo](docs/segunda-entrega.md#guion-de-demo) incluye el chequeo de
-entorno, una demostración con publicaciones existentes, pruebas y reintento.
-Para una verificación por etapa, consultar la
-[documentación técnica](docs/segunda-entrega.md#arquitectura-ejecutada).
-
-La [evidencia integrada](evidence/integration/README.md) registra 43.200
-eventos Silver, 11.050 filas Gold y Astra y una reejecución sin nuevas
-filas ni upserts. La [matriz de cumplimiento](docs/segunda-entrega.md#matriz-de-cumplimiento)
-separa lo verificado de las decisiones pendientes. El
-[backlog de la final](docs/segunda-entrega.md#backlog-para-la-entrega-final)
-prioriza las cuatro consultas obligatorias restantes y los artefactos de defensa.
+- Chequeo del entorno, prueba y reintento. [Guion de demo](docs/segunda-entrega.md#guion-de-demo).
+- Recorrido por etapa y resultados. [Arquitectura](docs/segunda-entrega.md#arquitectura-ejecutada)
+  y [evidencia integrada](evidence/integration/README.md).
+- Requisitos verificados y tareas pendientes. [Matriz de cumplimiento](docs/segunda-entrega.md#matriz-de-cumplimiento)
+  y [backlog de la final](docs/segunda-entrega.md#backlog-para-la-entrega-final).
 
 ### Demo reducida
 
-Con el runtime construido y Astra configurado, ejecutar desde la raíz.
-La muestra sintética y sus informes quedan aislados bajo
-`/lake/demos/finops-demo/`.
+Construir el runtime y configurar Astra antes de ejecutar desde la raíz.
+La muestra y sus informes quedan en `/lake/demos/finops-demo/`.
 
 ```sh
 docker compose run --rm --no-deps runtime python scripts/demo_sample.py generate --demo-id finops-demo
@@ -93,15 +83,13 @@ docker compose run --rm --no-deps runtime python scripts/validate_integration.py
 docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name repeat --compare-to first
 ```
 
-Para empezar otra demo usar un ID nuevo. Para reiniciar el mismo ID, seguir
-el [procedimiento de limpieza con dry-run](docs/segunda-entrega.md#muestra-reducida-y-reinicio-seguro).
-La limpieza conserva las publicaciones de Astra.
+Usar un ID nuevo para empezar otra demo. Para reiniciar el mismo ID, usar
+la limpieza local. [Plan y comandos de limpieza](docs/segunda-entrega.md#muestra-reducida-y-reinicio-seguro).
 
 ## Convenciones del repositorio
 
-- Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
-- Fechas de eventos y agregaciones en UTC; costos de uso separados de revenue.
+- Usar `snake_case` y conservar los identificadores de origen.
+- Usar UTC para eventos y agregaciones. Separar costos de uso y revenue.
 - Versionar código, diseño y evidencia agregada. Mantener fuera de Git los
   originales, credenciales, entornos, checkpoints y salidas del Lake.
-- Registrar decisiones de diseño en la entrega y detalles internos en
-  `CONTEXT.md`; no duplicar el documento en otros formatos.
+- Registrar las decisiones en la entrega y las notas internas en `CONTEXT.md`.
