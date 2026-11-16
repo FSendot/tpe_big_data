@@ -18,15 +18,22 @@ como parte de estas correcciones ni autorizan ampliar el alcance actual.
 
 Hay diseño y una exploración reproducible de las ocho fuentes en
 `scripts/profile_data.py`, con salida versionada en `evidence/profile.json`.
-Hay entorno y batch a Bronze; no hay todavía un pipeline completo. El perfilador
+Hay entorno, batch y streaming a Bronze y publicación batch de Silver. El perfilador
 usa Python estándar, recibe la ruta del paquete
 y conserva los originales. La primera entrega se mantiene como antecedente.
-El usuario autorizó las secciones 1 y 2 de la segunda entrega. Entorno, contratos
+El usuario autorizó las secciones 1 a 4 de la segunda entrega. Entorno, contratos
 y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
 cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
 manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
-duplicados exactos; no implementa todavía las reglas de Silver. Las siguientes
-secciones se implementarán por separado.
+duplicados exactos. La sección 3 usa dos queries
+availableNow con checkpoints: archivo completo antes del watermark, y candidatos
+deduplicados provisionales. Audita conflictos y contribuciones no emitidas
+antes del conformado batch. Usar `usage-v1`; la
+sesión local `usage` fue una prueba preliminar del parser, no es la validada.
+La sección 4 fija un batch y un corte Bronze y publica los maestros, los
+eventos con validez por medida y sus incidencias bajo un único manifiesto.
+La propuesta de tres queries, reconciliación y activación que sigue abajo es
+diseño futuro. El funcionamiento de Silver está en `docs/segunda-entrega.md`.
 
 La segunda entrega revisa HDFS: se usa un volumen local de Docker para el flujo
 mínimo, Python 3.11.15, Java 17 y Spark 3.5.8. Cassandra local permite probar CQL;
@@ -56,9 +63,9 @@ implementadas ni trasladables automáticamente al backend local.
 ## Exploración y validaciones posteriores
 
 La exploración registra archivos, tamaños, SHA256, columnas, tipos JSON,
-vacíos, claves, duplicados, referencias y distribuciones temporales. Faltan
-los casts y contratos completos de Silver, las validaciones de todas las
-medidas y los casos de recuperación. Conservar reglas independientes por medida.
+vacíos, claves, duplicados, referencias y distribuciones temporales. Silver
+implementa el conformado de organizaciones, recursos y eventos de uso.
+Las reglas de facturación y recuperación de agregados quedan pendientes.
 Comando, versión de Python y resultados están versionados sin datos personales.
 Los conteos de diseño son referencias para investigar diferencias, no filtros
 que permitan forzar el resultado esperado.

@@ -8,3 +8,7 @@ master = "local[2]"
 driver_memory = "1g"
 shuffle_partitions = 2
 timezone = "UTC"
+
+[streaming]
+watermark_delay = "60 days"
+max_files_per_trigger = 20

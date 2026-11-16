@@ -1,0 +1,20 @@
+{
+  "dataset_zip": "cloud_provider_challenge_dataset_v1.zip",
+  "dataset_zip_sha256": "49bdc33693426add261750a0d4e6225d3fc5f9e334dc0689786f43f8d29d1141",
+  "csv_hashes_matching_bronze_evidence": 4,
+  "jsonl_hashes_matching_bronze_evidence": 120,
+  "same_publication_manifest_after_retry": true,
+  "parquet_readback": {
+    "physical_rows": 43200,
+    "unique_event_ids": 43200,
+    "affected_event_ids_also_in_silver": 3122,
+    "usage_incidence_events_with_valid_cost": 2906,
+    "events_with_both_cost_and_usage_incidence": 9,
+    "negative_cost_values_in_silver": 0,
+    "events_by_schema_version": {
+      "2": 32400,
+      "1": 10800
+    },
+    "verified_original_jsonl_sources_in_archive": 120
+  }
+}

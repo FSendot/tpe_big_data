@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import os
+import re
 import tomllib
 
 
@@ -15,6 +16,8 @@ class Settings:
     driver_memory: str
     shuffle_partitions: int
     timezone: str
+    watermark_delay: str = "60 days"
+    max_files_per_trigger: int = 20
 
 
 def load_settings(path=None):
@@ -30,4 +33,10 @@ def load_settings(path=None):
         raise ValueError("Este entorno está validado sólo para local[2] y UTC.")
     if type(spark["shuffle_partitions"]) is not int or spark["shuffle_partitions"] < 1:
         raise ValueError("shuffle_partitions debe ser un entero positivo.")
-    return Settings(*paths, **spark)
+    stream = raw.get("streaming", {})
+    if not re.fullmatch(r"[1-9][0-9]* (days|hours|minutes)", stream.get("watermark_delay", "60 days")):
+        raise ValueError("watermark_delay debe ser un intervalo positivo en days, hours o minutes.")
+    limit = stream.get("max_files_per_trigger", 20)
+    if type(limit) is not int or limit < 1:
+        raise ValueError("max_files_per_trigger debe ser un entero positivo.")
+    return Settings(*paths, **spark, **stream)

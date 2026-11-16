@@ -67,11 +67,29 @@ el flujo mínimo, según la decisión documentada allí.
 
 La [sección 2](docs/segunda-entrega.md#2-contratos-e-ingesta-batch-a-bronze)
 implementa la ingesta de cuatro CSV a Bronze con contratos, trazabilidad,
-errores de conversión y reejecución sin duplicados. Streaming, Silver, Gold y
-carga a serving siguen pendientes.
+errores de conversión y reejecución sin duplicados.
 
 ```sh
 docker compose run --rm runtime python scripts/ingest_batch.py --report-name latest
+```
+
+La [sección 3](docs/segunda-entrega.md#3-streaming-de-eventos-a-bronze) incorpora
+replay JSONL, Bronze completo y candidatos deduplicados con watermark y
+checkpoints. Conserva eventos tardíos y conflictos para su tratamiento posterior.
+
+```sh
+docker compose run --rm runtime python scripts/replay_usage.py
+docker compose run --rm runtime python scripts/ingest_stream.py --report-name latest
+```
+
+La [sección 4](docs/segunda-entrega.md#4-silver-calidad-y-quarantine) publica
+eventos enriquecidos, organizaciones, recursos y quarantine en Parquet. Usa
+el `batch_id` del informe de ingesta batch y el `cut_id` de la inspección del
+archivo Bronze completo. Repetir con ambos IDs verifica y reutiliza la salida.
+
+```sh
+docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --inspect-cut
+docker compose run --rm runtime python scripts/build_silver.py --stream-id usage-v1 --batch-id <batch_id> --archive-cut <cut_id>
 ```
 
 ## Convenciones del repositorio
