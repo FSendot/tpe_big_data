@@ -52,8 +52,8 @@ Java 17 y PySpark 3.5.8. Las dependencias Python están fijadas con hashes en
 de los repositorios Debian y su versión efectiva se registra en la evidencia.
 No se promete una reconstrucción binaria idéntica de los paquetes del sistema.
 
-Docker aísla el runtime del Java instalado en Windows. Santos Galarraga
-autorizó el uso de Docker como entorno equivalente a Colab el 15/11/2026.
+Docker aísla el runtime del Java instalado en Windows. Para el proyecto se
+confirmó el uso permitido de Docker como entorno equivalente a Colab el 15/11/2026.
 [Evidencia de funcionamiento y versiones](../evidence/environment/README.md).
 
 ### Decisión de almacenamiento
@@ -620,7 +620,7 @@ separa el alcance de la final (§§7.2–7.6 y §9.3, pp. 11–12 y 15).
 
 | Requisito del segundo parcial | Implementación | Evidencia | Estado |
 | --- | --- | --- | --- |
-| Correcciones priorizadas y arquitectura coherente | Feedback registrado, retención y responsables definidos. Diagrama actualizado al volumen local y al flujo FinOps. | [Correcciones históricas](primera-entrega.md#correcciones-posteriores-al-feedback), [diagrama](#arquitectura-ejecutada) | Documentado |
+| Correcciones priorizadas y arquitectura coherente | Feedback registrado, retención y roles definidos. Diagrama actualizado al volumen local y al flujo FinOps. | [Correcciones históricas](primera-entrega.md#correcciones-posteriores-al-feedback), [diagrama](#arquitectura-ejecutada) | Documentado |
 | Batch a Bronze de al menos tres fuentes | Cuatro CSV a Parquet particionado con esquema explícito, `ingest_ts`, `source_file` y deduplicación de filas idénticas. | [Conciliación batch](../evidence/batch/README.md) | Verificado |
 | Streaming a Bronze | Esquema v1/v2, watermark, deduplicación por `event_id`, archivo completo para datos tardíos y dos checkpoints. | [Corridas y casos tardíos](../evidence/streaming/README.md) | Verificado |
 | Silver con eventos, maestro y features | Conformado y joins de organizaciones y recursos. Silver prepara las contribuciones tipificadas y Gold agrega seis medidas. | [Silver](../evidence/silver/README.md), [conciliación de medidas](../evidence/gold/README.md#conciliación) | Verificado |
@@ -703,13 +703,14 @@ de la final. [Evidencia de la consulta ya disponible](../evidence/serving/README
 | Obligatorio 3 | Tickets críticos, tasa de SLA y mart de Soporte | Ingesta de `support_tickets.csv`, severidad, indicador SLA y cobertura de CSAT | Consulta diaria de 30 días en Astra con conteos y tasa conciliados y nulos preservados. | Por asignar |
 | Obligatorio 4 | Revenue mensual en USD con créditos, impuestos y FX | Billing Bronze, criterios para créditos vacíos, montos negativos y tipos de cambio | Mart organización–mes y consulta en Astra con conversión trazable, parciales e importes conciliados. | Por asignar |
 | Obligatorio 5 | Tokens GenAI y costo diario estimado | Contribuciones GenAI de Silver, regla explícita de costo y cobertura | Mart organización–día y consulta verificable en Astra; documentar cómo se obtiene el costo y qué aportes faltan. | Por asignar |
-| Obligatorio 6 | Operación, seguridad y cierre de evidencias | Marts y consultas finales, política de retención, configuración externalizada | Probar reinicio y limpieza controlada, registrar tamaños, conteos y errores, y verificar que informes y repositorio excluyan secretos. | Santos Galarraga para gobierno, retención y limpieza |
-| Obligatorio 7 | Reproducción y defensa de la final | Cinco consultas, diccionario de datos, arquitectura final y resultados integrados | Validar el Quickstart desde un entorno limpio, preparar un dataset reducido reproducible, conservar CQL y salidas de las cinco consultas, y completar presentación, video y defensa remota. | Santos Galarraga para revisión y reproducción; presentación, video y defensa por asignar |
+| Obligatorio 6 | Operación, seguridad y cierre de evidencias | Marts y consultas finales, política de retención, configuración externalizada | Probar reinicio y limpieza controlada, registrar tamaños, conteos y errores, y verificar que informes y repositorio excluyan secretos. | Operación y gobierno (por asignar) |
+| Obligatorio 7 | Reproducción y defensa de la final | Cinco consultas, diccionario de datos, arquitectura final y resultados integrados | Validar el Quickstart desde un entorno limpio, preparar un dataset reducido reproducible, conservar CQL y salidas de las cinco consultas, y completar presentación, video y defensa remota. | Validación y documentación (por asignar) |
 | Deseable | Medir desempeño y ensayar la demo reducida | Integración final, casos de cobertura y criterio de medición | Repetir la demo con tiempos y recursos medidos. Revisar el objetivo operativo con mediciones de frescura y backlog. | Por asignar |
 | Fuera de alcance del MVP final propuesto | Migrar a HDFS o activar serving operativo por hora, rankings D/D−1 o dashboards adicionales | Revisión de alcance, demanda y pruebas de escala | Mantenerlos como propuestas hasta justificar su incorporación sin comprometer los requisitos obligatorios. | Por asignar |
 
-Las responsabilidades nominales retoman el [plan inicial](primera-entrega.md#esfuerzo-y-próximos-pasos)
+Los roles retoman el [plan inicial](primera-entrega.md#esfuerzo-y-próximos-pasos)
 y la [política de retención](primera-entrega.md#retención-y-operación).
+La asignación nominal de las tareas pendientes deberá acordarse entre los integrantes.
 El MVP ejecutado valida cortes finitos en Spark local. La alta disponibilidad,
 la frescura continua, la limpieza automática y el desempeño distribuido
 quedan fuera de la evidencia del segundo parcial.

@@ -2,6 +2,10 @@
 
 Proyecto integrador de Big Data, ITBA, segundo cuatrimestre de 2026.
 
+Integrantes: Francisco Sendot y Santos Galarraga. La primera entrega contó
+con la contribución principal de Francisco Sendot en el diseño, la documentación
+y la evidencia reproducible. La segunda entrega desarrolla esa base del proyecto.
+
 El MVP del segundo parcial ingiere CSV y JSONL con PySpark en Docker.
 Publica Bronze, Silver, quarantine y Gold en Parquet sobre un volumen
 local. Calcula señales estadísticas de costo y publica el mart diario

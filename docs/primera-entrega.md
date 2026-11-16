@@ -239,7 +239,8 @@ una decisión del proyecto. El watermark no determina la retención del Lake.
 | Quarantine | Mismo plazo, siempre que las incidencias estén resueltas |
 | Control, manifiestos y checkpoints | Mismo plazo, sólo cuando no sean necesarios para reanudar procesos o reconstruir resultados |
 
-Santos Galarraga autorizará y ejecutará la limpieza: revisar candidatos y
+El responsable de operación, a designar por el equipo, autorizará y ejecutará
+la limpieza: revisar candidatos y
 dependencias, verificar archivos de respaldo y hashes, y registrar rutas,
 fecha, motivo y resultado. Las dependencias activas posponen el borrado.
 No hay limpieza automática implementada.
@@ -417,7 +418,7 @@ interfaz de consumo.
 El consumidor tiene lectura de agregados e indicadores de calidad. El
 responsable de datos accede a originales e incidencias para investigar.
 El proceso de publicación escribe versiones y referencias de control.
-Un único integrante asume estas responsabilidades en el proyecto.
+Estas responsabilidades se organizan por rol dentro del equipo.
 
 Esquemas, reglas y manifiestos se versionan junto al código. Cada resultado
 registra entradas, hashes, snapshot de dimensiones y versión de reglas.
@@ -480,7 +481,7 @@ preparar la implementación posterior, antes de medir latencias o publicar resul
 
 ### Roles y recursos
 
-Un integrante cubre tres responsabilidades: análisis de negocio para preguntas
+El proyecto contempla tres responsabilidades: análisis de negocio para preguntas
 y reglas; ingeniería de datos para ingesta, calidad y publicación; y validación
 para evidencia, reproducción y medición. En esta etapa sólo se ejecuta la
 exploración inicial.
@@ -496,7 +497,7 @@ capa, versiones retenidas, réplicas, checkpoints y memoria del estado.
 
 El plan inicial estimaba 6–11 h para diseño, perfilado y evidencia, ya disponibles.
 Para las correcciones se estiman 3–4,5 h adicionales; no son horas registradas.
-Santos Galarraga es responsable de todas las tareas siguientes.
+Las tareas se organizan por análisis, ingeniería de datos y validación.
 
 | Tarea | Esfuerzo | Dependencia | Criterio de cierre |
 | --- | --- | --- | --- |
