@@ -1,0 +1,341 @@
+{
+  "validation_id": "demo-repro-demo-01",
+  "kind": "synthetic_demo_and_astra",
+  "steps": [
+    {
+      "step": "batch",
+      "args": [
+        "scripts/ingest_batch.py"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "replay",
+      "args": [
+        "scripts/replay_usage.py",
+        "--stream-id",
+        "integration-demo-repro-demo-01"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": "streaming",
+      "args": [
+        "scripts/ingest_stream.py",
+        "--stream-id",
+        "integration-demo-repro-demo-01"
+      ],
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "step": "archive_cut",
+      "args": [
+        "scripts/build_silver.py",
+        "--stream-id",
+        "integration-demo-repro-demo-01",
+        "--inspect-cut"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": "silver",
+      "args": [
+        "scripts/build_silver.py",
+        "--stream-id",
+        "integration-demo-repro-demo-01",
+        "--batch-id",
+        "59e962db1e20772be68ac3035478931af6ca90a2aacbc58f57ac2463e61abb25",
+        "--archive-cut",
+        "7846558d9804f5d7ba48b4acbd12e132c2ab719a3e24efd9dcf0cb7d8ef2120f"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "gold",
+      "args": [
+        "scripts/build_gold.py",
+        "--silver-publication-id",
+        "4de67955438459102b5f7b13391cd61295c7c3172bec6d9e1bd74e038606782c"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "anomalies",
+      "args": [
+        "scripts/build_cost_anomalies.py",
+        "--gold-publication-id",
+        "56594a1ca4e221939222ebbdf7ca9facadcf01a55980644fc2523b072bb9e7e4",
+        "--window-days",
+        "28",
+        "--min-observations",
+        "7",
+        "--score-threshold",
+        "3.5"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "serving",
+      "args": [
+        "scripts/serve_finops.py",
+        "load",
+        "--gold-publication-id",
+        "56594a1ca4e221939222ebbdf7ca9facadcf01a55980644fc2523b072bb9e7e4"
+      ],
+      "exit_code": 0,
+      "status": "loaded"
+    },
+    {
+      "step": "queries",
+      "args": [
+        "scripts/serve_finops.py",
+        "query",
+        "--gold-publication-id",
+        "56594a1ca4e221939222ebbdf7ca9facadcf01a55980644fc2523b072bb9e7e4",
+        "--org-id",
+        "demo-org",
+        "--service",
+        "compute",
+        "--start",
+        "2025-07-30",
+        "--end",
+        "2025-08-04",
+        "--detail",
+        "2025-08-02",
+        "--report-name",
+        "queries"
+      ],
+      "exit_code": 0,
+      "status": "verified"
+    }
+  ],
+  "demo_id": "repro-demo-01",
+  "dataset_manifest_sha256": "2d66220dca213b4f7bb8fd92d5b8d26e6533b6cea03cd830a98ee97fa997adb0",
+  "lake": "/lake/demos/repro-demo-01/work/lake",
+  "raw_job_reports": "/lake/demos/repro-demo-01/work/runs/restart/job-reports",
+  "ids": {
+    "batch": "59e962db1e20772be68ac3035478931af6ca90a2aacbc58f57ac2463e61abb25",
+    "stream": "integration-demo-repro-demo-01",
+    "archive_cut": "7846558d9804f5d7ba48b4acbd12e132c2ab719a3e24efd9dcf0cb7d8ef2120f",
+    "silver": "4de67955438459102b5f7b13391cd61295c7c3172bec6d9e1bd74e038606782c",
+    "gold": "56594a1ca4e221939222ebbdf7ca9facadcf01a55980644fc2523b072bb9e7e4",
+    "anomalies": "a1ef84ac32fd02d81178f69ca272418480ea154306232b593bfa595184668906"
+  },
+  "activity": {
+    "batch": "created",
+    "silver": "created",
+    "gold": "created",
+    "anomalies": "created",
+    "new_jsonl": 2,
+    "archive_input_rows": 17,
+    "dedup_input_rows": 17,
+    "astra": "loaded",
+    "astra_upserted_rows": 14
+  },
+  "verified": {
+    "csv_inputs": {
+      "customers_orgs": {
+        "source_file": "datalake/landing/customers_orgs.csv",
+        "sha256": "fa9aa5ab55b61c81fc019e85b3b7ebf6be76d647def98506cdf075486d2d052e",
+        "bytes": 193,
+        "input_rows": 1
+      },
+      "users": {
+        "source_file": "datalake/landing/users.csv",
+        "sha256": "15f5191133e59ee806ce42c5587556ddf5e66d92f1ef191d3b542bbbc71aa40d",
+        "bytes": 130,
+        "input_rows": 1
+      },
+      "billing_monthly": {
+        "source_file": "datalake/landing/billing_monthly.csv",
+        "sha256": "dec5ac4cb2810f30b996abb26567a7d6002342093ba426ff13c883a4fc8b0de7",
+        "bytes": 126,
+        "input_rows": 1
+      },
+      "resources": {
+        "source_file": "datalake/landing/resources.csv",
+        "sha256": "07d6e310f8636901bfd372cc430cd302b492b2541a48482925b308d4d1db1430",
+        "bytes": 234,
+        "input_rows": 3
+      }
+    },
+    "jsonl_files": 2,
+    "jsonl_inventory_sha256": "d1c8637fb6b482c8243216abbd9ea6d01179311fa73b863f165c49ce0456cfb4",
+    "stream_audit": {
+      "archive_rows": 17,
+      "candidate_rows": 16,
+      "candidate_rows_without_conflicts": 16,
+      "conflicting_ids": 0,
+      "equivalent_repeat_rows": 1,
+      "eligible_rows_not_emitted": 0,
+      "errors_by_rule": {},
+      "schema_versions": {
+        "2": 12,
+        "1": 5
+      }
+    },
+    "query_ids": {
+      "archive_query": "d1464348-6435-41ab-958d-04ec471a85f0",
+      "dedup_query": "13daeda1-94a0-444d-a234-3efa89c64e51"
+    },
+    "manifests_sha256": {
+      "batch": "d1ecf3a0976143bca789d8c90a19d38177ee4f18802d2d5af642551ca2be1e11",
+      "silver": "dbe961b19861a65de575970350c4d471b13c48ee8349d9ef99b9a2f847214ec3",
+      "gold": "bf638e0ea587db83440a1360c491615c3dc2e4038468a4d5a01363797b771f20",
+      "anomalies": "5378c6ed1a9ce758581b6dc9d49b626d1d169631e491c97d56b7742c33c07e91"
+    },
+    "bronze_batch_rows": {
+      "customers_orgs": 1,
+      "users": 1,
+      "billing_monthly": 1,
+      "resources": 3
+    },
+    "unique_grains": {
+      "usage_events": 16,
+      "customers_orgs": 1,
+      "resources": 3,
+      "org_daily_usage_by_service": 14,
+      "cost_anomaly_mart": 14
+    },
+    "quarantine_rows": 2,
+    "silver_gold": {
+      "silver_events": 16,
+      "gold_silver_events": 16,
+      "measures": {
+        "daily_cost_usd": {
+          "silver_valid_contributions": 15,
+          "gold_valid_contributions": 15,
+          "silver_total": "208.750000000000",
+          "gold_total": "208.750000000000"
+        },
+        "requests": {
+          "silver_valid_contributions": 13,
+          "gold_valid_contributions": 13,
+          "silver_total": "1269.000000000000",
+          "gold_total": "1269.000000000000"
+        },
+        "cpu_hours": {
+          "silver_valid_contributions": 1,
+          "gold_valid_contributions": 1,
+          "silver_total": "1.250000000000",
+          "gold_total": "1.250000000000"
+        },
+        "storage_gb_hours": {
+          "silver_valid_contributions": 1,
+          "gold_valid_contributions": 1,
+          "silver_total": "6.500000000000",
+          "gold_total": "6.500000000000"
+        },
+        "carbon_kg": {
+          "silver_valid_contributions": 12,
+          "gold_valid_contributions": 12,
+          "silver_total": "1.500000000000",
+          "gold_total": "1.500000000000"
+        },
+        "genai_tokens": {
+          "silver_valid_contributions": 1,
+          "gold_valid_contributions": 1,
+          "silver_total": "128",
+          "gold_total": "128"
+        }
+      }
+    },
+    "anomaly_quality": {
+      "evaluated_rows": 4,
+      "not_evaluable_rows": 10,
+      "anomalies": 1,
+      "origin_quality_limitation": null,
+      "by_reason": [
+        {
+          "evaluation_state": "evaluated",
+          "evaluation_reason": "above_threshold",
+          "cost_coverage_state": "complete",
+          "count": 1
+        },
+        {
+          "evaluation_state": "evaluated",
+          "evaluation_reason": "at_or_below_threshold",
+          "cost_coverage_state": "complete",
+          "count": 3
+        },
+        {
+          "evaluation_state": "not_evaluable",
+          "evaluation_reason": "incomplete_cost_coverage",
+          "cost_coverage_state": "partial",
+          "count": 1
+        },
+        {
+          "evaluation_state": "not_evaluable",
+          "evaluation_reason": "insufficient_history",
+          "cost_coverage_state": "complete",
+          "count": 9
+        }
+      ]
+    },
+    "astra_readback": {
+      "rows_verified": 14,
+      "partitions_verified": 4,
+      "cost_partial_rows": 1,
+      "cost_zero_rows": 1,
+      "cost_null_rows": 0
+    },
+    "astra_query_results_sha256": "5b601335e234fabe938e707a57b3b48e72aeacfd75e2ded95bf4d47a51be5b06",
+    "astra_range": {
+      "start": "2025-07-30",
+      "end": "2025-08-04",
+      "rows_verified": 6,
+      "sample": [
+        {
+          "event_date": "2025-07-30",
+          "daily_cost_usd": "9.000000000000",
+          "requests": "106.000000000000"
+        },
+        {
+          "event_date": "2025-07-31",
+          "daily_cost_usd": "11.000000000000",
+          "requests": "107.000000000000"
+        },
+        {
+          "event_date": "2025-08-01",
+          "daily_cost_usd": "100.000000000000",
+          "requests": "108.000000000000"
+        },
+        {
+          "event_date": "2025-08-02",
+          "daily_cost_usd": "10.000000000000",
+          "requests": "112.000000000000"
+        },
+        {
+          "event_date": "2025-08-03",
+          "daily_cost_usd": "12.500000000000",
+          "requests": "110.000000000000"
+        },
+        {
+          "event_date": "2025-08-04",
+          "daily_cost_usd": "10.000000000000",
+          "requests": "111.000000000000"
+        }
+      ]
+    },
+    "astra_detail": {
+      "event_date": "2025-08-02",
+      "daily_cost_usd": "10.000000000000",
+      "requests": "112.000000000000",
+      "daily_cost_usd_coverage": {
+        "eligible": 2,
+        "valid": 1,
+        "quarantined": 1,
+        "absent": 0,
+        "valid_fraction": 0.5,
+        "state": "partial"
+      }
+    }
+  },
+  "status": "passed",
+  "duration_seconds": 145.504
+}

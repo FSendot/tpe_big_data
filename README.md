@@ -81,6 +81,22 @@ separa lo verificado de las decisiones pendientes. El
 [backlog de la final](docs/segunda-entrega.md#backlog-para-la-entrega-final)
 prioriza las cuatro consultas obligatorias restantes y los artefactos de defensa.
 
+### Demo reducida
+
+Con el runtime construido y Astra configurado, ejecutar desde la raíz.
+La muestra sintética y sus informes quedan aislados bajo
+`/lake/demos/finops-demo/`.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/demo_sample.py generate --demo-id finops-demo
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name first
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name repeat --compare-to first
+```
+
+Para empezar otra demo usar un ID nuevo. Para reiniciar el mismo ID, seguir
+el [procedimiento de limpieza con dry-run](docs/segunda-entrega.md#muestra-reducida-y-reinicio-seguro).
+La limpieza conserva las publicaciones de Astra.
+
 ## Convenciones del repositorio
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.

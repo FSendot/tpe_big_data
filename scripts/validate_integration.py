@@ -1,6 +1,7 @@
 """Ejecuta los jobs existentes, comprueba sus contratos y compara reintentos."""
 
 import argparse
+from contextlib import nullcontext
 from datetime import date
 import json
 import os
@@ -17,6 +18,7 @@ from pyspark.sql import functions as F
 from cloud_analytics import anomalies, gold
 from cloud_analytics.bronze import fingerprint
 from cloud_analytics.config import load_settings
+from cloud_analytics.demo import DemoError, begin_work, checked_path, read_manifest, workspace_for
 from cloud_analytics.finops_serving import CqlStore, ServingLoadError, decode_row, load_gold, publish, spark_rows
 from cloud_analytics.serving import serving_session
 from cloud_analytics.silver import digest
@@ -68,9 +70,11 @@ class Jobs:
         return data
 
 
-def validation_config(base_path, lake, reports, target):
+def validation_config(base_path, lake, reports, target, dataset=None):
     raw = tomllib.loads(base_path.read_text(encoding="utf-8"))
     raw.update(lake_root=str(lake), evidence_root=str(reports))
+    if dataset is not None:
+        raw["dataset_root"] = str(dataset)
     sections = [[f"{key} = {json.dumps(value)}" for key, value in raw.items() if not isinstance(value, dict)]]
     sections.extend([f"[{table}]", *(f"{key} = {json.dumps(value)}" for key, value in fields.items())]
                     for table, fields in raw.items() if isinstance(fields, dict))
@@ -249,38 +253,67 @@ def compare_retry(first, repeat):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--validation-id", required=True)
+    scope = parser.add_mutually_exclusive_group(required=True)
+    scope.add_argument("--validation-id")
+    scope.add_argument("--demo-id")
     parser.add_argument("--report-name", required=True)
     parser.add_argument("--compare-to")
     parser.add_argument("--exercise-serving-recovery", action="store_true")
-    parser.add_argument("--org-id", default="org_he7ur23g")
-    parser.add_argument("--service", default="compute")
-    parser.add_argument("--start", type=date.fromisoformat, default=date(2025, 7, 29))
-    parser.add_argument("--end", type=date.fromisoformat, default=date(2025, 8, 4))
-    parser.add_argument("--detail", type=date.fromisoformat, default=date(2025, 8, 3))
+    parser.add_argument("--org-id")
+    parser.add_argument("--service")
+    parser.add_argument("--start", type=date.fromisoformat)
+    parser.add_argument("--end", type=date.fromisoformat)
+    parser.add_argument("--detail", type=date.fromisoformat)
     args = parser.parse_args()
-    names = [args.validation_id, args.report_name] + ([args.compare_to] if args.compare_to else [])
+    names = [args.validation_id or args.demo_id, args.report_name] + ([args.compare_to] if args.compare_to else [])
     if any(not re.fullmatch(r"[a-zA-Z0-9_-]{1,64}", name) for name in names):
         parser.error("IDs y nombres deben ser simples y tener hasta 64 caracteres")
-    if not args.start <= args.detail <= args.end or (args.compare_to and args.exercise_serving_recovery):
+    if args.compare_to and args.exercise_serving_recovery:
         parser.error("rango o combinación de opciones inválidos")
 
     base_path = Path(os.environ.get("APP_CONFIG", "config/runtime.toml"))
     base = load_settings(base_path)
-    root = base.lake_root / "integration" / args.validation_id
-    reports = base.evidence_root / "integration"
-    reports.mkdir(parents=True, exist_ok=True)
+    try:
+        demo = workspace_for(base, args.demo_id) if args.demo_id else None
+    except DemoError as error:
+        parser.error(str(error))
+    if demo:
+        args.validation_id = f"demo-{args.demo_id}"
+    root = demo.work if demo else base.lake_root / "integration" / args.validation_id
+    reports = demo.reports if demo else base.evidence_root / "integration"
     output = reports / f"{args.report_name}.json"
     started = monotonic()
     report = {"validation_id": args.validation_id, "kind": "real_dataset_and_astra", "steps": []}
-    report_lock = base.lake_root / "integration" / ".report-locks" / f"{args.report_name}.lock"
-    with lock_at(report_lock), lock_at(root / "integration.lock"):
+    report_lock = demo.lock if demo else base.lake_root / "integration" / ".report-locks" / f"{args.report_name}.lock"
+    with lock_at(report_lock), (nullcontext() if demo else lock_at(root / "integration.lock")):
         if output.exists():
             parser.error("el informe ya existe; elegir otro nombre")
         run = root / "runs" / args.report_name
+        defaults = {"org_id": "org_he7ur23g", "service": "compute",
+                    "start": date(2025, 7, 29), "end": date(2025, 8, 4), "detail": date(2025, 8, 3)}
+        if demo:
+            try:
+                defaults = read_manifest(demo)["queries"]
+                for name in ("start", "end", "detail"):
+                    defaults[name] = date.fromisoformat(defaults[name])
+                if args.compare_to and not (root / "lake").is_dir():
+                    raise DemoError("demo_retry_needs_existing_execution")
+                for path in (reports, output, run, root / "lake"):
+                    checked_path(path)
+                begin_work(demo)
+                report.update(kind="synthetic_demo_and_astra", demo_id=demo.demo_id,
+                              dataset_manifest_sha256=fingerprint(demo.dataset / "manifest.json"))
+            except DemoError as error:
+                parser.error(str(error))
+        for key, value in defaults.items():
+            if getattr(args, key) is None:
+                setattr(args, key, value)
+        if not args.start <= args.detail <= args.end:
+            parser.error("rango o combinación de opciones inválidos")
+        reports.mkdir(parents=True, exist_ok=True)
         run.mkdir(parents=True, exist_ok=False)
         config = run / "runtime.toml"
-        validation_config(base_path, root / "lake", run / "job-reports", config)
+        validation_config(base_path, root / "lake", run / "job-reports", config, dataset=demo.dataset if demo else None)
         report.update(lake=str(root / "lake"), raw_job_reports=str(run / "job-reports"))
         try:
             baseline = read_json(reports / f"{args.compare_to}.json") if args.compare_to else None

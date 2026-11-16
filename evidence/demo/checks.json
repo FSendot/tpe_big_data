@@ -1,0 +1,72 @@
+{
+  "kind": "synthetic_demo_with_astra",
+  "anomaly_cases": [
+    {
+      "event_date": "2025-07-24",
+      "daily_cost_usd": "0E-12",
+      "history_observations": 0,
+      "is_anomaly": null,
+      "evaluation_reason": "insufficient_history",
+      "evaluation_state": "not_evaluable"
+    },
+    {
+      "event_date": "2025-08-01",
+      "daily_cost_usd": "100.000000000000",
+      "history_observations": 8,
+      "is_anomaly": true,
+      "evaluation_reason": "above_threshold",
+      "evaluation_state": "evaluated"
+    },
+    {
+      "event_date": "2025-08-02",
+      "daily_cost_usd": "10.000000000000",
+      "history_observations": 9,
+      "is_anomaly": null,
+      "evaluation_reason": "incomplete_cost_coverage",
+      "evaluation_state": "not_evaluable"
+    }
+  ],
+  "quarantine_reasons": [
+    "missing_unit",
+    "negative_cost_pending"
+  ],
+  "cleanup": {
+    "dry_run": {
+      "status": "dry-run",
+      "demo_id": "repro-demo-01",
+      "delete_local": [
+        "/lake/demos/repro-demo-01/work"
+      ],
+      "preserve_local": [
+        "/lake/demos/repro-demo-01/dataset",
+        "/lake/demos/repro-demo-01/reports",
+        "/lake/demos/repro-demo-01/work-owner.json"
+      ],
+      "astra": "preserved_all_publication_rows_and_markers"
+    },
+    "applied": {
+      "status": "cleaned",
+      "demo_id": "repro-demo-01",
+      "delete_local": [
+        "/lake/demos/repro-demo-01/work"
+      ],
+      "preserve_local": [
+        "/lake/demos/repro-demo-01/dataset",
+        "/lake/demos/repro-demo-01/reports",
+        "/lake/demos/repro-demo-01/work-owner.json"
+      ],
+      "astra": "preserved_all_publication_rows_and_markers"
+    },
+    "traversal_rejected": "invalid_demo_id",
+    "foreign_id_rejected": "demo_manifest_missing",
+    "subsequent_plan_empty": true,
+    "original_landing_files_verified": 127,
+    "original_checkpoints_publication_and_evidence_verified": true,
+    "demo_dataset_and_compact_reports_preserved": true,
+    "previous_demo_publication_still_complete_in_astra": "20c03a56cab187473cfe99c282c5d05f744ccc09ca377d064ff68dda0717de91"
+  },
+  "restart": {
+    "same_dataset_and_business_results": true,
+    "new_gold_id": "56594a1ca4e221939222ebbdf7ca9facadcf01a55980644fc2523b072bb9e7e4"
+  }
+}

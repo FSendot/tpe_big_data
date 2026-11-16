@@ -688,6 +688,65 @@ Las interrupciones de streaming y Silver se reproducen con la suite
 sintética. La prueba de fallo real en Astra se puede agregar con
 `--exercise-serving-recovery` sólo al primer comando de un corte nuevo.
 
+### Muestra reducida y reinicio seguro
+
+`demo_sample.py` genera una muestra sintética con fechas fijas del
+24/07 al 04/08/2025. Usa los cuatro contratos CSV de Bronze y dos
+archivos JSONL v1/v2 con organizaciones y recursos vinculados. El manifiesto
+registra el origen, los SHA-256 y los casos de demo. Generar otra vez el mismo
+ID verifica y reutiliza sus bytes. Si falta el ZIP del campus, se puede
+usar `DATASET_PATH=./data` en el `.env` local para satisfacer el bind mount
+de Compose. En modo demo el validador selecciona su propia entrada generada.
+
+La serie `demo-org`/compute tiene un pico evaluable el 01/08, días iniciales
+con historial insuficiente, un costo cero y dos incidencias por medida.
+El rango CQL del 30/07 al 04/08 cruza meses. El detalle del 02/08 tiene
+costo parcial. El manifiesto fija esos parámetros por defecto. Se pueden
+sobrescribir con `--org-id`, `--service`, `--start`, `--end` y `--detail`
+si se mantienen iguales en el reintento.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/demo_sample.py generate --demo-id finops-demo
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name first
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name repeat --compare-to first
+```
+
+El reintento usa el mismo ID, checkpoints y publicaciones. Si la primera
+corrida se interrumpió, usar un informe nuevo y omitir `--compare-to` hasta
+tener una corrida exitosa. Para un arranque aislado en paralelo a otra
+demo, elegir un ID nuevo en ambos comandos. La demo escribe sus informes
+compactos en `/lake/demos/<id>/reports`; cada job usa su configuración e
+informes bajo `work/runs`. Los informes por etapa del dataset completo
+conservan sus rutas.
+
+Para reiniciar el mismo ID, revisar el plan antes de aplicar. El comando
+valida una ruta absoluta bajo `/lake/demos/<id>/work`, la pertenencia
+al ID y el manifiesto de la muestra. Rechaza enlaces simbólicos, montajes
+internos y rutas fuera del área administrada. Generación, ejecución y
+limpieza comparten un lock por demo.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/demo_sample.py clean --demo-id finops-demo --dry-run
+docker compose run --rm --no-deps runtime python scripts/demo_sample.py clean --demo-id finops-demo --apply
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --demo-id finops-demo --report-name restart
+```
+
+`--apply` retira el Lake, los checkpoints y los informes detallados
+de esa demo. Conserva su dataset, manifiesto e informes compactos, además
+de Landing original, secretos y otras ejecuciones. Si la limpieza local se
+interrumpe, repetir el plan y la aplicación antes de reiniciar. En Astra
+permanecen las filas y marcadores existentes, incluso los `loading`.
+Cada arranque limpio publica un nuevo ID; el informe anterior conserva el
+ID previo para auditoría. [Evidencia de la muestra y las pruebas](../evidence/demo/README.md).
+
+La referencia conceptual fue el commit
+`e9836e8d2fbb0c3a25c239b8565393ee4672fef6` del repositorio `bigdata`.
+Se consultaron `scripts/bootstrap_sample_landing.py`, `scripts/run_mvp.py`,
+`README.md` y `docs/segundo_parcial/idempotencia.md` con `git show`.
+Se adaptaron la fecha fija y el ensayo de dos corridas, con los contratos,
+publicaciones y controles de este proyecto. No se incorporó código de la
+referencia.
+
 ### Backlog para la entrega final
 
 El orden del backlog queda propuesto para revisión con el feedback de la
@@ -703,8 +762,8 @@ de la final. [Evidencia de la consulta ya disponible](../evidence/serving/README
 | Obligatorio 3 | Tickets críticos, tasa de SLA y mart de Soporte | Ingesta de `support_tickets.csv`, severidad, indicador SLA y cobertura de CSAT | Consulta diaria de 30 días en Astra con conteos y tasa conciliados y nulos preservados. | Por asignar |
 | Obligatorio 4 | Revenue mensual en USD con créditos, impuestos y FX | Billing Bronze, criterios para créditos vacíos, montos negativos y tipos de cambio | Mart organización–mes y consulta en Astra con conversión trazable, parciales e importes conciliados. | Por asignar |
 | Obligatorio 5 | Tokens GenAI y costo diario estimado | Contribuciones GenAI de Silver, regla explícita de costo y cobertura | Mart organización–día y consulta verificable en Astra; documentar cómo se obtiene el costo y qué aportes faltan. | Por asignar |
-| Obligatorio 6 | Operación, seguridad y cierre de evidencias | Marts y consultas finales, política de retención, configuración externalizada | Probar reinicio y limpieza controlada, registrar tamaños, conteos y errores, y verificar que informes y repositorio excluyan secretos. | Operación y gobierno (por asignar) |
-| Obligatorio 7 | Reproducción y defensa de la final | Cinco consultas, diccionario de datos, arquitectura final y resultados integrados | Validar el Quickstart desde un entorno limpio, preparar un dataset reducido reproducible, conservar CQL y salidas de las cinco consultas, y completar presentación, video y defensa remota. | Validación y documentación (por asignar) |
+| Obligatorio 6 | Operación, seguridad y cierre de evidencias | Marts y consultas finales, política de retención, configuración externalizada | Extender la verificación de reinicio y limpieza local de demo al alcance final, definir la retención de publicaciones Astra y registrar tamaños, conteos y errores sin exponer secretos. | Operación y gobierno (por asignar) |
+| Obligatorio 7 | Reproducción y defensa de la final | Cinco consultas, diccionario de datos, arquitectura final y resultados integrados | Validar el Quickstart desde un entorno limpio, ampliar la muestra reducida a los marts finales, conservar CQL y salidas de las cinco consultas, y completar presentación, video y defensa remota. | Validación y documentación (por asignar) |
 | Deseable | Medir desempeño y ensayar la demo reducida | Integración final, casos de cobertura y criterio de medición | Repetir la demo con tiempos y recursos medidos. Revisar el objetivo operativo con mediciones de frescura y backlog. | Por asignar |
 | Fuera de alcance del MVP final propuesto | Migrar a HDFS o activar serving operativo por hora, rankings D/D−1 o dashboards adicionales | Revisión de alcance, demanda y pruebas de escala | Mantenerlos como propuestas hasta justificar su incorporación sin comprometer los requisitos obligatorios. | Por asignar |
 
