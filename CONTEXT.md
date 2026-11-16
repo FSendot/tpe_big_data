@@ -30,11 +30,11 @@ recuperación. `usage-v1` corresponde a la prueba por etapas y
 
 El equipo está integrado por Francisco Sendot y Santos Galarraga. La primera
 entrega contó con la contribución principal de Francisco; la implementación
-posterior desarrolla esa base. Las responsabilidades se describen por rol,
-con asignaciones nominales pendientes en el backlog. La política por zona,
-el cierre registrado y la limpieza
-controlada están en la primera entrega. La limpieza automática y los
-controles de producción quedan pendientes.
+posterior desarrolla esa base. El backlog de la segunda entrega propone
+responsables para cada tarea futura. La política por zona, el cierre
+registrado y la limpieza controlada están en la primera entrega. La
+limpieza automática y los controles de producción quedan pendientes.
+[Reparto propuesto](docs/segunda-entrega.md#backlog-para-la-entrega-final).
 [Retención y operación](docs/primera-entrega.md#retención-y-operación).
 
 ## Vocabulario
