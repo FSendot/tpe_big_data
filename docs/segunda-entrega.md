@@ -529,7 +529,69 @@ La evaluación de precisión y recall requiere etiquetas. La ventana no
 ajusta por estacionalidad o cambios de nivel.
 [Evidencia del análisis estadístico](../evidence/anomalies/README.md).
 
+## 6. Serving en AstraDB y consultas CQL
+
+La consigna §§4.4 y 6.2 permite la carga desde Spark con driver y exige
+una tabla orientada a consultas y dos consultas con resultados. Se usa
+el keyspace de la sección 1 con el driver Python que ya incluye el runtime.
+El [esquema CQL](../config/finops-serving.cql) crea el mart y la tabla mínima
+de control. Se necesita acceso CQL de lectura, escritura y creación de tablas
+en ese keyspace. El Secure Connect Bundle se sigue leyendo del montaje
+de sólo lectura y el driver extrae su contenido en un temporal.
+
+### Consultas y grano
+
+El mart usa `PRIMARY KEY ((publication_id, org_id, service, usage_month), event_date)`.
+La publicación fija el snapshot. Organización y servicio seleccionan la
+serie. El mes UTC limita cada partición a 31 filas y la fecha como clustering
+permite un rango ordenado o una búsqueda exacta. `usage_month` es el primer
+día del mes. Si el rango abarca más de un mes, el script consulta una
+partición por mes y concatena los resultados en orden.
+
+| Consulta FinOps | Predicados CQL |
+| --- | --- |
+| Costo y consumo diario de una organización y servicio en un rango inclusivo | Clave de partición completa y `event_date >= ? AND event_date <= ?` |
+| Detalle de una fecha de la misma serie, incluidas las coberturas | Clave de partición completa y `event_date = ?` |
+
+Ambas leen importes y medidas como `decimal`. Cada tupla de cobertura
+contiene, en orden, `eligible`, `valid`, `quarantined`, `absent`,
+`valid_fraction` y `state`. Los nulos y ceros se conservan. El resultado
+incluye los IDs de Gold y Silver y los conteos de contexto del grupo.
+
+### Carga y estado
+
+El job Spark valida identidad, checksums, cantidad de filas y grano de Gold
+antes de abrir la conexión. Reparte y ordena por clave y entrega una partición
+Spark por vez al driver con `toLocalIterator()`. Usa sentencias preparadas,
+lotes de parámetros de hasta 64 y un máximo de 16 operaciones CQL concurrentes.
+El mecanismo aprovecha el runtime local y mantiene acotada la memoria del
+driver.
+
+Una inserción condicional en `finops_publications` vincula el ID al hash del
+manifiesto de Gold, al esquema CQL y al conteo esperado. Durante la carga
+queda en `loading`. Se relee cada partición declarada en Gold y se comparan
+todas las filas, valores y coberturas antes de pasar a `complete` mediante
+otra escritura condicional. Una interrupción puede dejar filas físicas en
+Astra, pero el comando de consulta exige el estado `complete` con la
+identidad y el conteo correctos. Aplicar ese mismo control al consultar
+directamente con CQL.
+
+Al reintentar una carga incompleta, los upserts usan las mismas claves. Si
+ya está completa, se repite la verificación sin reescribir el mart.
+La comprobación recorre las particiones de la publicación fuente y detecta
+filas adicionales dentro de esas particiones. El proceso supone que el
+mart se escribe mediante este cargador. Usar IDs explícitos evita mezclar
+snapshots y permite consultar una publicación anterior.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py load --gold-publication-id <publication_id> --report-name first
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py query --gold-publication-id <publication_id> --org-id <org_id> --service <service> --start <yyyy-mm-dd> --end <yyyy-mm-dd> --detail <yyyy-mm-dd> --report-name queries
+```
+
+Los comandos exactos, las consultas CQL y las verificaciones están en la
+[evidencia de serving](../evidence/serving/README.md).
+El driver se configura según la [guía de Astra para Python](https://docs.datastax.com/en/astra-db-serverless/drivers/python-driver.html).
+
 ## Secciones siguientes
 
-Pendientes, en orden: 6. serving del
-mart y consultas; 7. integración e idempotencia; 8. documentación final y backlog.
+Pendientes, en orden: 7. integración e idempotencia; 8. documentación final y backlog.

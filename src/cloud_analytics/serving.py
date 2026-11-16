@@ -1,15 +1,20 @@
-"""Prueba CQL de sólo lectura. Nunca imprime credenciales ni endpoints."""
+"""Conexión CQL del runtime. Nunca imprime credenciales ni endpoints."""
 
+from contextlib import contextmanager
 import logging
 import os
 from pathlib import Path
 
 
-def check_serving():
+class MissingAstraConfiguration(ValueError):
+    pass
+
+
+@contextmanager
+def serving_session(mode):
     from cassandra.auth import PlainTextAuthProvider
     from cassandra.cluster import Cluster
 
-    mode = os.environ.get("SERVING_MODE", "local")
     if mode not in {"local", "astra"}:
         raise ValueError("SERVING_MODE debe ser local o astra.")
     if mode == "astra":
@@ -17,7 +22,7 @@ def check_serving():
         bundle = os.environ.get("ASTRA_BUNDLE", "")
         keyspace = os.environ.get("ASTRA_KEYSPACE", "")
         if not token or not keyspace or not Path(bundle).is_file():
-            return {"status": "pending", "mode": mode, "reason": "Faltan token, bundle o keyspace de Astra."}
+            raise MissingAstraConfiguration("Faltan token, bundle o keyspace de Astra.")
 
     # Los errores del driver pueden contener endpoints. El informe sólo expone
     # la clase del error; no serializa excepciones ni variables de entorno.
@@ -35,15 +40,25 @@ def check_serving():
             )
         else:
             cluster = Cluster([os.environ.get("CASSANDRA_HOST", "cassandra")], connect_timeout=10)
-        session = cluster.connect(keyspace if mode == "astra" else None)
-        row = session.execute("SELECT release_version FROM system.local", timeout=15).one()
-        if row is None:
-            raise RuntimeError("No se recibió respuesta CQL.")
-        return {"status": "passed", "mode": mode, "release_version": row.release_version,
-                "query": "SELECT release_version FROM system.local", "read_only": True}
-    except Exception as error:
-        return {"status": "failed", "mode": mode, "error_type": type(error).__name__}
+        yield cluster.connect(keyspace if mode == "astra" else None)
     finally:
         if cluster is not None:
             cluster.shutdown()
         logger.setLevel(old_level)
+
+
+def check_serving():
+    mode = os.environ.get("SERVING_MODE", "local")
+    if mode not in {"local", "astra"}:
+        raise ValueError("SERVING_MODE debe ser local o astra.")
+    try:
+        with serving_session(mode) as session:
+            row = session.execute("SELECT release_version FROM system.local", timeout=15).one()
+            if row is None:
+                raise RuntimeError("No se recibió respuesta CQL.")
+            return {"status": "passed", "mode": mode, "release_version": row.release_version,
+                    "query": "SELECT release_version FROM system.local", "read_only": True}
+    except MissingAstraConfiguration as error:
+        return {"status": "pending", "mode": mode, "reason": str(error)}
+    except Exception as error:
+        return {"status": "failed", "mode": mode, "error_type": type(error).__name__}

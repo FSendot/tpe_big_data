@@ -1,0 +1,563 @@
+{
+  "mode": "astra",
+  "operation": "query",
+  "gold_publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+  "started_at": "2026-11-16T14:25:57.736564+00:00",
+  "gold_manifest_sha256": "05745459d734085f7c343454838e32157e0609bff4240e17336605acf0635674",
+  "expected_rows": 11050,
+  "serving_schema_sha256": "bbff2327249b24d78a56a2756abc55a565b10960b7480aea9971d8dd3273720e",
+  "status": "verified",
+  "state": "complete",
+  "queries": {
+    "range": {
+      "cql": "SELECT publication_id, org_id, service, usage_month, event_date, silver_publication_id, silver_event_count, unassigned_usage_events, excluded_event_ids, excluded_unidentified_fingerprints, daily_cost_usd, requests, cpu_hours, storage_gb_hours, carbon_kg, genai_tokens, daily_cost_usd_coverage, requests_coverage, cpu_hours_coverage, storage_gb_hours_coverage, carbon_kg_coverage, genai_tokens_coverage FROM org_daily_usage_by_service WHERE publication_id = ? AND org_id = ? AND service = ? AND usage_month = ? AND event_date >= ? AND event_date <= ?",
+      "org_id": "org_he7ur23g",
+      "service": "compute",
+      "start": "2025-07-29",
+      "end": "2025-08-04",
+      "rows_verified": 7,
+      "sample_rows": [
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-07-01",
+          "event_date": "2025-07-29",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 9,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "46.199200000000",
+          "requests": "503.000000000000",
+          "cpu_hours": "6.457700000000",
+          "storage_gb_hours": "26.390700000000",
+          "carbon_kg": "0.107170000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 9,
+            "valid": 9,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 4,
+            "valid": 4,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 2,
+            "valid": 2,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 9,
+            "valid": 9,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-07-01",
+          "event_date": "2025-07-30",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 9,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "60.135900000000",
+          "requests": "603.000000000000",
+          "cpu_hours": "3.180300000000",
+          "storage_gb_hours": "10.331500000000",
+          "carbon_kg": "0.123303000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 9,
+            "valid": 9,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 6,
+            "valid": 5,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.8333333333333334,
+            "state": "partial"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 2,
+            "valid": 2,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 1,
+            "valid": 1,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 9,
+            "valid": 9,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-07-01",
+          "event_date": "2025-07-31",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 12,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "54.666000000000",
+          "requests": "615.000000000000",
+          "cpu_hours": "15.591300000000",
+          "storage_gb_hours": "27.072200000000",
+          "carbon_kg": "0.131532000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 12,
+            "valid": 12,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 5,
+            "valid": 5,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 4,
+            "valid": 4,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 12,
+            "valid": 12,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-08-01",
+          "event_date": "2025-08-01",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 12,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "35.532400000000",
+          "requests": "363.000000000000",
+          "cpu_hours": "7.512500000000",
+          "storage_gb_hours": "68.843300000000",
+          "carbon_kg": "0.087871000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 12,
+            "valid": 12,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 4,
+            "valid": 4,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 5,
+            "valid": 5,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 12,
+            "valid": 12,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-08-01",
+          "event_date": "2025-08-02",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 3,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "1.970000000000",
+          "requests": null,
+          "cpu_hours": null,
+          "storage_gb_hours": "23.064200000000",
+          "carbon_kg": "0.004613000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 3,
+            "valid": 2,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.6666666666666666,
+            "state": "partial"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-08-01",
+          "event_date": "2025-08-03",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 6,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "40.429000000000",
+          "requests": "506.000000000000",
+          "cpu_hours": null,
+          "storage_gb_hours": "11.452000000000",
+          "carbon_kg": "0.129490000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 6,
+            "valid": 5,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.8333333333333334,
+            "state": "partial"
+          },
+          "requests_coverage": {
+            "eligible": 5,
+            "valid": 4,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.8,
+            "state": "partial"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 1,
+            "valid": 1,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 6,
+            "valid": 6,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        },
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-08-01",
+          "event_date": "2025-08-04",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 3,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "225.263700000000",
+          "requests": "112.000000000000",
+          "cpu_hours": null,
+          "storage_gb_hours": "0.151700000000",
+          "carbon_kg": "0.048230000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "requests_coverage": {
+            "eligible": 2,
+            "valid": 1,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.5,
+            "state": "partial"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 1,
+            "valid": 1,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 3,
+            "valid": 3,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        }
+      ],
+      "sample_limit": 7
+    },
+    "detail": {
+      "cql": "SELECT publication_id, org_id, service, usage_month, event_date, silver_publication_id, silver_event_count, unassigned_usage_events, excluded_event_ids, excluded_unidentified_fingerprints, daily_cost_usd, requests, cpu_hours, storage_gb_hours, carbon_kg, genai_tokens, daily_cost_usd_coverage, requests_coverage, cpu_hours_coverage, storage_gb_hours_coverage, carbon_kg_coverage, genai_tokens_coverage FROM org_daily_usage_by_service WHERE publication_id = ? AND org_id = ? AND service = ? AND usage_month = ? AND event_date = ?",
+      "org_id": "org_he7ur23g",
+      "service": "compute",
+      "date": "2025-08-03",
+      "rows_verified": 1,
+      "sample_rows": [
+        {
+          "publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+          "org_id": "org_he7ur23g",
+          "service": "compute",
+          "usage_month": "2025-08-01",
+          "event_date": "2025-08-03",
+          "silver_publication_id": "190b2e8ebbeb35f1eef60e5a45da48e343e0e119aab4451056862ffb0509daac",
+          "silver_event_count": 6,
+          "unassigned_usage_events": 0,
+          "excluded_event_ids": 0,
+          "excluded_unidentified_fingerprints": 0,
+          "daily_cost_usd": "40.429000000000",
+          "requests": "506.000000000000",
+          "cpu_hours": null,
+          "storage_gb_hours": "11.452000000000",
+          "carbon_kg": "0.129490000000",
+          "genai_tokens": null,
+          "daily_cost_usd_coverage": {
+            "eligible": 6,
+            "valid": 5,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.8333333333333334,
+            "state": "partial"
+          },
+          "requests_coverage": {
+            "eligible": 5,
+            "valid": 4,
+            "quarantined": 1,
+            "absent": 0,
+            "valid_fraction": 0.8,
+            "state": "partial"
+          },
+          "cpu_hours_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          },
+          "storage_gb_hours_coverage": {
+            "eligible": 1,
+            "valid": 1,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "carbon_kg_coverage": {
+            "eligible": 6,
+            "valid": 6,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": 1.0,
+            "state": "complete"
+          },
+          "genai_tokens_coverage": {
+            "eligible": 0,
+            "valid": 0,
+            "quarantined": 0,
+            "absent": 0,
+            "valid_fraction": null,
+            "state": "not_applicable"
+          }
+        }
+      ],
+      "sample_limit": 7
+    }
+  },
+  "duration_seconds": 18.827
+}

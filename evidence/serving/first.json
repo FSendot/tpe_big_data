@@ -1,0 +1,20 @@
+{
+  "mode": "astra",
+  "operation": "load",
+  "gold_publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+  "started_at": "2026-11-16T14:22:41.337979+00:00",
+  "gold_manifest_sha256": "05745459d734085f7c343454838e32157e0609bff4240e17336605acf0635674",
+  "expected_rows": 11050,
+  "serving_schema_sha256": "bbff2327249b24d78a56a2756abc55a565b10960b7480aea9971d8dd3273720e",
+  "status": "loaded",
+  "upserted_rows": 11050,
+  "state": "complete",
+  "verification": {
+    "rows_verified": 11050,
+    "partitions_verified": 524,
+    "cost_partial_rows": 213,
+    "cost_zero_rows": 6,
+    "cost_null_rows": 0
+  },
+  "duration_seconds": 164.242
+}

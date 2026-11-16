@@ -21,7 +21,7 @@ Hay diseño y una exploración reproducible de las ocho fuentes en
 Hay entorno, batch y streaming a Bronze y publicación batch de Silver y del mart Gold. El perfilador
 usa Python estándar, recibe la ruta del paquete
 y conserva los originales. La primera entrega se mantiene como antecedente.
-La implementación llega a la sección 5B de la segunda entrega. Entorno, contratos
+La implementación llega a la sección 6 de la segunda entrega. Entorno, contratos
 y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
 cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
 manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
@@ -36,6 +36,8 @@ La sección 5A toma una publicación Silver y versiona el mart diario FinOps
 con conciliación y cobertura por medida.
 La sección 5B toma una publicación Gold y versiona las señales estadísticas
 de costo con una ventana móvil retrospectiva.
+La sección 6 carga una publicación Gold del mart FinOps en Astra y habilita
+su lectura cuando los datos coinciden con Gold.
 La propuesta de tres queries, reconciliación y activación que sigue abajo es
 diseño futuro. Las publicaciones batch implementadas se describen en
 `docs/segunda-entrega.md`.

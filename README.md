@@ -108,6 +108,14 @@ Usar el `manifest.publication_id` del informe de Gold.
 docker compose run --rm runtime python scripts/build_cost_anomalies.py --gold-publication-id <publication_id>
 ```
 
+La [sección 6](docs/segunda-entrega.md#6-serving-en-astradb-y-consultas-cql)
+carga y verifica el mart diario en AstraDB. Usar las credenciales de la
+sección 1 y el `manifest.publication_id` de Gold.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/serve_finops.py load --gold-publication-id <publication_id>
+```
+
 ## Convenciones del repositorio
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
