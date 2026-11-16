@@ -477,7 +477,59 @@ y el SHA-256 del manifiesto Silver con el código y los checksums Gold.
 Repetir con el mismo origen y código verifica y reutiliza la salida.
 Los resultados están en la [evidencia de Gold](../evidence/gold/README.md).
 
+## 5B. Análisis estadístico de picos de costo
+
+`cost_anomaly_mart` conserva una fila por organización, fecha UTC y servicio
+de una publicación Gold explícita. Verifica su manifiesto y checksums.
+
+```sh
+docker compose run --rm runtime python scripts/build_cost_anomalies.py --gold-publication-id <publication_id> --window-days 28 --min-observations 7 --score-threshold 3.5
+```
+
+Para la fecha D, el historial usa únicamente costos completos observados
+entre D−28 y D−1 inclusive de la misma organización y servicio. La ventana
+abarca cuatro semanas calendario y exige al menos siete observaciones válidas.
+Se conservan los ceros observados y los días sin fila quedan fuera del
+historial. Los tres parámetros se pueden ajustar por comando.
+
+Se usa el score z modificado unilateral. La referencia es la mediana
+histórica y MAD es la mediana de las desviaciones absolutas respecto de
+esa mediana. Se calcula `0.6745 × (costo − mediana) / MAD` y se señala
+un pico si supera 3,5, equivalente a superar
+`mediana + 3.5 × MAD / 0.6745`. La mediana y la MAD reducen la influencia
+de extremos en series cortas. El umbral inicial adapta la referencia
+estadística a picos superiores y carece de calibración con etiquetas del
+dataset. [Guía de detección de valores atípicos de NIST](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm).
+
+| Motivo de fila no evaluable | Criterio |
+| --- | --- |
+| `incomplete_cost_coverage` | El costo actual tiene un estado de cobertura distinto de `complete`. |
+| `insufficient_history` | La ventana tiene menos observaciones elegibles que el mínimo. |
+| `zero_historical_mad` | La dispersión robusta es cero. Se conserva la referencia y el score queda nulo. |
+| `unlocated_gold_exclusions` o `gold_exclusion_metadata_unverified` | Se bloquea todo el corte si existen exclusiones sin ubicación o si faltan metadatos concluyentes. No es posible delimitar qué series afectan. |
+| `gold_coverage_state_unknown` o `gold_complete_cost_invalid` | El estado es desconocido o un costo declarado completo es nulo o negativo. |
+
+Las filas no evaluables tienen `is_anomaly` nulo. Una fila evaluada tiene
+un indicador booleano y su motivo, mediana, MAD, umbral superior y score.
+`history_observations` cuenta los costos previos elegibles, con cero cuando
+se bloquea el corte. El costo observado conserva su precisión decimal y
+la decisión compara valores decimales. Los diagnósticos numéricos se
+serializan como `double`. El mart conserva el ID de Gold, método y parámetros.
+
+La salida se publica por rename local en
+`/lake/gold/anomalies/publication_id=<id>/cost_anomaly_mart/`,
+particionada por fecha para podar lecturas. El ID fija la entrada, el código
+y los parámetros. Reejecutar verifica y reutiliza la publicación.
+
+El método es una regla estadística sin entrenamiento. La referencia se
+calcula directamente del historial de cada fila. Los picos son señales para
+investigar y los costos permanecen
+en Gold. La muestra permite verificar el cálculo y el volumen de señales.
+La evaluación de precisión y recall requiere etiquetas. La ventana no
+ajusta por estacionalidad o cambios de nivel.
+[Evidencia del análisis estadístico](../evidence/anomalies/README.md).
+
 ## Secciones siguientes
 
-Pendientes, en orden: 5B. anomalías; 6. serving del
+Pendientes, en orden: 6. serving del
 mart y consultas; 7. integración e idempotencia; 8. documentación final y backlog.

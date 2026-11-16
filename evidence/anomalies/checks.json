@@ -1,0 +1,11 @@
+{
+  "gold_publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+  "anomaly_publication_id": "e8d77cf7e7248a5546b4cb381578ff2b2641f82c8c8f52bac66fc1f40db0cbbe",
+  "gold_manifest_and_files_verified_after_run": true,
+  "same_manifest_on_retry": true,
+  "rows": 11050,
+  "unique_grain_keys": 11050,
+  "observed_cost_or_coverage_mismatches_against_gold": 0,
+  "history_count_mismatches_against_calendar_join": 0,
+  "invalid_flags": 0
+}

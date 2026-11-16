@@ -21,7 +21,7 @@ Hay diseño y una exploración reproducible de las ocho fuentes en
 Hay entorno, batch y streaming a Bronze y publicación batch de Silver y del mart Gold. El perfilador
 usa Python estándar, recibe la ruta del paquete
 y conserva los originales. La primera entrega se mantiene como antecedente.
-La implementación llega a la sección 5A de la segunda entrega. Entorno, contratos
+La implementación llega a la sección 5B de la segunda entrega. Entorno, contratos
 y batch están documentados en `docs/segunda-entrega.md`. La sección 2 publica
 cuatro fuentes juntas bajo `bronze/batch_id=<id>/<fuente>/ingest_date=...`, con
 manifiesto y rename local. Conserva errores en Bronze, raw y multiplicidad de
@@ -34,6 +34,8 @@ La sección 4 fija un batch y un corte Bronze y publica los maestros, los
 eventos con validez por medida y sus incidencias bajo un único manifiesto.
 La sección 5A toma una publicación Silver y versiona el mart diario FinOps
 con conciliación y cobertura por medida.
+La sección 5B toma una publicación Gold y versiona las señales estadísticas
+de costo con una ventana móvil retrospectiva.
 La propuesta de tres queries, reconciliación y activación que sigue abajo es
 diseño futuro. Las publicaciones batch implementadas se describen en
 `docs/segunda-entrega.md`.
@@ -246,7 +248,7 @@ reprocesadas. Tras cierre y margen de 30 días se coordina limpieza de Lake y se
 | genai_tokens_by_org_date | org_id, month, pub | date ASC | Tokens disponibles, costo registrado GenAI y cobertura de cada medida |
 | finops_daily_comparison | org_id, service, month, pub | date ASC | D/D−1, delta USD, porcentaje, base comparable y calidad |
 | finops_ranking_by_date | date, ranking_type, pub | rank ASC, org_id, service | Priorización entre organizaciones, por aumento USD o relativo; sólo comparaciones elegibles |
-| cost_anomaly_mart, futuro | org_id, service, month, pub | date ASC | Flag/score, método y contexto; no evaluable hasta definir método y base suficientes |
+| cost_anomaly_mart | org_id, service, month, pub | date ASC | Flag/score, método, parámetros, cobertura y motivo de evaluación |
 | hourly_head_by_org_day | org_id, date | hour ASC, service | Referencia activa por grupo, autoridad, generación, estado y corte |
 | hourly_usage_version | org_id, service, hour, version | metric, unit | Medidas de la versión horaria y su calidad; se consulta la versión resuelta por head |
 | publication_head | dataset_id | — | Publicación batch activa, corte, estado y generación; actualizaciones condicionales |

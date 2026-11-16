@@ -100,6 +100,14 @@ La [sección 5A](docs/segunda-entrega.md#5a-agregaciones-y-mart-gold) publica
 docker compose run --rm runtime python scripts/build_gold.py --silver-publication-id <publication_id>
 ```
 
+La [sección 5B](docs/segunda-entrega.md#5b-análisis-estadístico-de-picos-de-costo)
+publica `cost_anomaly_mart` con señales estadísticas y motivos de evaluación.
+Usar el `manifest.publication_id` del informe de Gold.
+
+```sh
+docker compose run --rm runtime python scripts/build_cost_anomalies.py --gold-publication-id <publication_id>
+```
+
 ## Convenciones del repositorio
 
 - Código y nombres derivados en `snake_case`; conservar los identificadores de origen.
