@@ -12,8 +12,9 @@ El flujo usa cuatro CSV batch y dos consultas streaming `availableNow`
 con checkpoints. Silver toma el archivo Bronze completo y el snapshot
 batch explícito, conforma organizaciones y recursos y separa incidencias en
 quarantine. Gold agrega el uso diario. Las anomalías quedan en Parquet como
-señales estadísticas. La aceptación docente como equivalente a ML sigue
-sin confirmación.
+señales estadísticas. Este análisis con mediana y MAD cubre el componente
+analítico; no es un modelo entrenado ni requiere presentarse como equivalente
+a ML. Sus resultados y limitaciones se documentan en la segunda entrega.
 
 El mart diario fue cargado y verificado en Astra. Su clave de partición
 es `(publication_id, org_id, service, usage_month)` y su clustering es
