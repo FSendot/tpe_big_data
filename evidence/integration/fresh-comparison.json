@@ -1,0 +1,17 @@
+{
+  "purpose": "compare_fresh_validation_against_existing_publications",
+  "outputs": {
+    "gold": {
+      "previous_publication_id": "ad9dcfe3db7eda46accbaa3c8a384b11c44589472ae8f13fd91d6c9efa931d52",
+      "validation_publication_id": "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb",
+      "differing_business_rows_excluding_lineage_id": 0,
+      "verified_previous_manifest_and_files": true
+    },
+    "anomalies": {
+      "previous_publication_id": "e8d77cf7e7248a5546b4cb381578ff2b2641f82c8c8f52bac66fc1f40db0cbbe",
+      "validation_publication_id": "a447481200b5cc6f3b17c47d2d9bd39facffd2d1598153a2743fdaccef89aca4",
+      "differing_business_rows_excluding_lineage_id": 0,
+      "verified_previous_manifest_and_files": true
+    }
+  }
+}

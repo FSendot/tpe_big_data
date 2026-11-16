@@ -1,0 +1,381 @@
+{
+  "validation_id": "section-7-v1",
+  "kind": "real_dataset_and_astra",
+  "steps": [
+    {
+      "step": "batch",
+      "args": [
+        "scripts/ingest_batch.py"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "replay",
+      "args": [
+        "scripts/replay_usage.py",
+        "--stream-id",
+        "integration-section-7-v1"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": "streaming",
+      "args": [
+        "scripts/ingest_stream.py",
+        "--stream-id",
+        "integration-section-7-v1"
+      ],
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "step": "archive_cut",
+      "args": [
+        "scripts/build_silver.py",
+        "--stream-id",
+        "integration-section-7-v1",
+        "--inspect-cut"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": "silver",
+      "args": [
+        "scripts/build_silver.py",
+        "--stream-id",
+        "integration-section-7-v1",
+        "--batch-id",
+        "bbdccc35eab9288ce7d018bca0ae19440c9d551ec18e55a882617b7336851dc4",
+        "--archive-cut",
+        "e0960f11fa400c4d59a8203c491856cd8d081fb7b317c8d029b78583dd76ddff"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "gold",
+      "args": [
+        "scripts/build_gold.py",
+        "--silver-publication-id",
+        "2ca4aa74f502b8319f6bc2e108bea8d3e7d407f81e623fe51073071745b06759"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "anomalies",
+      "args": [
+        "scripts/build_cost_anomalies.py",
+        "--gold-publication-id",
+        "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb",
+        "--window-days",
+        "28",
+        "--min-observations",
+        "7",
+        "--score-threshold",
+        "3.5"
+      ],
+      "exit_code": 0,
+      "status": "created"
+    },
+    {
+      "step": "query_while_loading",
+      "args": [
+        "scripts/serve_finops.py",
+        "query",
+        "--gold-publication-id",
+        "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb",
+        "--org-id",
+        "org_he7ur23g",
+        "--service",
+        "compute",
+        "--start",
+        "2025-07-29",
+        "--end",
+        "2025-08-04",
+        "--detail",
+        "2025-08-03",
+        "--report-name",
+        "loading"
+      ],
+      "exit_code": 1,
+      "status": "failed",
+      "stage": "publication_status",
+      "error_code": "publication_not_ready",
+      "error_type": null
+    },
+    {
+      "step": "serving",
+      "args": [
+        "scripts/serve_finops.py",
+        "load",
+        "--gold-publication-id",
+        "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb"
+      ],
+      "exit_code": 0,
+      "status": "loaded"
+    },
+    {
+      "step": "queries",
+      "args": [
+        "scripts/serve_finops.py",
+        "query",
+        "--gold-publication-id",
+        "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb",
+        "--org-id",
+        "org_he7ur23g",
+        "--service",
+        "compute",
+        "--start",
+        "2025-07-29",
+        "--end",
+        "2025-08-04",
+        "--detail",
+        "2025-08-03",
+        "--report-name",
+        "queries"
+      ],
+      "exit_code": 0,
+      "status": "verified"
+    }
+  ],
+  "lake": "/lake/integration/section-7-v1/lake",
+  "raw_job_reports": "/lake/integration/section-7-v1/runs/first/job-reports",
+  "ids": {
+    "batch": "bbdccc35eab9288ce7d018bca0ae19440c9d551ec18e55a882617b7336851dc4",
+    "stream": "integration-section-7-v1",
+    "archive_cut": "e0960f11fa400c4d59a8203c491856cd8d081fb7b317c8d029b78583dd76ddff",
+    "silver": "2ca4aa74f502b8319f6bc2e108bea8d3e7d407f81e623fe51073071745b06759",
+    "gold": "292555547697b324d286e33d3f4280ba71a2c07974a586e3959395228b1aa1cb",
+    "anomalies": "a447481200b5cc6f3b17c47d2d9bd39facffd2d1598153a2743fdaccef89aca4"
+  },
+  "serving_recovery": {
+    "backend": "astra",
+    "injection": "after_first_acknowledged_upsert",
+    "written_and_read_back": 1,
+    "expected_rows": 11050,
+    "state_after_failure": "loading",
+    "verified_rows_after_failure": null,
+    "query_rejected": "publication_not_ready",
+    "state_after_retry": "complete",
+    "rows_verified_after_retry": 11050
+  },
+  "activity": {
+    "batch": "created",
+    "silver": "created",
+    "gold": "created",
+    "anomalies": "created",
+    "new_jsonl": 120,
+    "archive_input_rows": 43200,
+    "dedup_input_rows": 43200,
+    "astra": "loaded",
+    "astra_upserted_rows": 11050
+  },
+  "verified": {
+    "csv_inputs": {
+      "customers_orgs": {
+        "source_file": "datalake/landing/customers_orgs.csv",
+        "sha256": "33b4acd3a86a9cc84ba2e5b18ea6ff92bdbc56ae420ccb89a2881f4f376cb364",
+        "bytes": 7746,
+        "input_rows": 80
+      },
+      "users": {
+        "source_file": "datalake/landing/users.csv",
+        "sha256": "e66c8cec889ed3699172315709e27da8fa1e64330cfb23db7dfbf781abade021",
+        "bytes": 70683,
+        "input_rows": 800
+      },
+      "billing_monthly": {
+        "source_file": "datalake/landing/billing_monthly.csv",
+        "sha256": "89662f497cf2ad464763e832175c4c94ea0790cf0a320be81a264649d74072cc",
+        "bytes": 15854,
+        "input_rows": 240
+      },
+      "resources": {
+        "source_file": "datalake/landing/resources.csv",
+        "sha256": "ff00868ae96ddfd7556e4aaeadbf66781181699da5428320f8725b527e7faaba",
+        "bytes": 36703,
+        "input_rows": 400
+      }
+    },
+    "jsonl_files": 120,
+    "jsonl_inventory_sha256": "a8d53b66a186c229517bfdb50c36925ac2d5e182598ead983c0c273d3e2d1418",
+    "stream_audit": {
+      "archive_rows": 43200,
+      "candidate_rows": 43200,
+      "candidate_rows_without_conflicts": 43200,
+      "conflicting_ids": 0,
+      "equivalent_repeat_rows": 0,
+      "eligible_rows_not_emitted": 0,
+      "errors_by_rule": {},
+      "schema_versions": {
+        "2": 32400,
+        "1": 10800
+      }
+    },
+    "query_ids": {
+      "archive_query": "dc880e6a-1af4-4ea7-a83e-6a35a259751e",
+      "dedup_query": "ba66194f-daa8-43be-bb47-e489dc2333a8"
+    },
+    "manifests_sha256": {
+      "batch": "e87e1b000d6a4288dedd67fe591b5b18a4d7a887df4183826dfdb2a2d69c2de1",
+      "silver": "de9ce5e7d4a89a7f967a7bd986b694dbdafcc30684a58524f1638f9e671b1928",
+      "gold": "1f91df6a4af8a417ceafc7b0fc057023c4f53dd8c3dea72b6cc8ed65b88d9dbe",
+      "anomalies": "dc733f981e88af19dcd6505c85a4e63b2de62593b963497874eadbdcdb9f92ba"
+    },
+    "bronze_batch_rows": {
+      "customers_orgs": 80,
+      "users": 800,
+      "billing_monthly": 240,
+      "resources": 400
+    },
+    "unique_grains": {
+      "usage_events": 43200,
+      "customers_orgs": 80,
+      "resources": 400,
+      "org_daily_usage_by_service": 11050,
+      "cost_anomaly_mart": 11050
+    },
+    "quarantine_rows": 3131,
+    "silver_gold": {
+      "silver_events": 43200,
+      "gold_silver_events": 43200,
+      "measures": {
+        "daily_cost_usd": {
+          "silver_valid_contributions": 42984,
+          "gold_valid_contributions": 42984,
+          "silver_total": "148351.600900000000",
+          "gold_total": "148351.600900000000"
+        },
+        "requests": {
+          "silver_valid_contributions": 18215,
+          "gold_valid_contributions": 18215,
+          "silver_total": "2186404.000000000000",
+          "gold_total": "2186404.000000000000"
+        },
+        "cpu_hours": {
+          "silver_valid_contributions": 9995,
+          "gold_valid_contributions": 9995,
+          "silver_total": "18880.271200000000",
+          "gold_total": "18880.271200000000"
+        },
+        "storage_gb_hours": {
+          "silver_valid_contributions": 12075,
+          "gold_valid_contributions": 12075,
+          "silver_total": "124661.374000000000",
+          "gold_total": "124661.374000000000"
+        },
+        "carbon_kg": {
+          "silver_valid_contributions": 32400,
+          "gold_valid_contributions": 32400,
+          "silver_total": "367.502378000000",
+          "gold_total": "367.502378000000"
+        },
+        "genai_tokens": {
+          "silver_valid_contributions": 3132,
+          "gold_valid_contributions": 3132,
+          "silver_total": "2558359",
+          "gold_total": "2558359"
+        }
+      }
+    },
+    "anomaly_quality": {
+      "evaluated_rows": 9003,
+      "not_evaluable_rows": 2047,
+      "anomalies": 243,
+      "origin_quality_limitation": null,
+      "by_reason": [
+        {
+          "evaluation_state": "evaluated",
+          "evaluation_reason": "above_threshold",
+          "cost_coverage_state": "complete",
+          "count": 243
+        },
+        {
+          "evaluation_state": "evaluated",
+          "evaluation_reason": "at_or_below_threshold",
+          "cost_coverage_state": "complete",
+          "count": 8760
+        },
+        {
+          "evaluation_state": "not_evaluable",
+          "evaluation_reason": "incomplete_cost_coverage",
+          "cost_coverage_state": "partial",
+          "count": 213
+        },
+        {
+          "evaluation_state": "not_evaluable",
+          "evaluation_reason": "insufficient_history",
+          "cost_coverage_state": "complete",
+          "count": 1834
+        }
+      ]
+    },
+    "astra_readback": {
+      "rows_verified": 11050,
+      "partitions_verified": 524,
+      "cost_partial_rows": 213,
+      "cost_zero_rows": 6,
+      "cost_null_rows": 0
+    },
+    "astra_query_results_sha256": "c4a64cda776763f11b4fec80342c7ccd2ced9b8c25121f5c28939e0901d07d7e",
+    "astra_range": {
+      "start": "2025-07-29",
+      "end": "2025-08-04",
+      "rows_verified": 7,
+      "sample": [
+        {
+          "event_date": "2025-07-29",
+          "daily_cost_usd": "46.199200000000",
+          "requests": "503.000000000000"
+        },
+        {
+          "event_date": "2025-07-30",
+          "daily_cost_usd": "60.135900000000",
+          "requests": "603.000000000000"
+        },
+        {
+          "event_date": "2025-07-31",
+          "daily_cost_usd": "54.666000000000",
+          "requests": "615.000000000000"
+        },
+        {
+          "event_date": "2025-08-01",
+          "daily_cost_usd": "35.532400000000",
+          "requests": "363.000000000000"
+        },
+        {
+          "event_date": "2025-08-02",
+          "daily_cost_usd": "1.970000000000",
+          "requests": null
+        },
+        {
+          "event_date": "2025-08-03",
+          "daily_cost_usd": "40.429000000000",
+          "requests": "506.000000000000"
+        },
+        {
+          "event_date": "2025-08-04",
+          "daily_cost_usd": "225.263700000000",
+          "requests": "112.000000000000"
+        }
+      ]
+    },
+    "astra_detail": {
+      "event_date": "2025-08-03",
+      "daily_cost_usd": "40.429000000000",
+      "requests": "506.000000000000",
+      "daily_cost_usd_coverage": {
+        "eligible": 6,
+        "valid": 5,
+        "quarantined": 1,
+        "absent": 0,
+        "valid_fraction": 0.8333333333333334,
+        "state": "partial"
+      }
+    }
+  },
+  "status": "passed",
+  "duration_seconds": 369.884
+}

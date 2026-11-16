@@ -84,6 +84,10 @@ class StreamingTests(unittest.TestCase):
             recovered = run_stream(self.spark, settings)
             self.assertEqual(recovered["audit"]["archive_rows"], 4)
             self.assertEqual(recovered["audit"]["candidate_rows"], 2)
+            for query in ("archive_query", "dedup_query"):
+                self.assertEqual(recovered[query]["query_id"], first[query]["query_id"])
+            self.assertEqual(sum(p["input_rows"] for p in recovered["archive_query"]["progress"]), 0)
+            self.assertEqual(sum(p["input_rows"] for p in recovered["dedup_query"]["progress"]), 1)
 
             # Evento dentro del margen, copia repetida, evento demasiado viejo,
             # y una variante contradictoria de un evento ya emitido.

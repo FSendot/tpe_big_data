@@ -592,6 +592,56 @@ Los comandos exactos, las consultas CQL y las verificaciones están en la
 [evidencia de serving](../evidence/serving/README.md).
 El driver se configura según la [guía de Astra para Python](https://docs.datastax.com/en/astra-db-serverless/drivers/python-driver.html).
 
+## 7. Validación integrada, idempotencia y recuperación
+
+El comando reutiliza los jobs del proyecto. Encadena el ID batch y el corte
+del archivo streaming con Silver, luego Gold y anomalías. Usa el mismo ID
+Gold para cargar Astra y verificar ambas consultas. El Lake y los informes
+de cada job quedan en `/lake/integration/<validation-id>/`, con una sesión
+de streaming propia y el dataset configurado en sólo lectura.
+
+```sh
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id section-7-v1 --report-name first --exercise-serving-recovery
+docker compose run --rm --no-deps runtime python scripts/validate_integration.py --validation-id section-7-v1 --report-name repeat --compare-to first
+```
+
+Para una corrida nueva, elegir un `--validation-id` y nombres de informe
+nuevos. Para reintentar, conservar el ID de validación y los parámetros de
+consulta. `--compare-to` exige los mismos IDs, hashes de manifiesto, conteos,
+conciliación Silver–Gold, resultados CQL e IDs de queries de streaming.
+Además exige cero entradas nuevas en replay y streaming, cero upserts en
+Astra y reutilización de las cuatro publicaciones locales y de serving.
+El script acepta `--org-id`, `--service`, `--start`, `--end` y `--detail`
+para elegir una serie y una fecha presentes en el dataset.
+
+Con los mismos datos y código, el ID batch depende de los hashes de origen
+y el contrato. Desde cero, las marcas de ingesta, los IDs de queries y
+los nombres físicos de Parquet pueden variar. La sesión, el corte Bronze
+y los hashes de manifiesto pueden producir otros IDs de Silver, Gold y
+anomalías. Se esperan los mismos granos, medidas, coberturas y decisiones
+analíticas para las mismas entradas y parámetros. El reintento del mismo
+corte conserva los IDs de publicación y los checkpoints. Cada intento
+puede generar su propio informe y revisión de auditoría.
+
+La prueba opcional de Astra requiere un ID Gold aún ausente en el destino.
+Interrumpe el primer intento después de una escritura confirmada, comprueba
+la fila y el marcador `loading`, y exige que el comando oficial de consulta
+devuelva `publication_not_ready`. Luego carga y verifica el mart por el
+camino normal. Si se interrumpe esa prueba, reejecutar con el mismo ID de
+validación y un informe nuevo, omitiendo `--exercise-serving-recovery`.
+La publicación de validación tiene su propio ID dentro de las tablas
+existentes de Astra.
+
+Las pruebas sintéticas ejercitan streaming con los mismos checkpoints y un
+fallo de promoción local antes del rename. La corrida real comprueba la
+trazabilidad, unicidad del grano, conciliación de las seis medidas, valores
+de costo y cobertura en anomalías, lectura completa de las particiones
+declaradas en Astra y resultados de las dos consultas. Se verificaron
+43.200 eventos Silver y 11.050 filas en Gold y Astra. El reintento
+reutilizó las publicaciones y validó los mismos resultados con cero
+filas nuevas en streaming y cero upserts en Astra.
+[Resultados y comandos de validación](../evidence/integration/README.md).
+
 ## Secciones siguientes
 
-Pendientes, en orden: 7. integración e idempotencia; 8. documentación final y backlog.
+Pendiente la sección 8 de documentación final y backlog.
